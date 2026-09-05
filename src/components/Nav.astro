@@ -19,7 +19,7 @@ const altHref = localizePath(path, other);
 
 <nav class="nav">
   <a class="nav-logo" href={L('/')}>Alquimia Lab</a>
-  <div class="nav-links">
+  <div class="nav-links" id="nav-links">
     <a class={active === 'home' ? 'active' : undefined} href={L('/')}>{t('Home')}</a>
     <div class="nav-dd">
       <a class={active === 'portfolio' ? 'active' : undefined} href={L('/portafolio')}>
@@ -48,14 +48,33 @@ const altHref = localizePath(path, other);
     aria-label={lang === 'es' ? 'Switch to English' : 'Cambiar a Español'}
     title="ES / EN"
   >
-    <span class="cur">ES</span><span class="sep">|</span><span class="cur">EN</span>
+    {
+      lang === 'es' ? (
+        <><span class="cur" aria-current="true">ES</span><span class="sep">|</span><span>EN</span></>
+      ) : (
+        <><span>ES</span><span class="sep">|</span><span class="cur" aria-current="true">EN</span></>
+      )
+    }
   </a>
 
   <button
     class="nav-toggle"
-    aria-label="Menu"
-    onclick="document.querySelector('.nav-links').classList.toggle('open')"
+    type="button"
+    aria-label={lang === 'es' ? 'Abrir menú' : 'Open menu'}
+    aria-expanded="false"
+    aria-controls="nav-links"
   >
     <span></span><span></span><span></span>
   </button>
 </nav>
+
+<script>
+  // Sustituye el `onclick` inline: mantiene `aria-expanded` sincronizado, que
+  // es lo que Lighthouse revisa y lo que anuncian los lectores de pantalla.
+  const btn = document.querySelector('.nav-toggle');
+  const links = document.getElementById('nav-links');
+  btn?.addEventListener('click', () => {
+    const open = links?.classList.toggle('open') ?? false;
+    btn.setAttribute('aria-expanded', String(open));
+  });
+</script>

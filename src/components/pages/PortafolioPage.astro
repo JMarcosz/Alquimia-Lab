@@ -89,7 +89,7 @@ const illustrations = ['illustration-1.jpg', 'illustration-2.webp', 'illustratio
   lang={lang}
   path="/portafolio"
   active="portfolio"
-  title="Portfolio — Isabel Correa Boder, graphic designer in Bogotá"
+  title="Isabel Correa Boder · Graphic designer in Colombia"
   description="Portfolio of Isabel Correa Boder: brand identity, UI/UX, illustration and editorial design for clients in Bogotá, Colombia and remote."
   ogImageAlt="Portafolio de Isabel Correa Boder, diseñadora gráfica en Bogotá"
 >
@@ -351,7 +351,7 @@ const illustrations = ['illustration-1.jpg', 'illustration-2.webp', 'illustratio
       <h4 class="pack-section-title">{t('Editorial')}</h4>
       <div class="car-panel">
         <button class="car-arrow prev" data-car-prev="ed">&larr;</button>
-        <div class="car-view"><img id="ed-big" src="/img/ed-1.png" alt="Editorial piece" loading="lazy" decoding="async" /></div>
+        <div class="car-view"><img id="ed-big" src="/img/ed-1.webp" alt="Editorial piece" loading="lazy" decoding="async" /></div>
         <button class="car-arrow next" data-car-next="ed">&rarr;</button>
       </div>
       <div class="car-counter" id="ed-counter">1 / 5</div>
@@ -360,7 +360,7 @@ const illustrations = ['illustration-1.jpg', 'illustration-2.webp', 'illustratio
     <!-- MODAL: Creative Illustration -->
     <Modal id="modal-illustration" title={t('Creative Illustration')} wide>
       <div class="ill-main">
-        <img id="ill-big" src="/img/illustration-1.jpg" alt="Illustration" loading="lazy" decoding="async" />
+        <img id="ill-big" src="/img/illustration-1.webp" alt="Illustration" loading="lazy" decoding="async" />
       </div>
       <div class="ill-thumbs">
         {
@@ -377,7 +377,7 @@ const illustrations = ['illustration-1.jpg', 'illustration-2.webp', 'illustratio
     <Modal id="modal-email" title={t('Email Marketing')} wide>
       <div class="car-panel">
         <button class="car-arrow prev" data-car-prev="mail">&larr;</button>
-        <div class="car-view"><img id="mail-big" src="/img/mail-thumbs/mail1.png" alt="Email design" loading="lazy" decoding="async" /></div>
+        <div class="car-view"><img id="mail-big" src="/img/mail-thumbs/mail1.webp" alt="Email design" loading="lazy" decoding="async" /></div>
         <button class="car-arrow next" data-car-next="mail">&rarr;</button>
       </div>
       <div class="car-counter" id="mail-counter">1 / 4</div>
@@ -388,8 +388,8 @@ const illustrations = ['illustration-1.jpg', 'illustration-2.webp', 'illustratio
     <script>
       const series: Record<string, string[]> = {
         pack: ['/img/pack-1.webp', '/img/pack-2.webp', '/img/pack-3.webp', '/img/pack-4.webp', '/img/pack-5.webp'],
-        ed: ['/img/ed-1.png', '/img/ed-2.webp', '/img/ed-3.webp', '/img/ed-4.png', '/img/ed-5.webp'],
-        mail: ['/img/mail-thumbs/mail1.png', '/img/mail-thumbs/mail2.png', '/img/mail-thumbs/mail3.png', '/img/mail-thumbs/mail4.png'],
+        ed: ['/img/ed-1.webp', '/img/ed-2.webp', '/img/ed-3.webp', '/img/ed-4.webp', '/img/ed-5.webp'],
+        mail: ['/img/mail-thumbs/mail1.webp', '/img/mail-thumbs/mail2.webp', '/img/mail-thumbs/mail3.webp', '/img/mail-thumbs/mail4.webp'],
       };
       const idx: Record<string, number> = { pack: 0, ed: 0, mail: 0 };
 
@@ -412,9 +412,9 @@ const illustrations = ['illustration-1.jpg', 'illustration-2.webp', 'illustratio
       });
 
       const illImages = [
-        '/img/illustration-1.jpg',
+        '/img/illustration-1.webp',
         '/img/illustration-2.webp',
-        '/img/illustration-3.png',
+        '/img/illustration-3.webp',
         '/img/illustration-4.webp',
       ];
       document.addEventListener('click', (e) => {

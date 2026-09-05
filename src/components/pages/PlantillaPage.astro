@@ -1,0 +1,164 @@
+---
+/**
+ * Página de detalle de una plantilla de Notion.
+ *
+ * Cierra el hueco estructural frente a los competidores por
+ * "plantillas notion colombia": ellos tienen una URL por plantilla y aquí
+ * había 11 productos con cero páginas propias.
+ *
+ * Recibe la ENTRADA COMPLETA por props, no el slug. Volver a buscarla por
+ * `Astro.params.slug` rompería en cuanto los slugs difieran por idioma.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import Faq from '../Faq.astro';
+import Pic from '../Pic.astro';
+import { getImage } from 'astro:assets';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+import { SITE_URL, SITE_NAME } from '../../consts';
+import type { Plantilla } from '../../data/plantillas';
+
+interface Props {
+  lang: Lang;
+  plantilla: Plantilla;
+}
+const { lang, plantilla } = Astro.props;
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+const c = plantilla[lang];
+
+const isFree = /free/i.test(plantilla.price);
+const priceValue = isFree ? '0' : (plantilla.price.replace(',', '.').match(/[\d.]+/)?.[0] ?? null);
+
+// Portada absoluta para el schema: `Product` sin `image` no produce rich results.
+const assetMods = import.meta.glob<{ default: ImageMetadata }>(
+  '../../assets/img/*.{png,jpg,jpeg,webp}',
+  { eager: true },
+);
+let productImage: string | null = null;
+if (plantilla.img) {
+  const mod = assetMods[`../../assets/img/${plantilla.img}`];
+  if (mod) {
+    const img = await getImage({ src: mod.default, format: 'webp', width: 1200 });
+    productImage = new URL(img.src, Astro.site!).href;
+  }
+}
+
+const pageUrl = new URL(L(`/plantillas-notion/${plantilla.slug}`), Astro.site!).href;
+
+const productLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: plantilla.name,
+  description: c.intro,
+  brand: { '@type': 'Brand', name: SITE_NAME },
+  category: 'Notion template',
+  url: pageUrl,
+  ...(productImage ? { image: productImage } : {}),
+  ...(priceValue !== null
+    ? {
+        offers: {
+          '@type': 'Offer',
+          url: plantilla.href,
+          price: priceValue,
+          priceCurrency: 'USD',
+          availability: 'https://schema.org/InStock',
+          seller: { '@id': `${SITE_URL}/#organization` },
+        },
+      }
+    : {}),
+};
+
+const forWhoTitle = lang === 'es' ? 'Para quién es' : 'Who it is for';
+const includesTitle = lang === 'es' ? 'Qué incluye' : "What's included";
+const faqTitle = lang === 'es' ? 'Preguntas frecuentes' : 'FAQ';
+const ctaLabel = isFree
+  ? lang === 'es'
+    ? 'Descargar gratis'
+    : 'Download free'
+  : lang === 'es'
+    ? `Conseguir por ${plantilla.price}`
+    : `Get it for ${plantilla.price}`;
+const backLabel = lang === 'es' ? 'Ver todas las plantillas' : 'See all templates';
+---
+
+<BaseLayout
+  lang={lang}
+  path={`/plantillas-notion/${plantilla.slug}`}
+  active="products"
+  title={c.title}
+  description={c.metaDescription}
+  ogImageAlt={c.h1}
+>
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(productLd)} />
+
+  <div class="page">
+    <Breadcrumbs
+      items={[
+        { name: t('Home'), href: L('/') },
+        { name: lang === 'es' ? 'Plantillas de Notion' : 'Notion templates', href: L('/plantillas-notion') },
+        { name: c.short },
+      ]}
+    />
+
+    <section class="section">
+      <h1 class="section-title"><span>{c.h1}</span></h1>
+
+      <div class="plantilla-hero">
+        <div class="plantilla-media">
+          {
+            plantilla.img ? (
+              <Pic
+                name={plantilla.img}
+                alt={c.h1}
+                class="plantilla-cover"
+                sizes="(max-width: 700px) 100vw, 480px"
+                loading="eager"
+                fetchpriority="high"
+              />
+            ) : (
+              <div class="plantilla-cover plantilla-cover-icon">{plantilla.icon ?? '📄'}</div>
+            )
+          }
+        </div>
+
+        <div class="plantilla-info">
+          <p class="plantilla-intro">{c.intro}</p>
+          <p class="plantilla-price">
+            <strong>{isFree ? (lang === 'es' ? 'Gratis' : 'Free') : plantilla.price}</strong>
+            {!isFree && <span class="plantilla-cur"> USD</span>}
+          </p>
+          <a
+            class="btn-primary"
+            href={plantilla.href}
+            target="_blank"
+            rel="noopener"
+            aria-label={`${ctaLabel} — ${plantilla.name}`}
+          >
+            {ctaLabel}
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title"><span>{forWhoTitle}</span></h2>
+      <ul class="plantilla-list">
+        {c.forWho.map((it) => <li>{it}</li>)}
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title"><span>{includesTitle}</span></h2>
+      <ul class="plantilla-list">
+        {c.includes.map((it) => <li>{it}</li>)}
+      </ul>
+    </section>
+
+    <Faq title={faqTitle} items={c.faq} />
+
+    <section class="section" style="text-align:center;">
+      <a class="btn-secondary" href={L('/plantillas-notion')}>{backLabel}</a>
+    </section>
+  </div>
+</BaseLayout>

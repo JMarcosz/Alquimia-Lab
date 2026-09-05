@@ -250,27 +250,27 @@ const placeholders: Record<string, string> = {
 
 /** <title> per page (English -> Spanish). Optimizados con keyword + ciudad. */
 export const titles: Record<string, string> = {
-  'Alquimia Lab · Brand design & Notion templates from Bogotá':
-    'Alquimia Lab · Diseño de marca y plantillas de Notion desde Bogotá',
-  'Portfolio — Isabel Correa Boder, graphic designer in Bogotá':
-    'Portafolio — Isabel Correa Boder, diseñadora gráfica en Bogotá',
+  'Alquimia Lab · Notion templates & brand design':
+    'Alquimia Lab · Plantillas de Notion y diseño en Bogotá',
+  'Isabel Correa Boder · Graphic designer in Colombia':
+    'Isabel Correa Boder · Diseñadora gráfica en Colombia',
   'UI/UX design portfolio · Alquimia Lab (Bogotá)':
     'Portafolio de diseño UI/UX · Alquimia Lab (Bogotá)',
   'Social media design portfolio · Alquimia Lab (Bogotá)':
-    'Portafolio de diseño para redes sociales · Alquimia Lab (Bogotá)',
-  'AI Characters · Alquimia Lab': 'Personajes IA · Alquimia Lab',
-  'Brand identity & logo design portfolio · Alquimia Lab (Bogotá)':
-    'Portafolio de identidad de marca y logotipos · Alquimia Lab (Bogotá)',
-  'Notion templates in Spanish & printed products · Alquimia Lab':
-    'Plantillas de Notion en español y productos impresos · Alquimia Lab',
+    'Diseño para redes sociales · Alquimia Lab Bogotá',
+  'Original AI characters · Alquimia Lab': 'Personajes IA originales · Alquimia Lab',
+  'Brand identity & logo design · Alquimia Lab':
+    'Identidad de marca y logotipos · Alquimia Lab Bogotá',
+  'Notion templates in Spanish · Alquimia Lab':
+    'Plantillas de Notion en español · Alquimia Lab',
   'Contact — Alquimia Lab, graphic design in Bogotá':
     'Contacto — Alquimia Lab, diseño gráfico en Bogotá',
 };
 
 /** <meta name="description"> per page (English -> Spanish). Con señales de ubicación. */
 export const descriptions: Record<string, string> = {
-  'Isabel Correa Boder — graphic designer in Bogotá, Colombia. Brand identity, UI/UX and social media design, plus Notion templates in Spanish to organize your work.':
-    'Isabel Correa Boder — diseñadora gráfica en Bogotá, Colombia. Identidad de marca, UI/UX y diseño para redes sociales, además de plantillas de Notion en español para organizar tu trabajo.',
+  'Brand identity, UI/UX and social media design, plus Notion templates in Spanish. Isabel Correa Boder, graphic designer in Bogotá, Colombia.':
+    'Diseño de identidad de marca, UI/UX y plantillas de Notion en español. Isabel Correa Boder, diseñadora gráfica en Bogotá, Colombia.',
   'Portfolio of Isabel Correa Boder: brand identity, UI/UX, illustration and editorial design for clients in Bogotá, Colombia and remote.':
     'Portafolio de Isabel Correa Boder: identidad de marca, UI/UX, ilustración y diseño editorial para clientes en Bogotá, Colombia y en remoto.',
   'UI/UX design work by Alquimia Lab — landing pages and mobile apps focused on usability and clarity. Bogotá, Colombia.':
@@ -282,9 +282,9 @@ export const descriptions: Record<string, string> = {
   'Brand identity and logo design work by Alquimia Lab (Isabel Correa Boder), graphic designer in Bogotá, Colombia.':
     'Trabajo de identidad de marca y diseño de logotipos de Alquimia Lab (Isabel Correa Boder), diseñadora gráfica en Bogotá, Colombia.',
   'Notion templates in Spanish (finance, habits, students, freelancers) plus coloring books and printed planners by Alquimia Lab.':
-    'Plantillas de Notion en español (finanzas, hábitos, estudiantes, freelancers) más libros para colorear y planners impresos de Alquimia Lab.',
+    'Plantillas de Notion en español para Colombia: finanzas, hábitos, estudiantes y freelancers. Gratuitas y de pago, listas para duplicar.',
   'Contact Isabel Correa Boder — graphic designer in Bogotá, Colombia. Available for clients across Colombia and remote. Write via email or WhatsApp.':
-    'Contacta a Isabel Correa Boder — diseñadora gráfica en Bogotá, Colombia. Disponible para clientes de toda Colombia y en remoto. Escríbeme por correo o WhatsApp.',
+    'Contacta a Isabel Correa Boder, diseñadora gráfica en Bogotá. Clientes de toda Colombia y en remoto. Escríbeme por correo o WhatsApp.',
 };
 
 const normalize = (s: string) => s.replace(/\s+/g, ' ').trim();
@@ -320,7 +320,9 @@ export function tDescription(lang: Lang, en: string): string {
 export function localizePath(path: string, lang: Lang): string {
   const clean = path === '' ? '/' : path.startsWith('/') ? path : `/${path}`;
   if (lang === 'es') return clean;
-  return clean === '/' ? '/en/' : `/en${clean}`;
+  // Sin barra final: `trailingSlash: 'never'` sirve la home EN en `/en`.
+  // Devolver '/en/' metia un 308 en cada hreflang y en el toggle de idioma.
+  return clean === '/' ? '/en' : `/en${clean}`;
 }
 
 /** Strip the "/en" prefix from a pathname to get its logical path. */

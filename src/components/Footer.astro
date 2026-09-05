@@ -1,6 +1,124 @@
 ---
-import { useTranslations, type Lang } from '../i18n';
-const { lang } = Astro.props as { lang: Lang };
+/**
+ * Pie de página con navegación real.
+ *
+ * ANTES: una sola línea con el copyright, sin un solo enlace. En un sitio de
+ * 29 páginas eso desaprovecha por completo el enlazado interno del footer,
+ * que es la forma más barata de repartir autoridad hacia las páginas
+ * comerciales y de darle a Google rutas de rastreo alternativas.
+ * También añade el bloque NAP (nombre, zona, teléfono), señal de SEO local.
+ */
+import { useTranslations, localizePath, type Lang } from '../i18n';
+import {
+  SITE_NAME,
+  AUTHOR_NAME,
+  CONTACT_EMAIL,
+  PHONE_DISPLAY,
+  PHONE_E164,
+  WHATSAPP_URL,
+  BUSINESS_CITY,
+  BUSINESS_COUNTRY,
+  SOCIAL_LINKS,
+} from '../consts';
+import { servicios } from '../data/servicios';
+import { plantillas } from '../data/plantillas';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
 const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+const es = lang === 'es';
+
+const year = new Date().getFullYear();
+
+// Solo las 4 plantillas más buscadas: un footer no es un mapa del sitio.
+const topPlantillas = plantillas.slice(0, 4);
+
+const cols = [
+  {
+    title: es ? 'Servicios' : 'Services',
+    links: servicios.map((s) => ({
+      label: s[lang].short,
+      href: L(`/servicios/${s.slug}`),
+    })),
+  },
+  {
+    title: es ? 'Plantillas de Notion' : 'Notion templates',
+    links: [
+      ...topPlantillas.map((p) => ({
+        label: p[lang].short,
+        href: L(`/plantillas-notion/${p.slug}`),
+      })),
+      { label: es ? 'Ver todas' : 'See all', href: L('/plantillas-notion') },
+    ],
+  },
+  {
+    title: es ? 'Estudio' : 'Studio',
+    links: [
+      { label: t('Portfolio'), href: L('/portafolio') },
+      { label: t('Products'), href: L('/productos') },
+      { label: t('Contact'), href: L('/contacto') },
+    ],
+  },
+];
 ---
-<footer class="footer">{t('© 2026 Alquimia Lab · Made with calm & coffee')}</footer>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <p class="footer-name">{SITE_NAME}</p>
+      <!-- Bloque NAP: nombre, zona de servicio y teléfono, coherentes con el
+           JSON-LD de ProfessionalService. Señal de SEO local. -->
+      <p class="footer-nap">
+        {AUTHOR_NAME}<br />
+        {es ? 'Diseño gráfico en' : 'Graphic design in'} {BUSINESS_CITY}, {BUSINESS_COUNTRY}
+      </p>
+      <p class="footer-contact">
+        <a href={`tel:${PHONE_E164}`}>{PHONE_DISPLAY}</a><br />
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a><br />
+        <a href={WHATSAPP_URL} target="_blank" rel="noopener">WhatsApp</a>
+      </p>
+      <ul class="footer-social">
+        {
+          SOCIAL_LINKS.map((url) => {
+            const net = url.includes('instagram')
+              ? 'Instagram'
+              : url.includes('youtube')
+                ? 'YouTube'
+                : url.includes('facebook')
+                  ? 'Facebook'
+                  : 'Web';
+            return (
+              <li>
+                <a href={url} target="_blank" rel="me noopener">
+                  {net}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+
+    {
+      cols.map((col) => (
+        <nav class="footer-col" aria-label={col.title}>
+          <h2 class="footer-col-title">{col.title}</h2>
+          <ul>
+            {col.links.map((l) => (
+              <li>
+                <a href={l.href}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+
+  <p class="footer-legal">
+    © {year} {SITE_NAME} · {es ? 'Hecho con calma y café' : 'Made with calm & coffee'}
+  </p>
+</footer>

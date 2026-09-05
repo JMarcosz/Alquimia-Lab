@@ -3,6 +3,9 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import WhatsappFloat from '../components/WhatsappFloat.astro';
+import { getImage } from 'astro:assets';
+import logoSrc from '../assets/img/logo-alquimia.png';
+import isabelSrc from '../assets/img/foto-isabel.jpg';
 import { tTitle, tDescription, localizePath, type Lang } from '../i18n';
 import {
   SITE_NAME,
@@ -14,6 +17,7 @@ import {
   BUSINESS_CITY,
   BUSINESS_COUNTRY,
   BUSINESS_PRICE_RANGE,
+  BUSINESS_GEO,
   BUSINESS_DESCRIPTION_ES,
   BUSINESS_DESCRIPTION_EN,
 } from '../consts';
@@ -41,7 +45,7 @@ const {
   title,
   description,
   active,
-  ogImage = '/og-image.png',
+  ogImage = '/og-image.jpg',
   ogImageAlt,
   noindex = false,
 } = Astro.props;
@@ -56,13 +60,22 @@ const enHref = new URL(localizePath(path, 'en'), site).href;
 const ogImageUrl = new URL(ogImage, site).href;
 const businessDescription = lang === 'es' ? BUSINESS_DESCRIPTION_ES : BUSINESS_DESCRIPTION_EN;
 
+// Las imagenes del JSON-LD se referenciaban como `${SITE_URL}/archivo`,
+// una ruta de `public/` donde nunca estuvieron: ambas devolvian 404, dejando
+// `Organization.logo` y `Person.image` rotos en todas las paginas. Ahora se
+// resuelven por el pipeline de Astro y se absolutizan contra `site`.
+const logoImg = await getImage({ src: logoSrc, format: 'png', width: 512 });
+const isabelImg = await getImage({ src: isabelSrc, format: 'jpeg', width: 800 });
+const logoUrl = new URL(logoImg.src, site).href;
+const isabelUrl = new URL(isabelImg.src, site).href;
+
 const personLd = {
   '@type': 'Person',
   '@id': `${SITE_URL}/#isabel`,
   name: AUTHOR_NAME,
   url: `${SITE_URL}${localizePath('/portafolio', lang)}`,
   jobTitle: lang === 'es' ? 'Diseñadora gráfica' : 'Graphic designer',
-  image: `${SITE_URL}/foto-isabel.jpg`,
+  image: isabelUrl,
   worksFor: { '@type': 'Organization', name: 'Freepik Company' },
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Institución Universitaria Pascual Bravo' },
   address: {
@@ -84,7 +97,6 @@ const personLd = {
 };
 
 const orgLd = {
-  '@context': 'https://schema.org',
   '@type': 'Organization',
   '@id': `${SITE_URL}/#organization`,
   name: SITE_NAME,
@@ -92,7 +104,7 @@ const orgLd = {
   url: site.href,
   logo: {
     '@type': 'ImageObject',
-    url: `${SITE_URL}/logo-alquimia.png`,
+    url: logoUrl,
   },
   image: ogImageUrl,
   description: businessDescription,
@@ -107,7 +119,6 @@ const orgLd = {
 };
 
 const professionalServiceLd = {
-  '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   '@id': `${SITE_URL}/#business`,
   name: `${SITE_NAME} — ${lang === 'es' ? 'diseño gráfico y de marca en Bogotá' : 'graphic & brand design in Bogotá'}`,
@@ -115,6 +126,14 @@ const professionalServiceLd = {
   image: ogImageUrl,
   description: businessDescription,
   priceRange: BUSINESS_PRICE_RANGE,
+  // `geo` estaba definido en consts.ts pero no se emitia en ningun schema.
+  geo: { '@type': 'GeoCoordinates', latitude: BUSINESS_GEO.lat, longitude: BUSINESS_GEO.lon },
+  // Negocio de area de servicio: sin direccion publica, pero con radio.
+  serviceArea: {
+    '@type': 'GeoCircle',
+    geoMidpoint: { '@type': 'GeoCoordinates', latitude: BUSINESS_GEO.lat, longitude: BUSINESS_GEO.lon },
+    geoRadius: '50000',
+  },
   telephone: PHONE_E164,
   email: CONTACT_EMAIL,
   areaServed: [
@@ -128,22 +147,30 @@ const professionalServiceLd = {
     '@type': 'OfferCatalog',
     name: lang === 'es' ? 'Servicios de diseño' : 'Design services',
     itemListElement: [
-      lang === 'es' ? 'Identidad de marca y branding' : 'Brand identity',
-      lang === 'es' ? 'Diseño UI/UX' : 'UI/UX design',
-      lang === 'es' ? 'Diseño para redes sociales' : 'Social media design',
-      lang === 'es' ? 'Diseño visual y editorial' : 'Visual & editorial design',
-    ].map((name) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name } })),
+      { slug: 'identidad-de-marca-bogota', es: 'Identidad de marca y branding', en: 'Brand identity' },
+      { slug: 'diseno-ui-ux-bogota', es: 'Diseño UI/UX', en: 'UI/UX design' },
+      { slug: 'diseno-redes-sociales-bogota', es: 'Diseño para redes sociales', en: 'Social media design' },
+      { slug: 'diseno-visual-y-editorial-bogota', es: 'Diseño visual y editorial', en: 'Visual & editorial design' },
+    ].map((sv) => ({
+      '@type': 'Offer',
+      itemOffered: {
+        '@type': 'Service',
+        name: lang === 'es' ? sv.es : sv.en,
+        // Sin `url` el catalogo no enlazaba con /servicios/*.
+        url: new URL(localizePath(`/servicios/${sv.slug}`, lang), site).href,
+        provider: { '@id': `${SITE_URL}/#isabel` },
+      },
+    })),
   },
 };
 
 const websiteLd = {
-  '@context': 'https://schema.org',
   '@type': 'WebSite',
   '@id': `${SITE_URL}/#website`,
   name: SITE_NAME,
   url: site.href,
-  inLanguage: lang === 'es' ? 'es' : 'en',
   publisher: { '@id': `${SITE_URL}/#organization` },
+  inLanguage: lang === 'es' ? 'es-CO' : 'en',
 };
 ---
 
@@ -164,15 +191,26 @@ const websiteLd = {
     <link rel="alternate" hreflang="en" href={enHref} />
     <link rel="alternate" hreflang="x-default" href={esHref} />
 
+    <!-- Google exige un cuadrado MULTIPLO DE 48px para mostrar favicon en
+         resultados. El anterior era un PNG de 32x32 renombrado a .ico: por
+         debajo del minimo y con formato invalido, asi que no se mostraba.
+         La URL del favicon debe permanecer ESTABLE (Google la cachea): no
+         versionarla ni renombrarla. -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap-index.xml" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/quicksand-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
 
     <meta property="og:type" content="website" />
@@ -181,6 +219,8 @@ const websiteLd = {
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:secure_url" content={ogImageUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={ogImageAlt ?? pageTitle} />
@@ -192,13 +232,15 @@ const websiteLd = {
     <meta name="twitter:image" content={ogImageUrl} />
     <meta name="twitter:image:alt" content={ogImageAlt ?? pageTitle} />
 
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(orgLd)} />
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(professionalServiceLd)} />
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteLd)} />
+    <!-- Un solo @graph en vez de 4 <script> sueltos: ahorra ~1 KB por pagina y
+         hace explicitas las relaciones entre entidades por @id. -->
     <script
       is:inline
       type="application/ld+json"
-      set:html={JSON.stringify({ '@context': 'https://schema.org', ...personLd })}
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@graph': [orgLd, professionalServiceLd, websiteLd, personLd],
+      })}
     />
 
     <slot name="head" />
@@ -208,17 +250,58 @@ const websiteLd = {
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
 
+    <a class="skip-link" href="#main">{lang === 'es' ? 'Saltar al contenido' : 'Skip to content'}</a>
+
     <Nav lang={lang} path={path} active={active} />
 
+    <div id="main">
+
     <slot />
+    </div>
 
     <Footer lang={lang} />
     <WhatsappFloat lang={lang} />
 
     <script>
-      window.addEventListener('scroll', () => {
-        document.querySelector('.nav')?.classList.toggle('scrolled', window.scrollY > 20);
-      });
+      // `passive: true` + rAF: antes hacia un querySelector y un classList.toggle
+      // en cada frame de scroll, bloqueando el hilo principal.
+      const nav = document.querySelector('.nav');
+      let ticking = false;
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            nav?.classList.toggle('scrolled', window.scrollY > 20);
+            ticking = false;
+          });
+        },
+        { passive: true },
+      );
+
+      // Los videos decorativos llevan `preload="none"` y arrancan solo al
+      // entrar en pantalla, para que no compitan con el LCP.
+      const vids = document.querySelectorAll('video[data-lazy-video]');
+      if (vids.length) {
+        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              const v = e.target;
+              if (!(v instanceof HTMLVideoElement)) continue;
+              if (e.isIntersecting) {
+                if (v.preload !== 'auto') v.preload = 'auto';
+                if (!reduced) v.play().catch(() => {});
+              } else {
+                v.pause();
+              }
+            }
+          },
+          { rootMargin: '200px' },
+        );
+        vids.forEach((v) => io.observe(v));
+      }
     </script>
 
     <script is:inline define:vars={{ lang }}>
@@ -234,6 +317,13 @@ const websiteLd = {
         }
       });
     </script>
+
+    <!-- Analitica de Vercel via endpoint nativo: sin paquete npm, sin cookies
+         de terceros y por tanto sin banner de consentimiento. Requiere activar
+         Analytics y Speed Insights en el panel del proyecto en Vercel.
+         Hasta ahora el sitio no tenia NINGUNA medicion. -->
+    <script is:inline defer src="/_vercel/insights/script.js"></script>
+    <script is:inline defer src="/_vercel/speed-insights/script.js"></script>
 
     <slot name="end" />
   </body>

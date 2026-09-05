@@ -1,0 +1,150 @@
+---
+/**
+ * Hub de plantillas de Notion: /plantillas-notion
+ *
+ * URL con keyword para "plantillas notion colombia" y "Alquimia lab notion",
+ * que hasta ahora no tenían ninguna página que las atacara: el catálogo vivía
+ * en /productos, un slug genérico, y encima oculto tras un `display:none`.
+ *
+ * El hub se mantiene corto a propósito. El competidor que rankea
+ * (notion-latam.com) tiene 150-200 palabras aquí: la fuerza está en las URLs
+ * de producto, a las que este hub enlaza.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import Pic from '../Pic.astro';
+import Faq from '../Faq.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+import { plantillas } from '../../data/plantillas';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const es = lang === 'es';
+
+const h1 = es
+  ? 'Plantillas de Notion en español para Colombia'
+  : 'Notion templates in Spanish';
+
+const intro = es
+  ? 'Sistemas listos para duplicar en tu Notion: finanzas, hábitos, estudio, redes sociales y trabajo freelance. Están en español, funcionan en el plan gratuito y las diseño yo misma desde Bogotá. Hay versiones gratuitas y de pago desde 4 USD.'
+  : 'Ready-to-duplicate Notion systems: personal finance, habits, study, social media and freelance work. They work on the free Notion plan and I design each one myself from Bogotá, Colombia. Free and paid versions from 4 USD.';
+
+const freeTitle = es ? 'Gratuitas' : 'Free';
+const paidTitle = es ? 'De pago' : 'Paid';
+
+const free = plantillas.filter((p) => /free/i.test(p.price));
+const paid = plantillas.filter((p) => !/free/i.test(p.price));
+
+const faq = es
+  ? [
+      {
+        q: '¿Las plantillas de Notion están en español?',
+        a: 'Sí. Todas están redactadas en español, con los nombres de campos, vistas y secciones traducidos. También existen en inglés si lo prefieres.',
+      },
+      {
+        q: '¿Hay plantillas de Notion gratis?',
+        a: `Sí. ${free.length} de las ${plantillas.length} son gratuitas: finanzas personales, hábitos y bienestar mental. Se duplican con un clic y sin registro.`,
+      },
+      {
+        q: '¿Cuánto cuestan las plantillas de pago?',
+        a: 'Van desde 4 USD hasta 15 USD según el tamaño del sistema. Son pago único: la plantilla queda en tu espacio de Notion para siempre.',
+      },
+      {
+        q: '¿Funcionan desde Colombia?',
+        a: 'Sí. Se pagan con tarjeta a través de Notion o Gumroad y se duplican en tu espacio al instante, desde cualquier país.',
+      },
+      {
+        q: '¿Necesito saber usar Notion?',
+        a: 'No hace falta nivel avanzado. Las plantillas llegan estructuradas y listas para usar: solo tienes que empezar a rellenarlas.',
+      },
+    ]
+  : [
+      {
+        q: 'Are the Notion templates in Spanish?',
+        a: 'Yes. All of them are written in Spanish, with field names, views and sections translated. English versions are available too.',
+      },
+      {
+        q: 'Are there free Notion templates?',
+        a: `Yes. ${free.length} of the ${plantillas.length} are free: personal finance, habits and mental wellbeing. One click to duplicate, no signup.`,
+      },
+      {
+        q: 'How much do the paid templates cost?',
+        a: 'From 4 USD to 15 USD depending on the size of the system. One-time payment: the template stays in your Notion workspace forever.',
+      },
+      {
+        q: 'Do I need to know Notion well?',
+        a: 'No advanced knowledge needed. Templates arrive structured and ready to use: you just start filling them in.',
+      },
+    ];
+
+const card = (p: (typeof plantillas)[number]) => p;
+---
+
+<BaseLayout
+  lang={lang}
+  path="/plantillas-notion"
+  active="products"
+  title={es ? 'Plantillas de Notion en español | Alquimia Lab' : 'Notion templates in Spanish | Alquimia Lab'}
+  description={es
+    ? 'Plantillas de Notion en español para Colombia: finanzas, hábitos, estudiantes, freelancers y redes sociales. Gratuitas y de pago desde 4 USD.'
+    : 'Notion templates in Spanish: personal finance, habits, students, freelancers and social media. Free and paid from 4 USD. Designed in Bogotá.'}
+  ogImageAlt={h1}
+>
+  <div class="page">
+    <Breadcrumbs
+      items={[
+        { name: t('Home'), href: L('/') },
+        { name: es ? 'Plantillas de Notion' : 'Notion templates' },
+      ]}
+    />
+
+    <section class="section">
+      <h1 class="section-title"><span>{h1}</span></h1>
+      <p class="plantillas-intro">{intro}</p>
+    </section>
+
+    {
+      [
+        { title: freeTitle, items: free },
+        { title: paidTitle, items: paid },
+      ].map((group) => (
+        <section class="section">
+          <h2 class="section-title"><span>{group.title}</span></h2>
+          <div class="prod-grid">
+            {group.items.map((p) => {
+              const c = p[lang];
+              return (
+                <article class="prod-card">
+                  <a class="prod-card-media" href={L(`/plantillas-notion/${p.slug}`)}>
+                    {p.img ? (
+                      <Pic name={p.img} alt={c.h1} sizes="(max-width: 700px) 100vw, 320px" />
+                    ) : (
+                      <div class="plantilla-cover-icon">{p.icon ?? '📄'}</div>
+                    )}
+                  </a>
+                  <h3>
+                    <a href={L(`/plantillas-notion/${p.slug}`)}>{c.short}</a>
+                  </h3>
+                  <p>{c.intro}</p>
+                  <p class="prod-price">
+                    {/free/i.test(p.price) ? (es ? 'Gratis' : 'Free') : `${p.price} USD`}
+                  </p>
+                  <a class="prod-cta" href={L(`/plantillas-notion/${p.slug}`)}>
+                    {es ? `Ver ${c.short}` : `See ${c.short}`} →
+                  </a>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))
+    }
+
+    <Faq title={es ? 'Preguntas frecuentes' : 'FAQ'} items={faq} />
+  </div>
+</BaseLayout>

@@ -80,8 +80,8 @@ const featuredLoop = [...featured, ...featured];
   lang={lang}
   path="/"
   active="home"
-  title="Alquimia Lab · Brand design & Notion templates from Bogotá"
-  description="Isabel Correa Boder — graphic designer in Bogotá, Colombia. Brand identity, UI/UX and social media design, plus Notion templates in Spanish to organize your work."
+  title="Alquimia Lab · Notion templates & brand design"
+  description="Brand identity, UI/UX and social media design, plus Notion templates in Spanish. Isabel Correa Boder, graphic designer in Bogotá, Colombia."
   ogImageAlt="Alquimia Lab — diseño de marca y plantillas de Notion, Bogotá"
 >
   <!-- BANNER -->
@@ -90,11 +90,13 @@ const featuredLoop = [...featured, ...featured];
       name="banner-home.png"
       alt="Alquimia Lab — estudio de diseño gráfico en Bogotá"
       class="hero-banner-img"
+      sizes="100vw"
+      widths={[640, 960, 1280, 1920]}
       loading="eager"
       fetchpriority="high"
     />
     <div class="hero-banner-overlay">
-      <Pic name="logo-alquimia.png" alt="Logo de Alquimia Lab" class="hero-logo anim" loading="eager" />
+      <Pic name="logo-alquimia.png" alt="Logo de Alquimia Lab" class="hero-logo anim" sizes="200px" widths={[200, 400]} loading="eager" />
       <h1 class="anim d1">{t('Brand design and Notion templates from Bogotá')}</h1>
       <p class="anim d2">
         {t(

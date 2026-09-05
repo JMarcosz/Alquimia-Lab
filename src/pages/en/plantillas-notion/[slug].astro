@@ -1,0 +1,11 @@
+---
+import PlantillaPage from "../../../components/pages/PlantillaPage.astro";
+import { plantillas, type Plantilla } from "../../../data/plantillas";
+
+export function getStaticPaths() {
+  return plantillas.map((p) => ({ params: { slug: p.slug }, props: { plantilla: p } }));
+}
+
+const { plantilla } = Astro.props as { plantilla: Plantilla };
+---
+<PlantillaPage lang="en" plantilla={plantilla} />

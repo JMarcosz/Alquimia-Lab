@@ -24,7 +24,11 @@ const L = (p: string) => localizePath(p, lang);
 
       <div class="contact-box anim d1">
         <div class="contact-video-circle">
-          <video autoplay muted loop playsinline preload="metadata">
+          <!-- Sin `autoplay` y con `preload="none"`: `autoplay` anulaba el
+               `preload="metadata"` y descargaba los 5,12 MB completos en la
+               carga inicial, para un circulo de 140x140. Ahora arranca solo
+               cuando entra en pantalla (ver script al final). -->
+          <video data-lazy-video muted loop playsinline preload="none">
             <source src="/video/video.mp4" type="video/mp4" />
           </video>
         </div>

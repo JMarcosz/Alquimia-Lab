@@ -1,18 +1,25 @@
 ---
 /**
- * Thin wrapper around Astro's <Image> that resolves an asset from
- * `src/assets/img/` by file name, so page markup can stay declarative.
+ * Envoltorio sobre <Picture> de Astro que resuelve un asset de
+ * `src/assets/img/` por nombre de archivo, para que el marcado siga siendo
+ * declarativo.
  *
- * Use for static images. JS-swapped carousel images live in `public/img/`
- * and are referenced by plain <img> instead.
+ * Usa <Picture> (no <Image>) para emitir AVIF con respaldo WebP: <Image> solo
+ * produce un formato, y AVIF suele pesar un 20-30% menos que WebP.
  */
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 
 interface Props {
   name: string;
   alt: string;
   class?: string;
   widths?: number[];
+  /**
+   * Pista de tamano para el srcset. El valor por defecto asume una imagen
+   * dentro de la columna de contenido; las imagenes a sangre completa DEBEN
+   * pasar `sizes="100vw"` o el navegador elegira un candidato de 700px para
+   * un hueco de pantalla completa.
+   */
   sizes?: string;
   loading?: 'lazy' | 'eager';
   fetchpriority?: 'high' | 'low' | 'auto';
@@ -35,15 +42,25 @@ const extra: Record<string, unknown> = {};
 if (widths) extra.widths = widths;
 if (fetchpriority) extra.fetchpriority = fetchpriority;
 if (style) extra.style = style;
+
+// Los SVG no se transforman: pasarlos por <Picture> con formatos raster falla.
+const isSvg = name.toLowerCase().endsWith('.svg');
 ---
 
-<Image
-  src={mod.default}
-  alt={alt}
-  class={klass}
-  layout="constrained"
-  sizes={sizes ?? '(max-width: 700px) 100vw, 700px'}
-  loading={loading}
-  decoding="async"
-  {...extra}
-/>
+{
+  isSvg ? (
+    <img src={mod.default.src} alt={alt} class={klass} loading={loading} decoding="async" style={style} />
+  ) : (
+    <Picture
+      src={mod.default}
+      formats={['avif', 'webp']}
+      alt={alt}
+      class={klass}
+      layout="constrained"
+      sizes={sizes ?? '(max-width: 700px) 100vw, 700px'}
+      loading={loading}
+      decoding="async"
+      {...extra}
+    />
+  )
+}
