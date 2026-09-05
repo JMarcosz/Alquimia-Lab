@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+import { servicios } from '../../data/servicios';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const h1 = lang === 'es' ? 'Servicios de diseño en Bogotá' : 'Design services in Bogotá';
+const intro =
+  lang === 'es'
+    ? 'Identidad de marca, diseño UI/UX, diseño para redes sociales y diseño visual y editorial. Trabajo con emprendedores y empresas de Bogotá, de toda Colombia y en remoto.'
+    : 'Brand identity, UI/UX design, social media design and visual & editorial design. I work with founders and companies in Bogotá, across Colombia and remote.';
+---
+
+<BaseLayout
+  lang={lang}
+  path="/servicios"
+  active="services"
+  title={lang === 'es' ? 'Servicios de diseño en Bogotá | Alquimia Lab' : 'Design services in Bogotá | Alquimia Lab'}
+  description={intro}
+  ogImageAlt={h1}
+>
+  <div class="page">
+    <Breadcrumbs items={[{ name: t('Home'), href: L('/') }, { name: t('Services') }]} />
+
+    <section class="section">
+      <div class="service-hero">
+        <h1>{h1}</h1>
+        <p>{intro}</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+      <div class="services-index-grid">
+        {
+          servicios.map((s) => {
+            const c = s[lang];
+            return (
+              <a class="services-index-card" href={L(`/servicios/${s.slug}`)}>
+                <h2>{c.short}</h2>
+                <p>{c.intro}</p>
+              </a>
+            );
+          })
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>

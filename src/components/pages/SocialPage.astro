@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pic from '../Pic.astro';
+import Modal from '../Modal.astro';
+import ModalScript from '../ModalScript.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+interface Campaign {
+  id: string;
+  key: string;
+  name: string;
+  thumb: string;
+  avatar: string;
+  user: string;
+  slides: string[];
+}
+
+const campaigns: Campaign[] = [
+  { id: 'modal-shiro', key: 'shiro', name: 'Shiro Tora Judo Club', thumb: 'social-shiro-1.webp', avatar: 'social-shiro-thumb.png', user: 'shiro_tora_judo', slides: ['social-shiro-1.webp', 'social-shiro-2.webp', 'social-shiro-3.webp'] },
+  { id: 'modal-blink', key: 'blink', name: 'BlinkSpanish School', thumb: 'social-blink-thumb.png', avatar: 'social-blink-avatar.png', user: 'blinkspanish', slides: ['social-blink-1.png', 'social-blink-2.png', 'social-blink-3.webp'] },
+  { id: 'modal-uplife', key: 'uplife', name: 'Üplife', thumb: 'social-uplife-thumb.webp', avatar: 'social-uplife-avatar.png', user: 'uplife', slides: ['social-uplife-1.webp', 'social-uplife-2.webp', 'social-uplife-3.webp'] },
+  { id: 'modal-hillerbrau', key: 'hillerbrau', name: 'Hillerbräu', thumb: 'social-hillerbrau-thumb.webp', avatar: 'social-hillerbrau-avatar.png', user: 'hillerbrau', slides: ['social-hillerbrau-1.webp', 'social-hillerbrau-2.webp', 'social-hillerbrau-3.webp'] },
+  { id: 'modal-darrow', key: 'darrow', name: 'Darrow', thumb: 'social-darrow-thumb.webp', avatar: 'social-darrow-avatar.png', user: 'darrow', slides: ['social-darrow-1.webp', 'social-darrow-2.webp', 'social-darrow-3.webp'] },
+  { id: 'modal-luxury', key: 'luxury', name: 'Luxury products', thumb: 'social-luxury-thumb.webp', avatar: 'social-luxury-avatar.png', user: 'luxury_products', slides: ['social-luxury-1.webp', 'social-luxury-2.webp', 'social-luxury-3.webp'] },
+  { id: 'modal-alquimia', key: 'alquimia', name: 'Alquimia Lab', thumb: 'social-alquimia-thumb.webp', avatar: 'social-alquimia-avatar.png', user: 'alquimia.lab8', slides: ['social-alquimia-1.webp', 'social-alquimia-2.webp', 'social-alquimia-3.jpg'] },
+  { id: 'modal-boder', key: 'boder', name: 'Boder Studio', thumb: 'social-boder-thumb.webp', avatar: 'social-boder-avatar.webp', user: 'boder_studio', slides: ['social-boder-1.webp', 'social-boder-2.webp', 'social-boder-3.jpg'] },
+];
+---
+
+<BaseLayout
+  lang={lang}
+  path="/social"
+  active="portfolio"
+  title="Social media design portfolio · Alquimia Lab (Bogotá)"
+  description="Social media design work by Alquimia Lab — visuals and campaigns that give each brand a cohesive voice online. Bogotá, Colombia."
+>
+  <div class="page">
+    <Breadcrumbs
+      items={[
+        { name: t('Home'), href: L('/') },
+        { name: t('Portfolio'), href: L('/portafolio') },
+        { name: t('Social Media Campaign') },
+      ]}
+    />
+    <section class="section" style="padding-top:32px;">
+      <div class="project-back">
+        <a class="btn-primary btn-sm" href={L('/portafolio')}>{t('← Back to Portfolio')}</a>
+      </div>
+      <h1 class="section-title anim"><span>{t('SOCIAL MEDIA CAMPAIGN')}</span></h1>
+      <p class="section-intro anim d1">
+        {t('Social media visuals designed to boost engagement and give each brand a recognizable, cohesive voice online.')}
+      </p>
+      <p class="modal-hint anim d1" style="margin-top:12px;text-align:center;">
+        {t('Tap on each campaign to browse its posts.')}
+      </p>
+
+      <div class="social-grid anim d2">
+        {
+          campaigns.map((c) => (
+            <div class="social-card" data-open={c.id}>
+              <div class="social-card-thumb">
+                <Pic name={c.thumb} alt={c.name} />
+              </div>
+              <h3>{c.name}</h3>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+
+  <Fragment slot="end">
+    {
+      campaigns.map((c) => (
+        <Modal id={c.id} title={c.name}>
+          <div class="ig-mockup">
+            <div class="ig-header">
+              <div class="ig-avatar">
+                <Pic name={c.avatar} alt={c.name} />
+              </div>
+              <span class="ig-user">{c.user}</span>
+            </div>
+            <div class="ig-carousel" data-carousel={c.key}>
+              <div class="ig-carousel-inner">
+                {c.slides.map((s, i) => (
+                  <div class:list={['ig-slide', { active: i === 0 }]}>
+                    <Pic name={s} alt={`Post ${i + 1}`} />
+                  </div>
+                ))}
+              </div>
+              <button class="ig-arrow prev" data-car-prev={c.key}>&larr;</button>
+              <button class="ig-arrow next" data-car-next={c.key}>&rarr;</button>
+            </div>
+            <div class="ig-actions">
+              <span class="ig-icon">&#10084;</span><span class="ig-icon">&#128172;</span><span class="ig-icon">&#10148;</span>
+            </div>
+            <div class="ig-likes">{t('Liked by alquimia.lab8')}</div>
+            <div class="ig-dots" id={`dots-${c.key}`}>
+              {c.slides.map((_, i) => (
+                <span class:list={['ig-dot', { active: i === 0 }]} />
+              ))}
+            </div>
+          </div>
+        </Modal>
+      ))
+    }
+
+    <ModalScript />
+
+    <script>
+      function go(name: string, index: number) {
+        const slides = document.querySelectorAll<HTMLElement>(`[data-carousel="${name}"] .ig-slide`);
+        const dots = document.querySelectorAll<HTMLElement>(`#dots-${name} .ig-dot`);
+        const total = slides.length;
+        if (!total) return;
+        const i = ((index % total) + total) % total;
+        slides.forEach((s, n) => s.classList.toggle('active', n === i));
+        dots.forEach((d, n) => d.classList.toggle('active', n === i));
+      }
+      function current(name: string) {
+        const slides = Array.from(document.querySelectorAll(`[data-carousel="${name}"] .ig-slide`));
+        return slides.findIndex((s) => s.classList.contains('active'));
+      }
+      document.addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement).closest<HTMLElement>('[data-car-prev],[data-car-next]');
+        if (!el) return;
+        const next = el.hasAttribute('data-car-next');
+        const name = (next ? el.dataset.carNext : el.dataset.carPrev)!;
+        go(name, current(name) + (next ? 1 : -1));
+      });
+    </script>
+  </Fragment>
+</BaseLayout>

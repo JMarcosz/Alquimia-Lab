@@ -1,0 +1,240 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import WhatsappFloat from '../components/WhatsappFloat.astro';
+import { tTitle, tDescription, localizePath, type Lang } from '../i18n';
+import {
+  SITE_NAME,
+  SITE_URL,
+  AUTHOR_NAME,
+  SOCIAL_LINKS,
+  CONTACT_EMAIL,
+  PHONE_E164,
+  BUSINESS_CITY,
+  BUSINESS_COUNTRY,
+  BUSINESS_PRICE_RANGE,
+  BUSINESS_DESCRIPTION_ES,
+  BUSINESS_DESCRIPTION_EN,
+} from '../consts';
+
+interface Props {
+  lang: Lang;
+  /** Logical (Spanish-slug) path, e.g. "/portafolio" or "/". */
+  path: string;
+  /** English <title>; translated for ES via the i18n title map. */
+  title: string;
+  /** English meta description; translated for ES via the i18n map. */
+  description: string;
+  active?: 'home' | 'portfolio' | 'products' | 'contact' | 'services';
+  /** Optional image (absolute path under /) for Open Graph. */
+  ogImage?: string;
+  /** Alt text describing the OG image. */
+  ogImageAlt?: string;
+  /** Set true to keep this route out of search indexes. */
+  noindex?: boolean;
+}
+
+const {
+  lang,
+  path,
+  title,
+  description,
+  active,
+  ogImage = '/og-image.png',
+  ogImageAlt,
+  noindex = false,
+} = Astro.props;
+const site = Astro.site!;
+
+const pageTitle = tTitle(lang, title);
+const pageDescription = tDescription(lang, description);
+
+const canonical = new URL(localizePath(path, lang), site).href;
+const esHref = new URL(localizePath(path, 'es'), site).href;
+const enHref = new URL(localizePath(path, 'en'), site).href;
+const ogImageUrl = new URL(ogImage, site).href;
+const businessDescription = lang === 'es' ? BUSINESS_DESCRIPTION_ES : BUSINESS_DESCRIPTION_EN;
+
+const personLd = {
+  '@type': 'Person',
+  '@id': `${SITE_URL}/#isabel`,
+  name: AUTHOR_NAME,
+  url: `${SITE_URL}${localizePath('/portafolio', lang)}`,
+  jobTitle: lang === 'es' ? 'Diseñadora gráfica' : 'Graphic designer',
+  image: `${SITE_URL}/foto-isabel.jpg`,
+  worksFor: { '@type': 'Organization', name: 'Freepik Company' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Institución Universitaria Pascual Bravo' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: BUSINESS_CITY,
+    addressCountry: 'CO',
+  },
+  knowsLanguage: ['es', 'en'],
+  knowsAbout: [
+    'Diseño de identidad de marca',
+    'Diseño de logotipos',
+    'Diseño UI/UX',
+    'Diseño para redes sociales',
+    'Ilustración',
+    'Diseño editorial',
+    'Plantillas de Notion',
+  ],
+  sameAs: SOCIAL_LINKS,
+};
+
+const orgLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${SITE_URL}/#organization`,
+  name: SITE_NAME,
+  alternateName: `${SITE_NAME} — ${AUTHOR_NAME}`,
+  url: site.href,
+  logo: {
+    '@type': 'ImageObject',
+    url: `${SITE_URL}/logo-alquimia.png`,
+  },
+  image: ogImageUrl,
+  description: businessDescription,
+  email: CONTACT_EMAIL,
+  telephone: PHONE_E164,
+  founder: { '@type': 'Person', name: AUTHOR_NAME },
+  areaServed: [
+    { '@type': 'City', name: BUSINESS_CITY },
+    { '@type': 'Country', name: BUSINESS_COUNTRY },
+  ],
+  sameAs: SOCIAL_LINKS,
+};
+
+const professionalServiceLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  '@id': `${SITE_URL}/#business`,
+  name: `${SITE_NAME} — ${lang === 'es' ? 'diseño gráfico y de marca en Bogotá' : 'graphic & brand design in Bogotá'}`,
+  url: site.href,
+  image: ogImageUrl,
+  description: businessDescription,
+  priceRange: BUSINESS_PRICE_RANGE,
+  telephone: PHONE_E164,
+  email: CONTACT_EMAIL,
+  areaServed: [
+    { '@type': 'City', name: BUSINESS_CITY },
+    { '@type': 'AdministrativeArea', name: BUSINESS_COUNTRY },
+  ],
+  provider: { '@id': `${SITE_URL}/#isabel` },
+  knowsLanguage: ['es', 'en'],
+  sameAs: SOCIAL_LINKS,
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: lang === 'es' ? 'Servicios de diseño' : 'Design services',
+    itemListElement: [
+      lang === 'es' ? 'Identidad de marca y branding' : 'Brand identity',
+      lang === 'es' ? 'Diseño UI/UX' : 'UI/UX design',
+      lang === 'es' ? 'Diseño para redes sociales' : 'Social media design',
+      lang === 'es' ? 'Diseño visual y editorial' : 'Visual & editorial design',
+    ].map((name) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name } })),
+  },
+};
+
+const websiteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE_URL}/#website`,
+  name: SITE_NAME,
+  url: site.href,
+  inLanguage: lang === 'es' ? 'es' : 'en',
+  publisher: { '@id': `${SITE_URL}/#organization` },
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <meta name="theme-color" content="#f2f2f2" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="author" content={AUTHOR_NAME} />
+
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="es" href={esHref} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="x-default" href={esHref} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt ?? pageTitle} />
+    <meta property="og:locale" content={lang === 'es' ? 'es_CO' : 'en_US'} />
+    <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_CO'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt ?? pageTitle} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(orgLd)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(professionalServiceLd)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteLd)} />
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify({ '@context': 'https://schema.org', ...personLd })}
+    />
+
+    <slot name="head" />
+  </head>
+
+  <body>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <Nav lang={lang} path={path} active={active} />
+
+    <slot />
+
+    <Footer lang={lang} />
+    <WhatsappFloat lang={lang} />
+
+    <script>
+      window.addEventListener('scroll', () => {
+        document.querySelector('.nav')?.classList.toggle('scrolled', window.scrollY > 20);
+      });
+    </script>
+
+    <script is:inline define:vars={{ lang }}>
+      // Recuerda la preferencia de idioma cuando el usuario pulsa el toggle.
+      // Nota: NO se redirige automáticamente — se respeta siempre la URL solicitada
+      // (evita comportamientos inconsistentes para buscadores y para enlaces directos).
+      document.addEventListener('click', function (e) {
+        var toggle = e.target && e.target.closest && e.target.closest('.lang-toggle');
+        if (toggle) {
+          try {
+            localStorage.setItem('alquimia-lang', lang === 'es' ? 'en' : 'es');
+          } catch (err) {}
+        }
+      });
+    </script>
+
+    <slot name="end" />
+  </body>
+</html>

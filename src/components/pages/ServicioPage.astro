@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import Faq from '../Faq.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+import { SITE_URL, SITE_NAME, BUSINESS_CITY, BUSINESS_COUNTRY, WHATSAPP_URL } from '../../consts';
+import { getServicio } from '../../data/servicios';
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+const { lang, slug } = Astro.props;
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const servicio = getServicio(slug);
+if (!servicio) throw new Error(`ServicioPage: slug no encontrado "${slug}"`);
+const c = servicio[lang];
+
+const serviceLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: c.h1,
+  serviceType: c.short,
+  url: `${SITE_URL}${L(`/servicios/${slug}`)}`,
+  description: c.intro,
+  provider: { '@id': `${SITE_URL}/#isabel` },
+  areaServed: [
+    { '@type': 'City', name: BUSINESS_CITY },
+    { '@type': 'AdministrativeArea', name: BUSINESS_COUNTRY },
+  ],
+  brand: { '@type': 'Brand', name: SITE_NAME },
+};
+
+const faqTitle = lang === 'es' ? 'Preguntas frecuentes' : 'FAQ';
+const ctaTitle = lang === 'es' ? '¿Trabajamos juntos?' : "Let's work together";
+const ctaText =
+  lang === 'es'
+    ? 'Cuéntame sobre tu proyecto y te envío una propuesta.'
+    : 'Tell me about your project and I will send you a proposal.';
+const includesTitle = lang === 'es' ? 'Qué incluye' : "What's included";
+const processTitle = lang === 'es' ? 'Cómo trabajo' : 'How I work';
+---
+
+<BaseLayout
+  lang={lang}
+  path={`/servicios/${slug}`}
+  active="services"
+  title={c.title}
+  description={c.metaDescription}
+  ogImageAlt={c.h1}
+>
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(serviceLd)} />
+
+  <div class="page">
+    <Breadcrumbs
+      items={[
+        { name: t('Home'), href: L('/') },
+        { name: t('Services'), href: L('/servicios') },
+        { name: c.short },
+      ]}
+    />
+
+    {
+      import.meta.env.DEV && (
+        <p class="draft-note">
+          Borrador de contenido — revisa el texto y ajústalo a tu voz, precios y plazos reales
+          (<code>src/data/servicios.ts</code>). Esta nota solo se ve en desarrollo.
+        </p>
+      )
+    }
+
+    <section class="section">
+      <div class="service-hero">
+        <h1>{c.h1}</h1>
+        <p>{c.intro}</p>
+      </div>
+      <p style="text-align:center; margin-top: 8px;">
+        <a class="btn-primary" href={L('/contacto')}>{ctaTitle}</a>
+      </p>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+      <div class="service-block">
+        <h2>{includesTitle}</h2>
+        <ul class="service-list">
+          {c.includes.map((it) => <li>{it}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+      <div class="service-block">
+        <h2>{processTitle}</h2>
+        <ol class="service-steps">
+          {c.process.map((step) => <li>{step}</li>)}
+        </ol>
+      </div>
+    </section>
+
+    <Faq title={faqTitle} items={c.faq} />
+
+    <section class="section" style="text-align:center; padding-top: 0;">
+      <p style="color: var(--text-muted); margin-bottom: 16px;">{ctaText}</p>
+      <a class="btn-primary" href={L('/contacto')} style="margin-right: 8px;">{ctaTitle}</a>
+      <a class="btn-secondary" href={WHATSAPP_URL} target="_blank" rel="noopener">
+        {t('Write on WhatsApp')}
+      </a>
+    </section>
+  </div>
+</BaseLayout>

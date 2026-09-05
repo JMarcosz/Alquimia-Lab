@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pic from '../Pic.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const categories = [
+  {
+    icon: '📋',
+    title: 'Notion Templates',
+    text: 'Organization systems for freelancers, planning, and personal productivity.',
+    href: L('/productos'),
+  },
+  {
+    icon: '🖨️',
+    title: 'Printed Products',
+    text: 'Coloring books with a lofi aesthetic and designs that invite you to unwind.',
+    href: L('/productos'),
+  },
+  {
+    icon: '🎨',
+    title: 'Explore Design Portfolio',
+    text: 'Bold brand identities, intuitive UI/UX, and social media visuals crafted to captivate.',
+    href: L('/portafolio'),
+  },
+];
+
+const featured = [
+  {
+    img: 'featured-freelancer.webp',
+    title: 'Freelancer CRM - Planner',
+    text: 'Operating system to structure your workflow from start to finish.',
+    href: 'https://bordergaze.gumroad.com/l/FreelancerCRM',
+    btn: 'btn-primary',
+  },
+  {
+    img: 'featured-finance.webp',
+    title: 'Finance Planner Free',
+    text: 'Available in Free and Pro versions.',
+    href: 'https://www.notion.com/templates/finance-planner-785',
+    btn: 'btn-primary',
+  },
+  {
+    img: 'featured-quietmind.webp',
+    title: 'Quiet Mind Planner',
+    text: 'Clear mental noise and protect your energy with a minimalist sanctuary.',
+    href: 'https://www.notion.com/templates/quiet-mind-planner',
+    btn: 'btn-secondary',
+  },
+  {
+    img: 'featured-youtube.webp',
+    title: 'YouTube Creator OS',
+    text: 'Comprehensive Notion workspace for creators and producers.',
+    href: 'https://www.notion.com/templates/youtube-creator-os-automated-social-media-planner-script',
+    btn: 'btn-primary',
+  },
+  {
+    img: 'featured-social.webp',
+    title: 'Social Media Planner',
+    text: 'A minimalist ecosystem for creators and entrepreneurs.',
+    href: 'https://www.notion.com/templates/social-media-planner-256',
+    btn: 'btn-primary',
+  },
+  {
+    img: 'featured-coloring.webp',
+    title: 'Coloring Books',
+    text: 'Print edition on Amazon and digital on Gumroad.',
+    href: 'https://www.amazon.com/COLORING-Adults-Isabel-Correa-Boder/dp/B0HBML5LCP/?_encoding=UTF8',
+    btn: 'btn-secondary',
+  },
+];
+// The track is duplicated for the seamless infinite-scroll animation.
+const featuredLoop = [...featured, ...featured];
+---
+
+<BaseLayout
+  lang={lang}
+  path="/"
+  active="home"
+  title="Alquimia Lab · Brand design & Notion templates from Bogotá"
+  description="Isabel Correa Boder — graphic designer in Bogotá, Colombia. Brand identity, UI/UX and social media design, plus Notion templates in Spanish to organize your work."
+  ogImageAlt="Alquimia Lab — diseño de marca y plantillas de Notion, Bogotá"
+>
+  <!-- BANNER -->
+  <section class="hero-banner">
+    <Pic
+      name="banner-home.png"
+      alt="Alquimia Lab — estudio de diseño gráfico en Bogotá"
+      class="hero-banner-img"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="hero-banner-overlay">
+      <Pic name="logo-alquimia.png" alt="Logo de Alquimia Lab" class="hero-logo anim" loading="eager" />
+      <h1 class="anim d1">{t('Brand design and Notion templates from Bogotá')}</h1>
+      <p class="anim d2">
+        {t(
+          'I create digital tools and designs that bring clarity and calm to your daily routine. Notion templates, coloring books, productivity tools, and visual design solutions.',
+        )}
+      </p>
+      <div class="hero-btns anim d3">
+        <a class="btn-primary btn-light" href={L('/portafolio')}>{t('View Portfolio')}</a>
+        <a class="btn-secondary btn-light" href={L('/servicios')}>{t('Services')}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="section">
+    <h2 class="section-title anim"><span>{t('What is Alquimia Lab')}</span></h2>
+    <p class="section-intro anim d1">
+      {t(
+        'Alquimia Lab is the studio of Isabel Correa Boder, a graphic designer in Bogotá, Colombia. I design brand identity, UI/UX experiences and social media content, and I build Notion templates to organize work.',
+      )}{' '}
+      {t(
+        'Alquimia Lab is where thoughtful design meets mindful living. I craft digital sanctuaries and creative tools designed to help you quiet mental noise, organize your workflow, and embrace a calmer daily rhythm.',
+      )}
+    </p>
+
+    <div class="category-grid anim d2">
+      {
+        categories.map((c) => (
+          <a class="category-card" href={c.href}>
+            <div class="category-icon">{c.icon}</div>
+            <h3>{t(c.title)}</h3>
+            <p>{t(c.text)}</p>
+            <span class="btn-secondary btn-sm">{t('Explore')}</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- FEATURED -->
+  <section class="section" style="padding-top: 0;">
+    <h2 class="section-title anim"><span>{t('Featured')}</span></h2>
+
+    <div class="featured-scroll anim d1">
+      <div class="featured-track">
+        {
+          featuredLoop.map((f) => (
+            <div class="featured-card">
+              <Pic name={f.img} alt={f.title} class="featured-thumb" />
+              <div class="featured-info">
+                <h3>{f.title}</h3>
+                <p>{t(f.text)}</p>
+                <a
+                  href={f.href}
+                  target="_blank"
+                  rel="noopener"
+                  class={`${f.btn} btn-sm`}
+                  aria-label={`${t('Get it')} — ${f.title}`}
+                >
+                  {t('Get it')}
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section" style="text-align: center; padding-top: 0;">
+    <a class="btn-primary anim" href={L('/productos')} style="min-width:280px; justify-content:center;">
+      {t('Explore all products')}
+    </a>
+  </section>
+</BaseLayout>

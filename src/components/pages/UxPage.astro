@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pic from '../Pic.astro';
+import Modal from '../Modal.astro';
+import ModalScript from '../ModalScript.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const cards = [
+  { id: 'modal-dual', img: 'ux-dual.png', name: 'Dual', tag: 'Landing' },
+  { id: 'modal-syngular', img: 'ux-syngular.webp', name: 'Syngular', tag: 'Landing' },
+  { id: 'modal-blink', img: 'ux-blink.webp', name: 'Blink Spanish', tag: 'Landing' },
+  { id: 'modal-okuo', img: 'ux-okuo.webp', name: 'Okuo', tag: 'Landing' },
+  { id: 'modal-aqua', img: 'ux-aqua.webp', name: 'Aqua', tag: 'Landing' },
+  { id: 'modal-faith', img: 'ux-faith.png', name: 'Faith and Roots', tag: 'Landing' },
+  { id: 'modal-petsgo', img: 'ux-petsgo.webp', name: 'PetsGo', tag: 'App' },
+];
+
+const landings = [
+  { id: 'modal-dual', name: 'Dual', img: 'dual-landing.jpg' },
+  { id: 'modal-syngular', name: 'Syngular', img: 'syngular-landing.jpg' },
+  { id: 'modal-blink', name: 'Blink Spanish', img: 'blink-landing.webp' },
+  { id: 'modal-okuo', name: 'Okuo', img: 'okuo-landing.jpg' },
+  { id: 'modal-aqua', name: 'Aqua', img: 'aqua-landing.jpg' },
+  {
+    id: 'modal-faith',
+    name: 'Faith and Roots',
+    img: 'faith-landing.webp',
+    note: 'This design was a practice piece — not created for a client.',
+  },
+];
+
+const figmaProto =
+  'https://www.figma.com/proto/OMlN6UZHsY7cvdrsLk9rYh/PetsGo-App?node-id=949-14763&p=f&viewport=513%2C690%2C0.15&t=uCe6I8f8dgmuVeY9-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=949%3A14763&show-proto-sidebar=1&page-id=0%3A1';
+const figmaEmbed = `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(figmaProto)}`;
+---
+
+<BaseLayout
+  lang={lang}
+  path="/ux"
+  active="portfolio"
+  title="UI/UX design portfolio · Alquimia Lab (Bogotá)"
+  description="UI/UX design work by Alquimia Lab — landing pages and mobile apps focused on usability and clarity. Bogotá, Colombia."
+>
+  <div class="page">
+    <Breadcrumbs
+      items={[
+        { name: t('Home'), href: L('/') },
+        { name: t('Portfolio'), href: L('/portafolio') },
+        { name: t('User Experience Design') },
+      ]}
+    />
+    <section class="section" style="padding-top:32px;">
+      <div class="project-back">
+        <a class="btn-primary btn-sm" href={L('/portafolio')}>{t('← Back to Portfolio')}</a>
+      </div>
+      <h1 class="section-title anim"><span>{t('USER EXPERIENCE DESIGN')}</span></h1>
+      <p class="section-intro anim d1">
+        {t('Landing pages and a mobile app designed with a focus on usability, clarity, and delightful interactions.')}
+      </p>
+      <p class="modal-hint anim d1" style="margin-top:12px;text-align:center;">
+        {t('Tap on each project to preview it.')}
+      </p>
+
+      <div class="ux-grid anim d2">
+        {
+          cards.map((c) => (
+            <div class="ux-card" data-open={c.id}>
+              <div class="ux-card-thumb">
+                <Pic name={c.img} alt={c.name} />
+              </div>
+              <h3>{c.name}</h3>
+              <div class="ux-tag">{t(c.tag)}</div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+
+  <Fragment slot="end">
+    {
+      landings.map((l) => (
+        <Modal id={l.id} title={l.name}>
+          {l.note && <p class="modal-note anim d1">{t(l.note)}</p>}
+          <div class="ux-frame">
+            <div class="ux-frame-bar"><span /><span /><span /></div>
+            <div class="ux-frame-body">
+              <Pic name={l.img} alt={`${l.name} landing`} />
+            </div>
+          </div>
+        </Modal>
+      ))
+    }
+
+    <Modal id="modal-petsgo" title="PetsGo">
+      <div class="ux-figma-embed">
+        <iframe src={figmaEmbed} title="PetsGo App prototype" loading="lazy" allowfullscreen></iframe>
+      </div>
+      <div class="ux-figma-link">
+        <a href={figmaProto} target="_blank" rel="noopener" class="btn-primary btn-sm">{t('Open in Figma')}</a>
+      </div>
+    </Modal>
+
+    <ModalScript />
+  </Fragment>
+</BaseLayout>

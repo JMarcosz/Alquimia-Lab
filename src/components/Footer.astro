@@ -1,0 +1,6 @@
+---
+import { useTranslations, type Lang } from '../i18n';
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+---
+<footer class="footer">{t('© 2026 Alquimia Lab · Made with calm & coffee')}</footer>

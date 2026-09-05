@@ -1,0 +1,388 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pic from '../Pic.astro';
+import Modal from '../Modal.astro';
+import ModalScript from '../ModalScript.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+import { SITE_URL, SITE_NAME } from '../../consts';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const notionProducts = [
+  {
+    img: 'cover-freelancer-crm.webp',
+    title: 'Freelancer CRM - Planner',
+    text: 'Operating system to structure your workflow from start to finish.',
+    price: '$9.99',
+    free: false,
+    href: 'https://bordergaze.gumroad.com/l/FreelancerCRM?wanted=true',
+    btn: 'btn-primary',
+    cta: 'Buy',
+  },
+  {
+    img: 'cover-finance-free.webp',
+    title: 'Finance Planner Free',
+    text: 'Organize your personal finances with a visual and intuitive system.',
+    price: 'Free',
+    free: true,
+    href: 'https://www.notion.com/templates/finance-planner-785',
+    btn: 'btn-secondary',
+    cta: 'Download',
+  },
+  {
+    img: 'cover-finance-pro.webp',
+    title: 'Finance Planner Pro',
+    text: 'Advanced financial tracking with detailed reports and projections.',
+    price: '$9.99',
+    free: false,
+    href: 'https://www.notion.com/templates/finance-planner-pro',
+    btn: 'btn-primary',
+    cta: 'Buy',
+  },
+  {
+    img: 'cover-habit.webp',
+    title: 'Habit Planner',
+    text: 'Transform your habits without the visual guilt of missed days from the past. A clean-slate design to keep your mind clear and focused entirely on your growth.',
+    price: 'Free',
+    free: true,
+    href: 'https://www.notion.com/templates/habit-planner',
+    btn: 'btn-secondary',
+    cta: 'Download',
+  },
+  {
+    icon: '🎓',
+    title: 'Student OS & Study Planner',
+    text: 'Say goodbye to scattered notes and missed deadlines with a single minimalist dashboard. Run your entire student life smoothly, from daily tasks to final exams.',
+    price: '$5.99',
+    free: false,
+    href: 'https://www.notion.com/templates/student-os-study-planner',
+    btn: 'btn-primary',
+    cta: 'Buy',
+  },
+  {
+    img: 'cover-quiet-mind.webp',
+    title: 'Quiet Mind Planner',
+    text: 'Free your mind from mental noise with a minimalist sanctuary designed to protect your energy and bring calm. Transform your daily routines into a gentle daily flow of intentional reflection.',
+    price: 'Free',
+    free: true,
+    href: 'https://www.notion.com/templates/quiet-mind-planner',
+    btn: 'btn-secondary',
+    cta: 'Download',
+  },
+  {
+    img: 'cover-youtube.webp',
+    title: 'YouTube Creator OS – Planner & Script',
+    text: 'Stop losing video ideas with a comprehensive Notion workspace built for creators and producers. Bring strategic clarity to your channel, from long-form scripts to viral shorts.',
+    price: '$15',
+    free: false,
+    href: 'https://www.notion.com/templates/youtube-creator-os-automated-social-media-planner-script',
+    btn: 'btn-primary',
+    cta: 'Buy',
+  },
+  {
+    img: 'cover-social-media.webp',
+    title: 'Social Media Planner',
+    text: 'Bring mental clarity and absolute control to your digital business with a minimalist ecosystem designed for creators and entrepreneurs. Manage everything seamlessly in one aesthetic place.',
+    price: '$4',
+    free: false,
+    href: 'https://www.notion.com/templates/social-media-planner-256',
+    btn: 'btn-primary',
+    cta: 'Buy',
+  },
+];
+
+const journalImages = ['journal-1.webp', 'journal-3.webp', 'journal-4.webp', 'journal-5.webp', 'journal-6.webp'];
+
+// --- Datos estructurados de producto -----------------------------------------
+// NOTA: los precios están en USD (tal como se muestran). Cuando definas precios
+// en COP, cámbialos aquí y ajusta `priceCurrency`.
+const PRICE_CURRENCY = 'USD';
+
+const parsePrice = (p: string): string | null => {
+  if (/free/i.test(p)) return '0';
+  const m = p.replace(',', '.').match(/[\d.]+/);
+  return m ? m[0] : null;
+};
+
+const productListLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: lang === 'es' ? 'Plantillas de Notion de Alquimia Lab' : 'Alquimia Lab Notion templates',
+  itemListElement: notionProducts.map((p, i) => {
+    const price = parsePrice(p.price);
+    return {
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Product',
+        name: t(p.title),
+        description: t(p.text),
+        brand: { '@type': 'Brand', name: SITE_NAME },
+        category: 'Notion template',
+        ...(price !== null
+          ? {
+              offers: {
+                '@type': 'Offer',
+                url: p.href,
+                price,
+                priceCurrency: PRICE_CURRENCY,
+                availability: 'https://schema.org/InStock',
+              },
+            }
+          : {}),
+      },
+    };
+  }),
+};
+
+const videoLd = {
+  '@context': 'https://schema.org',
+  '@type': 'VideoObject',
+  name: lang === 'es' ? 'Música Lofi — Alquimia Lab' : 'Lofi music — Alquimia Lab',
+  description:
+    lang === 'es'
+      ? 'Selección de música lofi producida por Alquimia Lab para concentrarte y trabajar con calma.'
+      : 'A selection of lofi music produced by Alquimia Lab for focus and calm work.',
+  thumbnailUrl: `${SITE_URL}/video/lofi-poster.png`,
+  contentUrl: `${SITE_URL}/video/lofi-video.mp4`,
+  uploadDate: '2026-01-01', // TODO: fecha real de publicación
+};
+---
+
+<BaseLayout
+  lang={lang}
+  path="/productos"
+  active="products"
+  title="Notion templates in Spanish & printed products · Alquimia Lab"
+  description="Notion templates in Spanish (finance, habits, students, freelancers) plus coloring books and printed planners by Alquimia Lab."
+>
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(productListLd)} />
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(videoLd)} />
+
+  <div class="page" id="products-page">
+    <Breadcrumbs items={[{ name: t('Home'), href: L('/') }, { name: t('Products') }]} />
+    <!-- BANNER -->
+    <section class="section">
+      <div class="products-banner anim">
+        <h1>{lang === 'es' ? 'Plantillas de Notion en español y productos impresos' : 'Notion templates and printed products'}</h1>
+        <p>{t('Tools and creativity to organize your life, find calm, and work with intention.')}</p>
+      </div>
+
+      <!-- YOUTUBE -->
+      <div class="youtube-banner anim d1" style="margin-top: 24px; margin-bottom: 32px;">
+        <div class="youtube-thumb">
+          <video src="/video/lofi-video.mp4" autoplay muted loop playsinline preload="metadata" poster="/video/lofi-poster.png"></video>
+        </div>
+        <div class="youtube-text">
+          <h3>{t('My Lofi Music')}</h3>
+          <p>Lo-Fi · Alquimia Lab</p>
+          <a
+            href="https://www.youtube.com/channel/UCWb7zKnOw5k_XDgfUcBn9eQ"
+            target="_blank"
+            rel="noopener"
+            class="btn-secondary btn-sm">{t('Subscribe on YouTube →')}</a
+          >
+        </div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="category-grid anim d1" id="categories-grid">
+        <div class="category-card" id="cat-notion">
+          <div class="category-media"><Pic name="notion-featured.webp" alt="Notion Templates" /></div>
+          <h3>{t('Notion Templates')}</h3>
+          <p>
+            {t('Productivity, planning, and personal & professional organization systems. 8 templates available.')}
+          </p>
+          <button
+            class="btn-primary btn-sm"
+            onclick="document.getElementById('notion-products').style.display='block';document.getElementById('impresos-products').style.display='none';"
+            >{t('View all')}</button
+          >
+        </div>
+        <div class="category-card" id="cat-impresos">
+          <div class="category-media"><Pic name="printed-featured.webp" alt="Printed Products" /></div>
+          <h3>{t('Printed Products')}</h3>
+          <p>{t('Coloring books, productivity PDFs, and more. Available on Amazon and Gumroad.')}</p>
+          <button
+            class="btn-primary btn-sm"
+            onclick="document.getElementById('impresos-products').style.display='block';document.getElementById('notion-products').style.display='none';"
+            >{t('View all')}</button
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- NOTION TEMPLATES -->
+    <section class="section" id="notion-products" style="display:none; padding-top: 0;">
+      <button
+        class="btn-secondary btn-sm"
+        onclick="document.getElementById('notion-products').style.display='none';"
+        style="margin-bottom:20px;">{t('← Back')}</button
+      >
+      <h2 class="section-title"><span>{t('Notion Templates')}</span></h2>
+
+      <div class="notion-grid">
+        {
+          notionProducts.map((p) => (
+            <div class="notion-card">
+              {p.img ? (
+                <Pic name={p.img} alt={p.title} class="notion-thumb" />
+              ) : (
+                <div
+                  class="notion-thumb"
+                  style="background: linear-gradient(135deg, #6462ab 0%, #524f96 100%); display:flex; align-items:center; justify-content:center; color:#fff; font-size:32px;"
+                >
+                  {p.icon}
+                </div>
+              )}
+              <div class="notion-info">
+                <h3>{t(p.title)}</h3>
+                <p>{t(p.text)}</p>
+                <span class="notion-price" style={p.free ? 'color:var(--text-muted);' : undefined}>
+                  {t(p.price)}
+                </span>
+                <a
+                  href={p.href}
+                  target="_blank"
+                  rel="noopener"
+                  class={`${p.btn} btn-sm`}
+                  style="width:100%;justify-content:center;"
+                >
+                  {t(p.cta)}
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- PRINTED PRODUCTS -->
+    <section class="section" id="impresos-products" style="display:none; padding-top: 0;">
+      <h2 class="section-title"><span>{t('Printed Products')}</span></h2>
+      <button
+        class="btn-secondary btn-sm"
+        onclick="document.getElementById('impresos-products').style.display='none';"
+        style="margin-bottom:20px;">{t('← Back')}</button
+      >
+
+      <div class="product-item">
+        <Pic name="print-focus.webp" alt="Focus Dock" class="product-media" />
+        <div class="product-body">
+          <h3>Focus Dock</h3>
+          <p>{t("Your Notion isn't broken. It's just poorly designed. 43-page protocol.")}</p>
+        </div>
+        <span class="product-price">$27</span>
+        <a href="http://getfocusdock.com/isabel" target="_blank" rel="noopener" class="btn-primary btn-sm">{t('Buy')}</a>
+      </div>
+
+      <div class="product-item">
+        <Pic name="print-coloring.webp" alt="Lofi Coloring" class="product-media" />
+        <div class="product-body">
+          <h3>{t('Coloring Books — Lofi Coloring')}</h3>
+          <p>{t('Available in English and Spanish. Print and digital edition.')}</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0;">
+          <a
+            href="https://www.amazon.com/COLORING-Adults-Isabel-Correa-Boder/dp/B0HBML5LCP/?_encoding=UTF8"
+            target="_blank"
+            rel="noopener"
+            class="btn-primary btn-sm">{t('Amazon')}</a
+          >
+          <a
+            href="https://bordergaze.gumroad.com/l/LofiColoringBookAlquimia"
+            target="_blank"
+            rel="noopener"
+            class="btn-secondary btn-sm">{t('Digital')}</a
+          >
+        </div>
+      </div>
+
+      <div class="product-item">
+        <Pic name="journal-cover.webp" alt="Planner 2027" class="product-media" />
+        <div class="product-body">
+          <h3>{t('Planner 2027')}</h3>
+          <p>{t('A minimalist planner to organize your year with calm and intention.')}</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;">
+          <span class="btn-secondary btn-sm" data-open="modal-journal" style="cursor:pointer;">{t('View project')}</span>
+          <a
+            href="https://bordergaze.gumroad.com/l/bvzpd?wanted=true"
+            target="_blank"
+            rel="noopener"
+            class="btn-primary btn-sm">{t('Download')}</a
+          >
+          <span
+            class="badge"
+            style="background:var(--lavender);color:var(--purple);font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;white-space:nowrap;"
+            >{t('Soon on Amazon')}</span
+          >
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <Fragment slot="end">
+    <!-- MODAL: Calma y Orden Journal (contenido solo en español, igual que el sitio original) -->
+    <Modal id="modal-journal" title="Calma y Orden — Journal Híbrido de Autocuidado y Productividad" wide>
+      <div class="car-panel">
+        <button class="car-arrow prev" data-car-prev="journal">&larr;</button>
+        <div class="car-view">
+          <img id="journal-big" src="/img/journal-1.webp" alt="Calma y Orden journal" loading="lazy" decoding="async" />
+        </div>
+        <button class="car-arrow next" data-car-next="journal">&rarr;</button>
+      </div>
+      <div class="car-counter" id="journal-counter">1 / 5</div>
+
+      <h4 class="pack-section-title">Lo que encontrarás dentro</h4>
+      <ul class="journal-features">
+        <li><strong>Calendarios mensuales</strong> con espacio para fechas clave y objetivos del mes.</li>
+        <li><strong>Planificación semanal</strong> que integra responsabilidades + autocuidado obligatorio.</li>
+        <li><strong>Páginas diarias</strong> con lista de tareas y prompts de reflexión rotativos.</li>
+        <li><strong>Tracker de hábitos mensual</strong> con grilla 31 días × 6 hábitos.</li>
+        <li><strong>Control de finanzas personales</strong> (ingresos, gastos, ahorro y balance).</li>
+        <li><strong>Registro de energía y estrés</strong> para identificar tus patrones.</li>
+        <li><strong>Espacios libres</strong> para notas, ideas y descarga mental.</li>
+        <li><strong>Página de cierre anual</strong> para reflexionar sobre tu crecimiento.</li>
+      </ul>
+
+      <div class="journal-cta">
+        <a
+          href="https://bordergaze.gumroad.com/l/bvzpd?wanted=true"
+          target="_blank"
+          rel="noopener"
+          class="btn-primary btn-sm"
+          style="padding:10px 18px;">{t('Download')}</a
+        >
+        <span
+          class="badge"
+          style="background:var(--lavender);color:var(--purple);font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;"
+          >{t('Soon on Amazon')}</span
+        >
+      </div>
+    </Modal>
+
+    <ModalScript />
+
+    <script is:inline define:vars={{ journalImages }}>
+      const list = journalImages.map((n) => `/img/${n}`);
+      let idx = 0;
+      function render() {
+        idx = ((idx % list.length) + list.length) % list.length;
+        const big = document.getElementById('journal-big');
+        const counter = document.getElementById('journal-counter');
+        if (big) big.src = list[idx];
+        if (counter) counter.textContent = `${idx + 1} / ${list.length}`;
+      }
+      document.addEventListener('click', (e) => {
+        const el = e.target.closest('[data-car-prev="journal"],[data-car-next="journal"]');
+        if (!el) return;
+        idx += el.hasAttribute('data-car-next') ? 1 : -1;
+        render();
+      });
+    </script>
+  </Fragment>
+</BaseLayout>

@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pic from '../Pic.astro';
+import Modal from '../Modal.astro';
+import ModalScript from '../ModalScript.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+interface Brand {
+  id: string;
+  name: string;
+  thumb: string;
+  hero: string;
+  mockup: string;
+  palette: string[];
+  type: [string, string];
+}
+
+const brands: Brand[] = [
+  { id: 'modal-petsgo', name: 'PetsGo', thumb: 'brand-petsgo.webp', hero: 'petsgo-hero.webp', mockup: 'petsgo-mockup.webp', palette: ['#52B09E', '#F5BA3A', '#DBF0EE', '#5F5E5C'], type: ['Roboto Bold', 'Roboto Regular'] },
+  { id: 'modal-vdm', name: 'Voces de Medianoche', thumb: 'brand-VDM.jpeg', hero: 'vdm-hero.webp', mockup: 'vdm-mockup.webp', palette: ['#ff483a', '#711613', '#111111', '#f0f1f3'], type: ['Anton Regular', 'Montserrat'] },
+  { id: 'modal-boma', name: 'BöMA', thumb: 'brand-boma.jpeg', hero: 'boma-hero.jpeg', mockup: 'boma-mockup.jpeg', palette: ['#010b54', '#ff00f3', '#ffe600', '#00e1ff'], type: ['Roboto Bold', 'Roboto Regular'] },
+  { id: 'modal-donnadie', name: 'Don Nadie', thumb: 'brand-donnadie.jpeg', hero: 'donnadie-hero.jpeg', mockup: 'donnadie-mockup.jpeg', palette: ['#ffefcd', '#254411', '#e09132', '#232323'], type: ['BillyMoney Regular', 'Candara Regular'] },
+  { id: 'modal-fulltrade', name: 'FullTrade', thumb: 'brand-fulltrade.jpeg', hero: 'fulltrade-hero.jpeg', mockup: 'fulltrade-mockup.jpeg', palette: ['#f9b816', '#111e2f', '#f7f7f7', '#ffffff'], type: ['Roboto Bold', 'Roboto Regular'] },
+  { id: 'modal-yesenia', name: 'Yesenia', thumb: 'brand-yesenia.jpeg', hero: 'yesenia-hero.jpeg', mockup: 'yesenia-mockup.jpeg', palette: ['#e9d9d9', '#e5a695', '#d66c5c', '#474747'], type: ['FelixTitlingMT Regular', 'ITC Avant Garde Gothic Std'] },
+  { id: 'modal-bioredes', name: 'Bioredes', thumb: 'bioredes-thumb.jpeg', hero: 'bioredes-hero.jpeg', mockup: 'bioredes-mockup.jpeg', palette: ['#1e1e1e', '#f4f4f4', '#b5c422', '#ffffff'], type: ['Dongle', 'Futura Std'] },
+  { id: 'modal-vamos', name: 'Vamos.com', thumb: 'vamos-thumb.jpeg', hero: 'vamos-hero.jpeg', mockup: 'vamos-mockup.jpeg', palette: ['#f67d48', '#ffd578', '#3096e1', '#7c7c7c'], type: ['Miguna', 'Ultima Std'] },
+  { id: 'modal-mymary', name: 'MyMary', thumb: 'mymary-thumb.jpeg', hero: 'mymary-hero.jpeg', mockup: 'mymary-mockup.jpeg', palette: ['#2a169a', '#ed046c', '#b60adc', '#f9dced'], type: ['Regards', 'Jeko'] },
+];
+
+const hexLabel = (c: string) => (c.toLowerCase() === '#ffffff' ? '—' : c);
+---
+
+<BaseLayout
+  lang={lang}
+  path="/branding"
+  active="portfolio"
+  title="Brand identity & logo design portfolio · Alquimia Lab (Bogotá)"
+  description="Brand identity and logo design work by Alquimia Lab (Isabel Correa Boder), graphic designer in Bogotá, Colombia."
+>
+  <div class="page">
+    <Breadcrumbs
+      items={[
+        { name: t('Home'), href: L('/') },
+        { name: t('Portfolio'), href: L('/portafolio') },
+        { name: t('Brand Identity Exploration') },
+      ]}
+    />
+    <section class="section" style="padding-top:32px;">
+      <div class="project-back">
+        <a class="btn-primary btn-sm" href={L('/portafolio')}>{t('← Back to Portfolio')}</a>
+      </div>
+      <h1 class="section-title anim"><span>{t('BRAND IDENTITY EXPLORATION')}</span></h1>
+      <p class="section-intro anim d1">
+        {t(
+          'A selection of logo designs developed to capture the essence of each brand through clean, adaptable, and impactful visuals.',
+        )}
+      </p>
+      <p class="modal-hint anim d1" style="margin-top:12px;text-align:center;">
+        {t('Tap on each logo to view the complete brand board.')}
+      </p>
+
+      <div class="brand-grid anim d2">
+        {
+          brands.map((b) => (
+            <div class="brand-card" data-open={b.id}>
+              <div class="brand-card-thumb">
+                <Pic name={b.thumb} alt={b.name} />
+              </div>
+              <h3>{b.name}</h3>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+
+  <Fragment slot="end">
+    {
+      brands.map((b) => (
+        <Modal id={b.id} title={b.name}>
+          <div class="brand-hero">
+            <Pic name={b.hero} alt={b.name} />
+          </div>
+          <div class="brand-board">
+            <div class="brand-col">
+              <h4>{t('Color Palette')}</h4>
+              <div class="swatches">
+                {b.palette.map((c) => (
+                  <div class="swatch">
+                    <span class="swatch-color" style={`background:${c};`} />
+                    <span class="swatch-hex">{hexLabel(c)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div class="brand-col">
+              <h4>{t('Typography')}</h4>
+              <div class="type-card">
+                <span class="type-name">{b.type[0]}</span>
+                <span class="type-tag">{t('Primary / Headline')}</span>
+              </div>
+              <div class="type-card">
+                <span class="type-name">{b.type[1]}</span>
+                <span class="type-tag">{t('Secondary / Body')}</span>
+              </div>
+            </div>
+          </div>
+          <div class="brand-mockup">
+            <Pic name={b.mockup} alt={`${b.name} mockup`} />
+          </div>
+        </Modal>
+      ))
+    }
+
+    <ModalScript />
+  </Fragment>
+</BaseLayout>

@@ -1,0 +1,41 @@
+---
+/**
+ * Bloque de preguntas frecuentes + JSON-LD `FAQPage`.
+ * `items`: [{ q, a }] con `a` en texto plano (sin HTML).
+ */
+interface QA {
+  q: string;
+  a: string;
+}
+interface Props {
+  title?: string;
+  items: QA[];
+}
+const { title, items } = Astro.props;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((it) => ({
+    '@type': 'Question',
+    name: it.q,
+    acceptedAnswer: { '@type': 'Answer', text: it.a },
+  })),
+};
+---
+
+<section class="faq section" style="padding-top: 0;">
+  {title && <h2 class="section-title"><span>{title}</span></h2>}
+  <div class="faq-list">
+    {
+      items.map((it) => (
+        <details class="faq-item">
+          <summary>{it.q}</summary>
+          <p>{it.a}</p>
+        </details>
+      ))
+    }
+  </div>
+</section>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

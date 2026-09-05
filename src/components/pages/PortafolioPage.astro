@@ -1,0 +1,430 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pic from '../Pic.astro';
+import ModalScript from '../ModalScript.astro';
+import Modal from '../Modal.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const skills = [
+  { name: 'Time Management', pct: 90, stroke: '#6462ab' },
+  { name: 'Planning', pct: 90, stroke: '#6462ab' },
+  { name: 'Teamwork', pct: 80, stroke: '#a29de0' },
+  { name: 'Communication', pct: 80, stroke: '#a29de0' },
+];
+
+const tools = [
+  { abbr: 'Ai', name: 'Adobe Illustrator', pct: 90 },
+  { abbr: 'Fi', name: 'Figma', pct: 70 },
+  { abbr: 'Ae', name: 'After Effects', pct: 70 },
+  { abbr: 'Ps', name: 'Photoshop', pct: 70 },
+  { abbr: 'Pr', name: 'Premiere Pro', pct: 50 },
+  { abbr: 'Id', name: 'InDesign', pct: 50 },
+];
+
+const experience = [
+  {
+    year: '2023 — Now',
+    org: 'Freepik Company',
+    role: 'Visual Content Curator',
+    desc: 'Select and evaluate graphic resources (vectors & photos) for publishing on Freepik.com',
+  },
+  {
+    year: '2023 — Now',
+    org: 'Freelance Designer',
+    role: 'Various clients (Ongoing)',
+    desc: 'Branding, digital content, and visual design for web and social media',
+  },
+  {
+    year: '2021 — 2023',
+    org: 'Dual Content & Marketing',
+    role: 'Digital Graphic Designer',
+    desc: 'Created short animations in After Effects. Developed branding, visual identity, and social media layouts. Designed websites in Figma, including structure and sitemap. Created digital catalogs and print pieces: billboards, photo calls, flyers, stationery.',
+  },
+  {
+    year: '2020',
+    org: 'La Company — Advertising Agency',
+    role: 'Graphic Design Intern',
+    desc: 'Created mailings, banners for Instagram & Facebook. Edited short videos and photo content. Designed and laid out the full real estate magazine EME.',
+  },
+  {
+    year: '2020',
+    org: 'Blink Spanish Immersion',
+    role: 'Graphic Designer',
+    desc: 'Updated the brand using the newly designed logo. Designed learning books to help improve Spanish skills. Handled the design and layout of the website: www.blinkspanish.com',
+  },
+];
+
+const education = [
+  { year: '2016 — 2020', org: 'Institución Universitaria Pascual Bravo', role: 'Associate Degree in Graphic Design Management' },
+  { year: '2020 — 2024', org: 'Institución Universitaria Pascual Bravo', role: "Bachelor's Degree in Graphic Design" },
+  { year: '2023', org: 'Coderhouse', role: 'UI/UX Design Certificate' },
+  { year: '2026', org: 'EducaciónIT', role: 'User Research' },
+];
+
+const certifications = [
+  { year: '2026', org: 'Notion Advanced Badge', role: 'Notion', desc: 'Credential ID: 9jeajmszyggp' },
+  { year: '2026', org: 'Notion Workflows Badge', role: 'Notion', desc: 'Credential ID: tdreqsssjkra' },
+  { year: '2026', org: 'Notion Essentials Badge', role: 'Notion', desc: 'Credential ID: 2n6z7wwujeow' },
+];
+
+const projects = [
+  { badge: 'Branding', img: 'proj-branding.webp', title: 'Brand Identity Exploration', href: L('/branding') },
+  { badge: 'UI/UX Design', img: 'proj-landing.webp', title: 'User Experience Design', href: L('/ux') },
+  { badge: 'Social Media', img: 'proj-social.webp', title: 'Social Media Campaign', href: L('/social') },
+  { badge: 'Illustration', img: 'proj-illustration.webp', title: 'Creative Illustration', modal: 'modal-illustration' },
+  { badge: 'Print & Packaging', img: 'proj-packaging.webp', title: 'Packaging & Editorial', modal: 'modal-packaging' },
+  { badge: 'Character', img: 'proj-ai-characters.jpeg', title: 'AI Characters', href: L('/ai-characters') },
+  { badge: 'Email Marketing', img: 'proj-email.png', title: 'Email Marketing', modal: 'modal-email' },
+];
+
+const illustrations = ['illustration-1.jpg', 'illustration-2.webp', 'illustration-3.png', 'illustration-4.webp'];
+---
+
+<BaseLayout
+  lang={lang}
+  path="/portafolio"
+  active="portfolio"
+  title="Portfolio — Isabel Correa Boder, graphic designer in Bogotá"
+  description="Portfolio of Isabel Correa Boder: brand identity, UI/UX, illustration and editorial design for clients in Bogotá, Colombia and remote."
+  ogImageAlt="Portafolio de Isabel Correa Boder, diseñadora gráfica en Bogotá"
+>
+  <div class="page">
+    <Breadcrumbs
+      items={[
+        { name: t('Home'), href: L('/') },
+        { name: t('Portfolio') },
+      ]}
+    />
+    <section class="section" style="padding-bottom: 0;">
+      <h1 class="page-h1">
+        {lang === 'es'
+          ? 'Portafolio de Isabel Correa Boder — diseñadora gráfica en Bogotá'
+          : 'Portfolio of Isabel Correa Boder — graphic designer in Bogotá'}
+      </h1>
+    </section>
+
+    <!-- ABOUT + SKILLS + TOOLS -->
+    <section class="section" id="about" style="padding-top: 24px;">
+      <h2 class="section-title anim"><span>{t('About Me')}</span></h2>
+
+      <div class="about-card anim d1">
+        <div class="about-top">
+          <div class="about-photo">
+            <Pic name="foto-isabel.jpg" alt="Isabel Boder" />
+          </div>
+          <div class="about-text">
+            <h3>Isabel Correa Boder</h3>
+            <div class="role">{t('Graphic Designer & Visual Content Curator')}</div>
+            <p>
+              {t(
+                "Hi! I'm Isabel Boder, a 30-year-old passionate graphic designer. I thrive in both collaborative and independent environments, bringing a strong sense of responsibility and discipline to successfully tackle every project.",
+              )}{' '}
+              {t('I work from Bogotá, Colombia, with local and remote clients.')}
+            </p>
+            <p>
+              {t(
+                "In the fast-paced world of design, I believe in staying curious, continuously learning, and keeping up with the latest tools, trends, and creative strategies. I'm committed to growing every day to consistently deliver work that exceeds expectations.",
+              )}
+            </p>
+          </div>
+        </div>
+
+        <div class="about-divider"></div>
+
+        <div class="about-section-label">{t('Skills')}</div>
+        <div class="skills-row">
+          {
+            skills.map((s) => (
+              <div class="skill-item">
+                <div class="skill-circle">
+                  <svg viewBox="0 0 36 36">
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke="#eee"
+                      stroke-width="2.5"
+                    />
+                    <path
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none"
+                      stroke={s.stroke}
+                      stroke-width="2.5"
+                      stroke-dasharray={`${s.pct}, 100`}
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <span class="skill-pct">{s.pct}%</span>
+                </div>
+                <span class="skill-name">{t(s.name)}</span>
+              </div>
+            ))
+          }
+        </div>
+
+        <div class="about-divider"></div>
+
+        <div class="about-section-label">{t('Tools')}</div>
+        <div class="tools-list">
+          {
+            tools.map((tool) => (
+              <div class="tool-bar">
+                <div class="tool-info">
+                  <span class="tool-icon">{tool.abbr}</span>
+                  <span>{tool.name}</span>
+                </div>
+                <div class="tool-track">
+                  <div class="tool-fill" style={`width:${tool.pct}%;`} />
+                </div>
+                <span class="tool-pct">{tool.pct}%</span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK EXPERIENCE -->
+    <section class="section" id="experience" style="padding-top: 0;">
+      <h2 class="section-title anim"><span>{t('Work Experience')}</span></h2>
+      <div class="timeline anim d1">
+        {
+          experience.map((item) => (
+            <div class="timeline-item">
+              <div class="timeline-dot" />
+              <div class="timeline-content">
+                <span class="timeline-year">{t(item.year)}</span>
+                <h3>{t(item.org)}</h3>
+                <div class="timeline-role">{t(item.role)}</div>
+                <p>{t(item.desc)}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="section" id="education" style="padding-top: 0;">
+      <h2 class="section-title anim"><span>{t('Education')}</span></h2>
+      <div class="timeline anim d1">
+        {
+          education.map((item) => (
+            <div class="timeline-item">
+              <div class="timeline-dot" />
+              <div class="timeline-content">
+                <span class="timeline-year">{t(item.year)}</span>
+                <h3>{item.org}</h3>
+                <div class="timeline-role">{t(item.role)}</div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- CERTIFICATIONS -->
+    <section class="section" style="padding-top: 0;">
+      <h2 class="section-title anim"><span>{t('Certifications')}</span></h2>
+      <div class="timeline anim d1">
+        {
+          certifications.map((item) => (
+            <div class="timeline-item">
+              <div class="timeline-dot" />
+              <div class="timeline-content">
+                <span class="timeline-year">{item.year}</span>
+                <h3>{item.org}</h3>
+                <div class="timeline-role">{item.role}</div>
+                <p>{t(item.desc)}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="section" style="padding-top: 0;">
+      <h2 class="section-title anim"><span>{t('Services')}</span></h2>
+
+      <div class="services-grid anim d1">
+        <div class="service-card">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.1 0 2-.9 2-2 0-.51-.19-.98-.52-1.34-.3-.33-.48-.76-.48-1.16 0-.88.72-1.6 1.6-1.6H16c3.31 0 6-2.69 6-6 0-5.52-4.48-9.8-10-9.8z"></path><circle cx="7.5" cy="11.5" r="1.5"></circle><circle cx="10.5" cy="7.5" r="1.5"></circle><circle cx="15.5" cy="7.5" r="1.5"></circle><circle cx="17.5" cy="11.5" r="1.5"></circle></svg>
+          </div>
+          <h3>Branding</h3>
+          <p>{t('Creation of unique brand identities, including logos, visual systems, and brand guidelines.')}</p>
+          <a class="service-card-link" href={L('/servicios/identidad-de-marca-bogota')}>{t('View services')} →</a>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line><circle cx="12" cy="10" r="3" fill="none" stroke="currentColor" stroke-width="1.5"></circle></svg>
+          </div>
+          <h3>{t('UI/UX Design')}</h3>
+          <p>
+            {t(
+              'Design of intuitive and user-centered digital experiences, including user research, wireframing, interface design, and interactive prototyping.',
+            )}
+          </p>
+          <a class="service-card-link" href={L('/servicios/diseno-ui-ux-bogota')}>{t('View services')} →</a>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12" y2="18" stroke-linecap="round"></line><circle cx="12" cy="10" r="4" fill="none" stroke="currentColor" stroke-width="1.5"></circle></svg>
+          </div>
+          <h3>{t('Social Media Design')}</h3>
+          <p>
+            {t(
+              'Creation of engaging social media visuals, campaign graphics, post templates, and story designs that help brands connect with their audience online.',
+            )}
+          </p>
+          <a class="service-card-link" href={L('/servicios/diseno-redes-sociales-bogota')}>{t('View services')} →</a>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </div>
+          <h3>{t('Visual Design')}</h3>
+          <p>
+            {t(
+              'Development of creative visual assets including editorial design, packaging, illustrations, and motion graphics for digital and print media.',
+            )}
+          </p>
+          <a class="service-card-link" href={L('/servicios/diseno-visual-y-editorial-bogota')}>{t('View services')} →</a>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:24px;">
+        <a class="btn-secondary btn-sm" href={L('/servicios')}>{t('View services')}</a>
+      </p>
+    </section>
+
+    <!-- PROJECTS -->
+    <section class="section" id="projects" style="padding-top: 0;">
+      <h2 class="section-title anim"><span>{t('Projects')}</span></h2>
+
+      <div class="portfolio-grid anim d1">
+        {
+          projects.map((p) => (
+            <div class="portfolio-card">
+              <div class="thumb" style="position:relative;">
+                <span style="position:absolute;top:12px;left:12px;background:rgba(255,255,255,.9);color:#6462ab;font-size:10px;font-weight:700;padding:4px 10px;border-radius:99px;z-index:1;">
+                  {t(p.badge)}
+                </span>
+                <Pic name={p.img} alt={p.title} style="width:100%;height:100%;object-fit:cover;display:block;" />
+                {p.href ? (
+                  <a class="view-project" href={p.href}>
+                    {t('View project')} <span class="arrow">→</span>
+                  </a>
+                ) : (
+                  <span class="view-project" data-open={p.modal}>
+                    {t('View project')} <span class="arrow">→</span>
+                  </span>
+                )}
+              </div>
+              <div class="info">
+                <h3>{t(p.title)}</h3>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+
+  <Fragment slot="end">
+    <!-- MODAL: Packaging & Editorial -->
+    <Modal id="modal-packaging" title={t('Packaging & Editorial')} wide>
+      <h4 class="pack-section-title">{t('Packaging')}</h4>
+      <div class="car-panel">
+        <button class="car-arrow prev" data-car-prev="pack">&larr;</button>
+        <div class="car-view"><img id="pack-big" src="/img/pack-1.webp" alt="Packaging piece" loading="lazy" decoding="async" /></div>
+        <button class="car-arrow next" data-car-next="pack">&rarr;</button>
+      </div>
+      <div class="car-counter" id="pack-counter">1 / 5</div>
+      <h4 class="pack-section-title">{t('Editorial')}</h4>
+      <div class="car-panel">
+        <button class="car-arrow prev" data-car-prev="ed">&larr;</button>
+        <div class="car-view"><img id="ed-big" src="/img/ed-1.png" alt="Editorial piece" loading="lazy" decoding="async" /></div>
+        <button class="car-arrow next" data-car-next="ed">&rarr;</button>
+      </div>
+      <div class="car-counter" id="ed-counter">1 / 5</div>
+    </Modal>
+
+    <!-- MODAL: Creative Illustration -->
+    <Modal id="modal-illustration" title={t('Creative Illustration')} wide>
+      <div class="ill-main">
+        <img id="ill-big" src="/img/illustration-1.jpg" alt="Illustration" loading="lazy" decoding="async" />
+      </div>
+      <div class="ill-thumbs">
+        {
+          illustrations.map((src, i) => (
+            <div class:list={['ill-thumb', { active: i === 0 }]} data-ill={i}>
+              <img src={`/img/${src}`} alt={`Illustration ${i + 1}`} loading="lazy" decoding="async" />
+            </div>
+          ))
+        }
+      </div>
+    </Modal>
+
+    <!-- MODAL: Email Marketing -->
+    <Modal id="modal-email" title={t('Email Marketing')} wide>
+      <div class="car-panel">
+        <button class="car-arrow prev" data-car-prev="mail">&larr;</button>
+        <div class="car-view"><img id="mail-big" src="/img/mail-thumbs/mail1.png" alt="Email design" loading="lazy" decoding="async" /></div>
+        <button class="car-arrow next" data-car-next="mail">&rarr;</button>
+      </div>
+      <div class="car-counter" id="mail-counter">1 / 4</div>
+    </Modal>
+
+    <ModalScript />
+
+    <script>
+      const series: Record<string, string[]> = {
+        pack: ['/img/pack-1.webp', '/img/pack-2.webp', '/img/pack-3.webp', '/img/pack-4.webp', '/img/pack-5.webp'],
+        ed: ['/img/ed-1.png', '/img/ed-2.webp', '/img/ed-3.webp', '/img/ed-4.png', '/img/ed-5.webp'],
+        mail: ['/img/mail-thumbs/mail1.png', '/img/mail-thumbs/mail2.png', '/img/mail-thumbs/mail3.png', '/img/mail-thumbs/mail4.png'],
+      };
+      const idx: Record<string, number> = { pack: 0, ed: 0, mail: 0 };
+
+      function render(name: string) {
+        const list = series[name];
+        idx[name] = ((idx[name] % list.length) + list.length) % list.length;
+        const big = document.getElementById(`${name}-big`) as HTMLImageElement | null;
+        const counter = document.getElementById(`${name}-counter`);
+        if (big) big.src = list[idx[name]];
+        if (counter) counter.textContent = `${idx[name] + 1} / ${list.length}`;
+      }
+
+      document.addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement).closest<HTMLElement>('[data-car-prev],[data-car-next]');
+        if (!el) return;
+        const isNext = el.hasAttribute('data-car-next');
+        const name = (isNext ? el.dataset.carNext : el.dataset.carPrev)!;
+        idx[name] += isNext ? 1 : -1;
+        render(name);
+      });
+
+      const illImages = [
+        '/img/illustration-1.jpg',
+        '/img/illustration-2.webp',
+        '/img/illustration-3.png',
+        '/img/illustration-4.webp',
+      ];
+      document.addEventListener('click', (e) => {
+        const thumb = (e.target as HTMLElement).closest<HTMLElement>('[data-ill]');
+        if (!thumb) return;
+        const i = Number(thumb.dataset.ill);
+        const big = document.getElementById('ill-big') as HTMLImageElement | null;
+        if (big) big.src = illImages[i];
+        document.querySelectorAll('.ill-thumb').forEach((el, n) => el.classList.toggle('active', n === i));
+      });
+    </script>
+  </Fragment>
+</BaseLayout>

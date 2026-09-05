@@ -1,0 +1,61 @@
+---
+import { useTranslations, localizePath, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Logical (Spanish-slug) path of the current page, e.g. "/portafolio". */
+  path: string;
+  /** Which top-level item to mark as active. */
+  active?: 'home' | 'portfolio' | 'products' | 'contact' | 'services';
+}
+
+const { lang, path, active } = Astro.props;
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const other: Lang = lang === 'es' ? 'en' : 'es';
+const altHref = localizePath(path, other);
+---
+
+<nav class="nav">
+  <a class="nav-logo" href={L('/')}>Alquimia Lab</a>
+  <div class="nav-links">
+    <a class={active === 'home' ? 'active' : undefined} href={L('/')}>{t('Home')}</a>
+    <div class="nav-dd">
+      <a class={active === 'portfolio' ? 'active' : undefined} href={L('/portafolio')}>
+        {t('Portfolio')} <span class="nav-dd-arrow">▾</span>
+      </a>
+      <div class="nav-dd-menu">
+        <a class="nav-dd-featured" href={`${L('/portafolio')}#projects`}>
+          {t('Projects')}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+        </a>
+        <a href={`${L('/portafolio')}#about`}>{t('About Me')}</a>
+        <a href={`${L('/portafolio')}#experience`}>{t('Work Experience')}</a>
+        <a href={`${L('/portafolio')}#education`}>{t('Education')}</a>
+      </div>
+    </div>
+    <a class={active === 'services' ? 'active' : undefined} href={L('/servicios')}>{t('Services')}</a>
+    <a class={active === 'products' ? 'active' : undefined} href={L('/productos')}>{t('Products')}</a>
+    <a class={active === 'contact' ? 'active' : undefined} href={L('/contacto')}>{t('Contact')}</a>
+  </div>
+
+  <a
+    class="lang-toggle"
+    href={altHref}
+    data-lang={lang}
+    hreflang={other}
+    aria-label={lang === 'es' ? 'Switch to English' : 'Cambiar a Español'}
+    title="ES / EN"
+  >
+    <span class="cur">ES</span><span class="sep">|</span><span class="cur">EN</span>
+  </a>
+
+  <button
+    class="nav-toggle"
+    aria-label="Menu"
+    onclick="document.querySelector('.nav-links').classList.toggle('open')"
+  >
+    <span></span><span></span><span></span>
+  </button>
+</nav>

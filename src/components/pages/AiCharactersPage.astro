@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Pic from '../Pic.astro';
+import Modal from '../Modal.astro';
+import ModalScript from '../ModalScript.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { useTranslations, localizePath, type Lang } from '../../i18n';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const L = (p: string) => localizePath(p, lang);
+
+const characters = [
+  {
+    id: 'modal-eduardo',
+    name: 'Eduardo',
+    photo: 'social-ai-eduardo-photo.webp',
+    poster: '/video/social-ai-eduardo-post.webp',
+    video: '/video/social-ai-eduardo.mp4',
+    desc: 'Eduardo is an enigmatic otherworldly creature who, despite his terrifying appearance, is a sweet and sensitive soul with a huge heart. Passionate about drama, darkness, and true crime, he has an insatiable curiosity for investigating criminal cases, perfectly balancing a dark aesthetic with a surprisingly warm and gentle personality.',
+  },
+  {
+    id: 'modal-antonio',
+    name: 'Antonio',
+    photo: 'social-ai-antonio-photo.webp',
+    poster: '/video/social-ai-antonio-post.png',
+    video: '/video/social-ai-antonio.mp4',
+    desc: "Antonio is an endearingly shy red panda with a clumsy charm and a deep passion for creativity and continuous learning. He adores everything cozy and peaceful that brings a sense of calm. While he isn't the most outgoing soul, he treats his small inner circle like true family.",
+  },
+];
+---
+
+<BaseLayout
+  lang={lang}
+  path="/ai-characters"
+  active="portfolio"
+  title="AI Characters · Alquimia Lab"
+  description="AI Characters by Alquimia Lab — original characters designed with artificial intelligence, each with its own personality."
+>
+  <div class="page">
+    <Breadcrumbs
+      items={[
+        { name: t('Home'), href: L('/') },
+        { name: t('Portfolio'), href: L('/portafolio') },
+        { name: t('AI Characters') },
+      ]}
+    />
+    <section class="section" style="padding-top:32px;">
+      <div class="project-back">
+        <a class="btn-primary btn-sm" href={L('/portafolio')}>{t('← Back to Portfolio')}</a>
+      </div>
+      <h1 class="section-title anim"><span>{t('AI CHARACTERS')}</span></h1>
+      <p class="section-intro anim d1">
+        {t('Original characters designed with artificial intelligence, each with its own personality.')}
+      </p>
+      <p class="modal-hint anim d1" style="margin-top:12px;text-align:center;">
+        {t('Tap a character to open their profile.')}
+      </p>
+
+      <div class="ai-grid anim d2">
+        {
+          characters.map((c) => (
+            <div class="ai-card" data-open={c.id}>
+              <div class="ai-card-photo">
+                <Pic name={c.photo} alt={c.name} />
+              </div>
+              <h3>{c.name}</h3>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+
+  <Fragment slot="end">
+    {
+      characters.map((c) => (
+        <Modal id={c.id} title={c.name}>
+          <div class="ai-modal-photo">
+            <Pic name={c.photo} alt={c.name} />
+          </div>
+          <p class="ai-modal-desc">{t(c.desc)}</p>
+          <div class="ai-modal-video">
+            <video controls playsinline preload="metadata" poster={c.poster}>
+              <source src={c.video} type="video/mp4" />
+            </video>
+          </div>
+        </Modal>
+      ))
+    }
+
+    <ModalScript />
+  </Fragment>
+</BaseLayout>

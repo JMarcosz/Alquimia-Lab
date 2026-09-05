@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { useTranslations, tPlaceholder, localizePath, type Lang } from '../../i18n';
+import { CONTACT_EMAIL, WHATSAPP_URL, PHONE_DISPLAY } from '../../consts';
+
+const { lang } = Astro.props as { lang: Lang };
+const t = useTranslations(lang);
+const ph = (s: string) => tPlaceholder(lang, s);
+const L = (p: string) => localizePath(p, lang);
+---
+
+<BaseLayout
+  lang={lang}
+  path="/contacto"
+  active="contact"
+  title="Contact — Alquimia Lab, graphic design in Bogotá"
+  description="Contact Isabel Correa Boder — graphic designer in Bogotá, Colombia. Available for clients across Colombia and remote. Write via email or WhatsApp."
+>
+  <div class="page">
+    <Breadcrumbs items={[{ name: t('Home'), href: L('/') }, { name: t('Contact') }]} />
+    <section class="section">
+      <h1 class="section-title anim"><span>{t('Contact')}</span></h1>
+
+      <div class="contact-box anim d1">
+        <div class="contact-video-circle">
+          <video autoplay muted loop playsinline preload="metadata">
+            <source src="/video/video.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <h2>{t('Shall we work together?')}</h2>
+        <p style="color: var(--text-muted); max-width: 400px;">
+          {t("Tell me about your project and let's create something amazing together.")}
+        </p>
+        <p style="color: var(--text-muted); max-width: 460px; font-size: 14px;">
+          {t('Graphic designer in Bogotá, Colombia · Available across Colombia and remote')}
+        </p>
+        <a href={`mailto:${CONTACT_EMAIL}`} class="contact-email">{CONTACT_EMAIL}</a>
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener"
+          class="contact-email"
+          style="font-size: 15px;"
+        >
+          {t('Write on WhatsApp')} · {PHONE_DISPLAY}
+        </a>
+
+        <div class="contact-socials">
+          <a href="https://www.instagram.com/alquimia.lab8/" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          </a>
+          <a href="https://www.youtube.com/channel/UCWb7zKnOw5k_XDgfUcBn9eQ" target="_blank" rel="noopener" aria-label="YouTube">
+            <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61592768576548" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          </a>
+        </div>
+
+        <!-- FORM (client-side mailto: like the original site — no backend) -->
+        <form
+          class="form"
+          onsubmit="event.preventDefault(); window.location.href='mailto:alquimialab88@gmail.com?subject=' + encodeURIComponent(this.subject.value) + '&body=' + encodeURIComponent('Hello Isabel,\n\n' + this.message.value + '\n\n' + this.name.value + '\n' + this.email.value);"
+        >
+          <input type="text" name="name" placeholder={ph('Your name')} required />
+          <input type="email" name="email" placeholder={ph('Your email')} required />
+          <input type="text" name="subject" placeholder={ph('Subject')} />
+          <textarea name="message" placeholder={ph('Tell me about your project...')} required></textarea>
+          <button type="submit" class="btn-primary" style="width:100%;justify-content:center;">
+            {t('Send message →')}
+          </button>
+        </form>
+      </div>
+    </section>
+  </div>
+</BaseLayout>

@@ -1,0 +1,38 @@
+---
+// Delegated modal open/close behaviour. Include once per page that uses <Modal>.
+---
+<script>
+  function setOpen(el: Element | null, open: boolean) {
+    if (!el) return;
+    el.classList.toggle('show', open);
+    el.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+
+    const opener = target.closest<HTMLElement>('[data-open]');
+    if (opener) {
+      setOpen(document.getElementById(opener.dataset.open!), true);
+      return;
+    }
+
+    if (target.closest('[data-close]')) {
+      setOpen(target.closest('.modal-overlay'), false);
+      return;
+    }
+
+    if (target.classList.contains('modal-overlay')) {
+      setOpen(target, false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      document
+        .querySelectorAll('.modal-overlay.show')
+        .forEach((m) => setOpen(m, false));
+    }
+  });
+</script>

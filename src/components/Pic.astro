@@ -1,0 +1,49 @@
+---
+/**
+ * Thin wrapper around Astro's <Image> that resolves an asset from
+ * `src/assets/img/` by file name, so page markup can stay declarative.
+ *
+ * Use for static images. JS-swapped carousel images live in `public/img/`
+ * and are referenced by plain <img> instead.
+ */
+import { Image } from 'astro:assets';
+
+interface Props {
+  name: string;
+  alt: string;
+  class?: string;
+  widths?: number[];
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  style?: string;
+}
+
+const images = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/img/*.{png,jpg,jpeg,webp,gif,svg,avif}',
+  { eager: true },
+);
+
+const { name, alt, class: klass, widths, sizes, loading = 'lazy', fetchpriority, style } = Astro.props;
+
+const mod = images[`../assets/img/${name}`];
+if (!mod) {
+  throw new Error(`<Pic>: asset "src/assets/img/${name}" not found.`);
+}
+
+const extra: Record<string, unknown> = {};
+if (widths) extra.widths = widths;
+if (fetchpriority) extra.fetchpriority = fetchpriority;
+if (style) extra.style = style;
+---
+
+<Image
+  src={mod.default}
+  alt={alt}
+  class={klass}
+  layout="constrained"
+  sizes={sizes ?? '(max-width: 700px) 100vw, 700px'}
+  loading={loading}
+  decoding="async"
+  {...extra}
+/>

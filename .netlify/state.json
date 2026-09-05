@@ -1,0 +1,21 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "Santo Domingo",
+			"country": {
+				"code": "DO",
+				"name": "Dominican Republic"
+			},
+			"subdivision": {
+				"code": "01",
+				"name": "Nacional"
+			},
+			"timezone": "America/Santo_Domingo",
+			"latitude": 18.4615,
+			"longitude": -69.8965,
+			"postalCode": "10203"
+		},
+		"timestamp": 1788492440676
+	},
+	"dbConnectionString": "postgres://localhost:59360/postgres"
+}
