@@ -91,12 +91,11 @@ const featuredLoop = [...featured, ...featured];
       alt="Alquimia Lab — estudio de diseño gráfico en Bogotá"
       class="hero-banner-img"
       sizes="100vw"
-      widths={[640, 960, 1280, 1920]}
       loading="eager"
       fetchpriority="high"
     />
     <div class="hero-banner-overlay">
-      <Pic name="logo-alquimia.png" alt="Logo de Alquimia Lab" class="hero-logo anim" sizes="200px" widths={[200, 400]} loading="eager" />
+      <Pic name="logo-alquimia.png" alt="Logo de Alquimia Lab" class="hero-logo anim" sizes="200px" maxWidth={480} loading="eager" />
       <h1 class="anim d1">{t('Brand design and Notion templates from Bogotá')}</h1>
       <p class="anim d2">
         {t(

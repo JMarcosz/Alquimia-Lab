@@ -3,9 +3,7 @@ import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import WhatsappFloat from '../components/WhatsappFloat.astro';
-import { getImage } from 'astro:assets';
-import logoSrc from '../assets/img/logo-alquimia.png';
-import isabelSrc from '../assets/img/foto-isabel.jpg';
+import { imageUrl } from '../image-url';
 import { tTitle, tDescription, localizePath, type Lang } from '../i18n';
 import {
   SITE_NAME,
@@ -64,10 +62,8 @@ const businessDescription = lang === 'es' ? BUSINESS_DESCRIPTION_ES : BUSINESS_D
 // una ruta de `public/` donde nunca estuvieron: ambas devolvian 404, dejando
 // `Organization.logo` y `Person.image` rotos en todas las paginas. Ahora se
 // resuelven por el pipeline de Astro y se absolutizan contra `site`.
-const logoImg = await getImage({ src: logoSrc, format: 'png', width: 512 });
-const isabelImg = await getImage({ src: isabelSrc, format: 'jpeg', width: 800 });
-const logoUrl = new URL(logoImg.src, site).href;
-const isabelUrl = new URL(isabelImg.src, site).href;
+const logoUrl = imageUrl('logo-alquimia.png', site, 960);
+const isabelUrl = imageUrl('foto-isabel.jpg', site, 960);
 
 const personLd = {
   '@type': 'Person',

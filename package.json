@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "check:assets": "node scripts/check-assets.mjs",
-    "check:meta": "node scripts/check-meta.mjs"
+    "check:meta": "node scripts/check-meta.mjs",
+    "images": "node scripts/build-images.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
