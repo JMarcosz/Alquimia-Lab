@@ -6,7 +6,7 @@ import ModalScript from '../ModalScript.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n';
 import { SITE_URL, SITE_NAME } from '../../consts';
-import { getImage } from 'astro:assets';
+import { imageUrl, hasImage } from '../../image-url';
 import { plantillas } from '../../data/plantillas';
 
 const { lang } = Astro.props as { lang: Lang };
@@ -28,22 +28,10 @@ const parsePrice = (p: string): string | null => {
   return m ? m[0] : null;
 };
 
-// Los 8 Product no emitian `image`, que es el campo MINIMO que Google exige
-// para producir rich results de producto. Se resuelven las portadas que ya
-// existen en src/assets/img por el pipeline de Astro.
-const assetMods = import.meta.glob<{ default: ImageMetadata }>(
-  '../../assets/img/*.{png,jpg,jpeg,webp}',
-  { eager: true },
-);
-const absImage = async (name?: string): Promise<string | null> => {
-  if (!name) return null;
-  const mod = assetMods[`../../assets/img/${name}`];
-  if (!mod) return null;
-  const img = await getImage({ src: mod.default, format: 'webp', width: 1200 });
-  return new URL(img.src, Astro.site!).href;
-};
+// Los 8 Product no emitian `image`, campo MINIMO que Google exige para
+// producir rich results de producto. Se leen del manifiesto pregenerado.
 const productImages = Object.fromEntries(
-  await Promise.all(plantillas.map(async (p) => [p.slug, await absImage(p.img)])),
+  plantillas.map((p) => [p.slug, p.img && hasImage(p.img) ? imageUrl(p.img, Astro.site!, 1440) : null]),
 ) as Record<string, string | null>;
 
 const productListLd = {

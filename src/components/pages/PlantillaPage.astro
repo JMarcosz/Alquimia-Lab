@@ -13,7 +13,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import Faq from '../Faq.astro';
 import Pic from '../Pic.astro';
-import { getImage } from 'astro:assets';
+import { imageUrl, hasImage } from '../../image-url';
 import { useTranslations, localizePath, type Lang } from '../../i18n';
 import { SITE_URL, SITE_NAME } from '../../consts';
 import type { Plantilla } from '../../data/plantillas';
@@ -31,18 +31,8 @@ const isFree = /free/i.test(plantilla.price);
 const priceValue = isFree ? '0' : (plantilla.price.replace(',', '.').match(/[\d.]+/)?.[0] ?? null);
 
 // Portada absoluta para el schema: `Product` sin `image` no produce rich results.
-const assetMods = import.meta.glob<{ default: ImageMetadata }>(
-  '../../assets/img/*.{png,jpg,jpeg,webp}',
-  { eager: true },
-);
-let productImage: string | null = null;
-if (plantilla.img) {
-  const mod = assetMods[`../../assets/img/${plantilla.img}`];
-  if (mod) {
-    const img = await getImage({ src: mod.default, format: 'webp', width: 1200 });
-    productImage = new URL(img.src, Astro.site!).href;
-  }
-}
+const productImage =
+  plantilla.img && hasImage(plantilla.img) ? imageUrl(plantilla.img, Astro.site!, 1440) : null;
 
 const pageUrl = new URL(L(`/plantillas-notion/${plantilla.slug}`), Astro.site!).href;
 

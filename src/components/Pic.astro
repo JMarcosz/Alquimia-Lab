@@ -1,66 +1,81 @@
 ---
 /**
- * Envoltorio sobre <Picture> de Astro que resuelve un asset de
- * `src/assets/img/` por nombre de archivo, para que el marcado siga siendo
- * declarativo.
+ * Imagen responsive servida desde variantes PREGENERADAS.
  *
- * Usa <Picture> (no <Image>) para emitir AVIF con respaldo WebP: <Image> solo
- * produce un formato, y AVIF suele pesar un 20-30% menos que WebP.
+ * No usa `astro:assets`: las variantes AVIF y WebP se generan en local con
+ * `npm run images` y se commitean en `public/img/opt/`. Vercel solo las copia.
+ *
+ * POR QUÉ
+ * Transformar en el build llevaba el despliegue a ~15 min. AVIF codifica 4,2x
+ * más lento que WebP y eran ~400 codificaciones por despliegue, idénticas cada
+ * vez aunque no cambiara ninguna imagen. Ahora ese coste se paga una sola vez,
+ * en local, y solo para las imágenes que cambian.
+ *
+ * Los nombres llevan hash de contenido, así que pueden servirse con caché
+ * inmutable (ver `vercel.json`).
  */
-import { Picture } from 'astro:assets';
+import manifest from '../image-manifest.json';
 
 interface Props {
+  /** Nombre del archivo en `src/assets/img/`, p. ej. "banner-home.png". */
   name: string;
   alt: string;
   class?: string;
-  widths?: number[];
   /**
-   * Pista de tamano para el srcset. El valor por defecto asume una imagen
-   * dentro de la columna de contenido; las imagenes a sangre completa DEBEN
-   * pasar `sizes="100vw"` o el navegador elegira un candidato de 700px para
-   * un hueco de pantalla completa.
+   * Pista de tamaño para el srcset. El valor por defecto asume una imagen
+   * dentro de la columna de contenido; las imágenes a sangre completa DEBEN
+   * pasar `sizes="100vw"` o el navegador elegirá un candidato pequeño para un
+   * hueco de pantalla completa.
    */
   sizes?: string;
   loading?: 'lazy' | 'eager';
   fetchpriority?: 'high' | 'low' | 'auto';
   style?: string;
+  /** Limita los anchos emitidos. Útil para logos y miniaturas. */
+  maxWidth?: number;
 }
 
-const images = import.meta.glob<{ default: ImageMetadata }>(
-  '../assets/img/*.{png,jpg,jpeg,webp,gif,svg,avif}',
-  { eager: true },
-);
+type Variant = { w: number; h: number; avif: string; webp: string };
+type Entry = { hash: string; width: number; height: number; variants: Variant[] };
 
-const { name, alt, class: klass, widths, sizes, loading = 'lazy', fetchpriority, style } = Astro.props;
+const {
+  name,
+  alt,
+  class: klass,
+  sizes = '(max-width: 700px) 100vw, 700px',
+  loading = 'lazy',
+  fetchpriority,
+  style,
+  maxWidth,
+} = Astro.props;
 
-const mod = images[`../assets/img/${name}`];
-if (!mod) {
-  throw new Error(`<Pic>: asset "src/assets/img/${name}" not found.`);
+const entry = (manifest as Record<string, Entry>)[name];
+if (!entry) {
+  throw new Error(
+    `<Pic>: "${name}" no está en src/image-manifest.json. ` +
+      `Añade el archivo a src/assets/img/ y ejecuta \`npm run images\`.`,
+  );
 }
 
-const extra: Record<string, unknown> = {};
-if (widths) extra.widths = widths;
-if (fetchpriority) extra.fetchpriority = fetchpriority;
-if (style) extra.style = style;
+const variants = maxWidth ? entry.variants.filter((v) => v.w <= maxWidth) : entry.variants;
+const usable = variants.length ? variants : [entry.variants[0]];
+const largest = usable[usable.length - 1];
 
-// Los SVG no se transforman: pasarlos por <Picture> con formatos raster falla.
-const isSvg = name.toLowerCase().endsWith('.svg');
+const srcset = (fmt: 'avif' | 'webp') => usable.map((v) => `${v[fmt]} ${v.w}w`).join(', ');
 ---
 
-{
-  isSvg ? (
-    <img src={mod.default.src} alt={alt} class={klass} loading={loading} decoding="async" style={style} />
-  ) : (
-    <Picture
-      src={mod.default}
-      formats={['avif', 'webp']}
-      alt={alt}
-      class={klass}
-      layout="constrained"
-      sizes={sizes ?? '(max-width: 700px) 100vw, 700px'}
-      loading={loading}
-      decoding="async"
-      {...extra}
-    />
-  )
-}
+<picture>
+  <source type="image/avif" srcset={srcset('avif')} sizes={sizes} />
+  <source type="image/webp" srcset={srcset('webp')} sizes={sizes} />
+  <img
+    src={largest.webp}
+    alt={alt}
+    class={klass}
+    width={largest.w}
+    height={largest.h}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+    style={style}
+  />
+</picture>
