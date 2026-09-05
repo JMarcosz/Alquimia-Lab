@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 import { useTranslations, localizePath, type Lang } from '../i18n';
 
 interface Props {
@@ -23,7 +24,7 @@ const altHref = localizePath(path, other);
     <a class={active === 'home' ? 'active' : undefined} href={L('/')}>{t('Home')}</a>
     <div class="nav-dd">
       <a class={active === 'portfolio' ? 'active' : undefined} href={L('/portafolio')}>
-        {t('Portfolio')} <span class="nav-dd-arrow">▾</span>
+        {t('Portfolio')} <Icon name="chevron-down" size={14} class="nav-dd-arrow" strokeWidth={2.5} />
       </a>
       <div class="nav-dd-menu">
         <a class="nav-dd-featured" href={`${L('/portafolio')}#projects`}>

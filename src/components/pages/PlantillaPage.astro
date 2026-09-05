@@ -13,6 +13,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import Faq from '../Faq.astro';
 import Pic from '../Pic.astro';
+import Icon from '../Icon.astro';
 import { imageUrl, hasImage } from '../../image-url';
 import { useTranslations, localizePath, type Lang } from '../../i18n';
 import { SITE_URL, SITE_NAME } from '../../consts';
@@ -107,7 +108,9 @@ const backLabel = lang === 'es' ? 'Ver todas las plantillas' : 'See all template
                 fetchpriority="high"
               />
             ) : (
-              <div class="plantilla-cover plantilla-cover-icon">{plantilla.icon ?? '📄'}</div>
+              <div class="plantilla-cover plantilla-cover-icon">
+                <Icon name={(plantilla.icon ?? 'file-text') as any} size={72} />
+              </div>
             )
           }
         </div>

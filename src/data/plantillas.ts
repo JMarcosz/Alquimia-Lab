@@ -47,7 +47,7 @@ export interface Plantilla {
   name: string;
   /** Portada en src/assets/img, si existe. */
   img?: string;
-  /** Emoji de respaldo cuando no hay portada. */
+  /** Nombre de icono Lucide (ver src/components/Icon.astro) cuando no hay portada. */
   icon?: string;
   /** Precio tal cual se muestra. 'Free' = gratuita. */
   price: string;
@@ -299,7 +299,7 @@ export const plantillas: Plantilla[] = [
   {
     slug: 'plantilla-notion-estudiantes',
     name: 'Student OS & Study Planner',
-    icon: '🎓',
+    icon: 'graduation-cap',
     price: '$5.99',
     href: 'https://www.notion.com/templates/student-os-study-planner',
     es: {

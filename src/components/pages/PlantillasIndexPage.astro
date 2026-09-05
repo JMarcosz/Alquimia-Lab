@@ -13,6 +13,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import Pic from '../Pic.astro';
+import Icon from '../Icon.astro';
 import Faq from '../Faq.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n';
 import { plantillas } from '../../data/plantillas';
@@ -124,7 +125,9 @@ const card = (p: (typeof plantillas)[number]) => p;
                     {p.img ? (
                       <Pic name={p.img} alt={c.h1} sizes="(max-width: 700px) 100vw, 320px" />
                     ) : (
-                      <div class="plantilla-cover-icon">{p.icon ?? '📄'}</div>
+                      <div class="plantilla-cover-icon">
+                      <Icon name={(p.icon ?? 'file-text') as any} size={44} />
+                    </div>
                     )}
                   </a>
                   <h3>
