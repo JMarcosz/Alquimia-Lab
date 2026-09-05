@@ -7,9 +7,11 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro check && astro build && node scripts/check-assets.mjs && node scripts/check-meta.mjs",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check:assets": "node scripts/check-assets.mjs",
+    "check:meta": "node scripts/check-meta.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
