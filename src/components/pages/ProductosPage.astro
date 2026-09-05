@@ -7,7 +7,9 @@ import Breadcrumbs from '../Breadcrumbs.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n';
 import { SITE_URL, SITE_NAME } from '../../consts';
 import { imageUrl, hasImage } from '../../image-url';
-import { plantillas } from '../../data/plantillas';
+import { getPlantillas } from '../../lib/catalog';
+
+const plantillas = await getPlantillas();
 
 const { lang } = Astro.props as { lang: Lang };
 const t = useTranslations(lang);
@@ -31,7 +33,10 @@ const parsePrice = (p: string): string | null => {
 // Los 8 Product no emitian `image`, campo MINIMO que Google exige para
 // producir rich results de producto. Se leen del manifiesto pregenerado.
 const productImages = Object.fromEntries(
-  plantillas.map((p) => [p.slug, p.img && hasImage(p.img) ? imageUrl(p.img, Astro.site!, 1440) : null]),
+  plantillas.map((p) => [
+    p.slug,
+    p.image ?? (p.img && hasImage(p.img) ? imageUrl(p.img, Astro.site!, 1440) : null),
+  ]),
 ) as Record<string, string | null>;
 
 const productListLd = {
@@ -158,7 +163,9 @@ const videoLd = {
             return (
               <div class="notion-card">
                 <a href={L(`/plantillas-notion/${p.slug}`)} aria-label={c.h1}>
-                  {p.img ? (
+                  {p.image ? (
+                    <img src={p.image} alt={c.h1} class="notion-thumb" loading="lazy" decoding="async" />
+                  ) : p.img ? (
                     <Pic name={p.img} alt={c.h1} class="notion-thumb" />
                   ) : (
                     <div

@@ -21,7 +21,7 @@ import {
   SOCIAL_LINKS,
 } from '../consts';
 import { servicios } from '../data/servicios';
-import { plantillas } from '../data/plantillas';
+import { getPlantillas } from '../lib/catalog';
 
 interface Props {
   lang: Lang;
@@ -34,7 +34,7 @@ const es = lang === 'es';
 const year = new Date().getFullYear();
 
 // Solo las 4 plantillas más buscadas: un footer no es un mapa del sitio.
-const topPlantillas = plantillas.slice(0, 4);
+const topPlantillas = (await getPlantillas()).slice(0, 4);
 
 const cols = [
   {

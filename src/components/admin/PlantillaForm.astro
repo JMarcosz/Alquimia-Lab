@@ -1,0 +1,277 @@
+---
+/**
+ * Formulario de alta/edición de una plantilla. Envía JSON a /api/admin/save.
+ * `row` nulo = alta.
+ */
+import type { PlantillaRow } from '../../lib/catalog';
+
+interface Props {
+  row: PlantillaRow | null;
+}
+const { row } = Astro.props;
+const isNew = row === null;
+
+const langBlock = (lang: 'es' | 'en') => {
+  const l = row?.[lang];
+  return {
+    title: l?.title ?? '',
+    metaDescription: l?.metaDescription ?? '',
+    h1: l?.h1 ?? '',
+    short: l?.short ?? '',
+    intro: l?.intro ?? '',
+    forWho: (l?.forWho ?? []).join('\n'),
+    includes: (l?.includes ?? []).join('\n'),
+    faq: l?.faq ?? [],
+  };
+};
+const ES = langBlock('es');
+const EN = langBlock('en');
+const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
+---
+<form id="pf" data-new={String(isNew)}>
+  <div id="msg"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div>
+      <label for="slug">Slug (URL)</label>
+      <input id="slug" name="slug" value={row?.slug ?? ''} readonly={!isNew}
+        placeholder="plantilla-de-algo" pattern="[a-z0-9]+(-[a-z0-9]+)*" required />
+      {!isNew && <span class="note">El slug no se cambia: es la URL publicada.</span>}
+    </div>
+    <div>
+      <label for="name">Nombre comercial</label>
+      <input id="name" name="name" value={row?.name ?? ''} required />
+    </div>
+    <div>
+      <label for="price">Precio (texto tal cual se muestra)</label>
+      <input id="price" name="price" value={row?.price ?? ''} placeholder="$9.99 o Free" required />
+    </div>
+    <div>
+      <label for="href">Enlace de compra / duplicado</label>
+      <input id="href" name="href" value={row?.href ?? ''} placeholder="https://..." required />
+    </div>
+    <div>
+      <label for="sort">Orden</label>
+      <input id="sort" name="sort" type="number" value={row?.sort ?? 0} />
+    </div>
+    <div>
+      <label for="icon">Icono Lucide (si no hay imagen)</label>
+      <input id="icon" name="icon" value={row?.icon ?? ''} placeholder="graduation-cap" />
+    </div>
+  </div>
+
+  <label style="margin-top:20px">Imagen de portada</label>
+  <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap">
+    <img id="img-preview" src={row?.image_url ?? ''} alt=""
+      style={`width:160px;height:120px;object-fit:cover;border-radius:8px;border:1px solid var(--border);background:#0c0e12;${row?.image_url ? '' : 'display:none'}`} />
+    <div style="flex:1;min-width:220px">
+      <input id="img-file" type="file" accept="image/*" />
+      <input type="hidden" id="image_url" name="image_url" value={row?.image_url ?? ''} />
+      <input type="hidden" id="img" name="img" value={row?.img ?? ''} />
+      <p class="note" id="img-status">
+        Se comprime en tu navegador a WebP (máx. 1600px de ancho) antes de subir.
+        {row?.img && !row?.image_url && ' Portada actual (legada): ' + row.img}
+      </p>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px">
+    {(['es', 'en'] as const).map((lang) => {
+      const D = lang === 'es' ? ES : EN;
+      return (
+        <fieldset style="border:1px solid var(--border);border-radius:10px;padding:0 16px 16px">
+          <legend style="padding:0 8px;color:var(--muted)">{lang === 'es' ? 'Español' : 'English'}</legend>
+          <label>Título (&le;60)</label>
+          <input data-l={lang} data-k="title" value={D.title} />
+          <label>Meta description (70-160)</label>
+          <textarea data-l={lang} data-k="metaDescription">{D.metaDescription}</textarea>
+          <label>H1</label>
+          <input data-l={lang} data-k="h1" value={D.h1} />
+          <label>Nombre corto (tarjetas / migas)</label>
+          <input data-l={lang} data-k="short" value={D.short} />
+          <label>Intro (2-3 frases)</label>
+          <textarea data-l={lang} data-k="intro">{D.intro}</textarea>
+          <label>Para quién es (una línea por punto)</label>
+          <textarea data-l={lang} data-k="forWho" rows="4">{D.forWho}</textarea>
+          <label>Qué incluye (una línea por punto)</label>
+          <textarea data-l={lang} data-k="includes" rows="4">{D.includes}</textarea>
+        </fieldset>
+      );
+    })}
+  </div>
+
+  <h3 style="margin:28px 0 6px">FAQ</h3>
+  <p class="note">Cada pregunta con su respuesta en español e inglés.</p>
+  <div id="faqs">
+    {Array.from({ length: faqRows }).map((_, i) => (
+      <div class="faq-row" style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div>
+            <label>Pregunta (ES)</label>
+            <input class="faq" data-l="es" data-k="q" value={ES.faq[i]?.q ?? ''} />
+            <label>Respuesta (ES)</label>
+            <textarea class="faq" data-l="es" data-k="a">{ES.faq[i]?.a ?? ''}</textarea>
+          </div>
+          <div>
+            <label>Pregunta (EN)</label>
+            <input class="faq" data-l="en" data-k="q" value={EN.faq[i]?.q ?? ''} />
+            <label>Respuesta (EN)</label>
+            <textarea class="faq" data-l="en" data-k="a">{EN.faq[i]?.a ?? ''}</textarea>
+          </div>
+        </div>
+        <button type="button" class="btn danger faq-del" style="margin-top:10px">Quitar</button>
+      </div>
+    ))}
+  </div>
+  <button type="button" id="faq-add" class="btn">+ Añadir pregunta</button>
+
+  <div style="margin-top:28px;display:flex;gap:12px;align-items:center">
+    <button type="submit" id="save" class="btn primary">Guardar y publicar</button>
+    <a class="btn" href="/admin">Cancelar</a>
+    {!isNew && (
+      <button type="button" id="del" class="btn danger" style="margin-left:auto">Eliminar</button>
+    )}
+  </div>
+</form>
+
+<script>
+  const form = document.getElementById('pf') as HTMLFormElement;
+  const msg = document.getElementById('msg')!;
+  const saveBtn = document.getElementById('save') as HTMLButtonElement;
+
+  function show(kind: 'ok' | 'err', text: string) {
+    msg.className = `msg ${kind}`;
+    msg.textContent = text;
+    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // ---- Imagen: comprimir en el navegador y subir ----
+  const fileInput = document.getElementById('img-file') as HTMLInputElement;
+  const imgUrl = document.getElementById('image_url') as HTMLInputElement;
+  const preview = document.getElementById('img-preview') as HTMLImageElement;
+  const imgStatus = document.getElementById('img-status')!;
+
+  async function compress(file: File, maxW = 1600, quality = 0.8): Promise<Blob> {
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, maxW / bmp.width);
+    const w = Math.round(bmp.width * scale);
+    const h = Math.round(bmp.height * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    canvas.getContext('2d')!.drawImage(bmp, 0, 0, w, h);
+    return await new Promise((res, rej) =>
+      canvas.toBlob((b) => (b ? res(b) : rej(new Error('toBlob falló'))), 'image/webp', quality),
+    );
+  }
+
+  fileInput?.addEventListener('change', async () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+    try {
+      imgStatus.textContent = 'Comprimiendo…';
+      const blob = await compress(file);
+      const slug = (document.getElementById('slug') as HTMLInputElement).value || 'plantilla';
+      imgStatus.textContent = `Subiendo (${Math.round(blob.size / 1024)} KB)…`;
+      const r = await fetch(`/api/admin/upload?slug=${encodeURIComponent(slug)}`, {
+        method: 'POST',
+        headers: { 'content-type': 'image/webp' },
+        body: blob,
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
+      imgUrl.value = data.url;
+      preview.src = data.url;
+      preview.style.display = '';
+      imgStatus.textContent = `Listo: ${Math.round(blob.size / 1024)} KB`;
+    } catch (e) {
+      imgStatus.textContent = 'Error al subir: ' + (e as Error).message;
+    }
+  });
+
+  // ---- FAQ dinámica ----
+  const faqs = document.getElementById('faqs')!;
+  document.getElementById('faq-add')!.addEventListener('click', () => {
+    const first = faqs.querySelector('.faq-row');
+    const clone = first!.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll('input, textarea').forEach((el) => ((el as HTMLInputElement).value = ''));
+    faqs.appendChild(clone);
+  });
+  faqs.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    if (t.classList.contains('faq-del')) {
+      if (faqs.querySelectorAll('.faq-row').length > 1) t.closest('.faq-row')!.remove();
+    }
+  });
+
+  // ---- Serializar y guardar ----
+  function collectLang(lang: string) {
+    const g = (k: string) =>
+      (form.querySelector(`[data-l="${lang}"][data-k="${k}"]`) as HTMLInputElement)?.value.trim() ?? '';
+    const lines = (k: string) =>
+      g(k)
+        .split('\n')
+        .map((s) => s.trim())
+        .filter(Boolean);
+    const faq: { q: string; a: string }[] = [];
+    faqs.querySelectorAll('.faq-row').forEach((rowEl) => {
+      const q = (rowEl.querySelector(`.faq[data-l="${lang}"][data-k="q"]`) as HTMLInputElement).value.trim();
+      const a = (rowEl.querySelector(`.faq[data-l="${lang}"][data-k="a"]`) as HTMLTextAreaElement).value.trim();
+      if (q || a) faq.push({ q, a });
+    });
+    return {
+      title: g('title'),
+      metaDescription: g('metaDescription'),
+      h1: g('h1'),
+      short: g('short'),
+      intro: g('intro'),
+      forWho: lines('forWho'),
+      includes: lines('includes'),
+      faq,
+    };
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    saveBtn.disabled = true;
+    show('ok', 'Guardando…');
+    const payload = {
+      slug: (document.getElementById('slug') as HTMLInputElement).value.trim(),
+      name: (document.getElementById('name') as HTMLInputElement).value.trim(),
+      price: (document.getElementById('price') as HTMLInputElement).value.trim(),
+      href: (document.getElementById('href') as HTMLInputElement).value.trim(),
+      sort: Number((document.getElementById('sort') as HTMLInputElement).value || 0),
+      icon: (document.getElementById('icon') as HTMLInputElement).value.trim() || null,
+      image_url: imgUrl.value.trim() || null,
+      img: (document.getElementById('img') as HTMLInputElement).value.trim() || null,
+      es: collectLang('es'),
+      en: collectLang('en'),
+    };
+    try {
+      const r = await fetch('/api/admin/save', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error((data.issues || [data.error]).join('\n'));
+      location.href = '/admin?ok=saved';
+    } catch (err) {
+      show('err', 'No se guardó:\n' + (err as Error).message);
+      saveBtn.disabled = false;
+    }
+  });
+
+  // ---- Eliminar ----
+  document.getElementById('del')?.addEventListener('click', async () => {
+    const slug = (document.getElementById('slug') as HTMLInputElement).value;
+    if (!confirm(`¿Eliminar "${slug}"? La URL /plantillas-notion/${slug} dejará de existir.`)) return;
+    const r = await fetch('/api/admin/save', {
+      method: 'DELETE',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ slug }),
+    });
+    if (r.ok) location.href = '/admin?ok=deleted';
+    else show('err', 'No se pudo eliminar.');
+  });
+</script>

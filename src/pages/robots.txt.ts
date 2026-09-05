@@ -31,6 +31,7 @@ const aiBlock = AI_BOTS.map((bot) => `User-agent: ${bot}\nAllow: /`).join('\n\n'
 const body = [
   'User-agent: *',
   'Allow: /',
+  'Disallow: /admin',
   '',
   aiBlock,
   '',

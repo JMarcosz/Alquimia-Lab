@@ -16,7 +16,9 @@ import Pic from '../Pic.astro';
 import Icon from '../Icon.astro';
 import Faq from '../Faq.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n';
-import { plantillas } from '../../data/plantillas';
+import { getPlantillas } from '../../lib/catalog';
+
+const plantillas = await getPlantillas();
 
 interface Props {
   lang: Lang;
@@ -122,7 +124,9 @@ const card = (p: (typeof plantillas)[number]) => p;
               return (
                 <article class="prod-card">
                   <a class="prod-card-media" href={L(`/plantillas-notion/${p.slug}`)}>
-                    {p.img ? (
+                    {p.image ? (
+                      <img src={p.image} alt={c.h1} width="320" height="240" loading="lazy" decoding="async" />
+                    ) : p.img ? (
                       <Pic name={p.img} alt={c.h1} sizes="(max-width: 700px) 100vw, 320px" />
                     ) : (
                       <div class="plantilla-cover-icon">

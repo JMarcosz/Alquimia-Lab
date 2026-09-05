@@ -1,8 +1,10 @@
 ---
 import PlantillaPage from "../../../components/pages/PlantillaPage.astro";
-import { plantillas, type Plantilla } from "../../../data/plantillas";
+import type { Plantilla } from "../../../data/plantillas";
+import { getPlantillas } from "../../../lib/catalog";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const plantillas = await getPlantillas();
   return plantillas.map((p) => ({ params: { slug: p.slug }, props: { plantilla: p } }));
 }
 

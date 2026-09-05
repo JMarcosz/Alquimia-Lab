@@ -1,0 +1,10 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import PlantillaForm from '../../components/admin/PlantillaForm.astro';
+---
+<AdminLayout title="Nueva plantilla">
+  <h2 style="margin-top:0">Nueva plantilla</h2>
+  <PlantillaForm row={null} />
+</AdminLayout>

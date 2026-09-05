@@ -1,0 +1,666 @@
+[
+  {
+    "slug": "crm-para-freelancers",
+    "name": "Freelancer CRM - Planner",
+    "price": "$9.99",
+    "href": "https://bordergaze.gumroad.com/l/FreelancerCRM?wanted=true",
+    "img": "cover-freelancer-crm.webp",
+    "icon": null,
+    "image_url": null,
+    "active": true,
+    "sort": 0,
+    "es": {
+      "title": "Plantilla Notion CRM para freelancers | Alquimia Lab",
+      "metaDescription": "Plantilla de Notion en español para freelancers: clientes, proyectos y entregas en un solo panel. Duplicado directo y funciona en el plan gratuito.",
+      "h1": "Plantilla de Notion: CRM y planificador para freelancers",
+      "short": "CRM para freelancers",
+      "intro": "Un sistema operativo para tu trabajo por cuenta propia: ordena clientes, proyectos y entregas de principio a fin, en un solo lugar y sin saltar entre herramientas.",
+      "forWho": [
+        "Diseñadores, desarrolladores y creativos que trabajan por proyectos.",
+        "Quien lleva varios clientes a la vez y pierde el hilo entre correos y notas sueltas.",
+        "Freelancers que quieren dejar de improvisar el seguimiento comercial."
+      ],
+      "includes": [
+        "Panel central con el estado de cada proyecto.",
+        "Base de clientes con su historial.",
+        "Seguimiento del flujo de trabajo de principio a fin.",
+        "Enlace de duplicado directo a tu espacio de Notion."
+      ],
+      "faq": [
+        {
+          "q": "¿Cómo recibo la plantilla?",
+          "a": "Recibes un enlace de duplicado directo. Se abre en tu propio espacio de Notion con un clic, sin instalar nada."
+        },
+        {
+          "q": "¿Necesito Notion de pago?",
+          "a": "No. Funciona en el plan gratuito de Notion, tanto en escritorio como en la aplicación móvil."
+        },
+        {
+          "q": "¿Puedo modificarla?",
+          "a": "Sí. Al duplicarla queda en tu espacio y es tuya: puedes cambiar campos, vistas, colores y estructura sin límite."
+        },
+        {
+          "q": "¿Está en español?",
+          "a": "Sí, la plantilla está en español. Si la prefieres en inglés, escríbeme y te paso esa versión."
+        }
+      ]
+    },
+    "en": {
+      "title": "Notion CRM template for freelancers | Alquimia Lab",
+      "metaDescription": "Notion template for freelancers: clients, projects and deliverables in one dashboard. Direct duplicate link, works on the free Notion plan.",
+      "h1": "Notion template: freelancer CRM and planner",
+      "short": "Freelancer CRM",
+      "intro": "An operating system for your freelance work: clients, projects and deliverables from start to finish, in one place instead of scattered across tools.",
+      "forWho": [
+        "Designers, developers and creatives working project by project.",
+        "Anyone juggling several clients and losing track between emails and loose notes.",
+        "Freelancers who want to stop improvising their sales follow-up."
+      ],
+      "includes": [
+        "Central dashboard with the status of every project.",
+        "Client base with full history.",
+        "End-to-end workflow tracking.",
+        "Direct duplicate link into your Notion workspace."
+      ],
+      "faq": [
+        {
+          "q": "How do I get the template?",
+          "a": "You get a direct duplicate link. It opens in your own Notion workspace in one click, with nothing to install."
+        },
+        {
+          "q": "Do I need a paid Notion plan?",
+          "a": "No. It works on the free Notion plan, on desktop and in the mobile app."
+        },
+        {
+          "q": "Can I modify it?",
+          "a": "Yes. Once duplicated it lives in your workspace and it is yours: change fields, views, colors and structure freely."
+        },
+        {
+          "q": "Which language is it in?",
+          "a": "Templates ship in Spanish and English. Tell me which you prefer and I will send that version."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "plantilla-finanzas-personales-gratis",
+    "name": "Finance Planner Free",
+    "price": "Free",
+    "href": "https://www.notion.com/templates/finance-planner-785",
+    "img": "cover-finance-free.webp",
+    "icon": null,
+    "image_url": null,
+    "active": true,
+    "sort": 1,
+    "es": {
+      "title": "Plantilla Notion finanzas personales gratis",
+      "metaDescription": "Plantilla de Notion gratuita en español para organizar tus finanzas personales: ingresos, gastos y ahorro en un sistema visual. Duplicado directo.",
+      "h1": "Plantilla de Notion para finanzas personales (gratis)",
+      "short": "Finanzas personales · Gratis",
+      "intro": "Organiza tus finanzas personales con un sistema visual e intuitivo. Es gratuita: la duplicas en tu Notion y empiezas a registrar hoy mismo, sin hoja de cálculo.",
+      "forWho": [
+        "Quien empieza a llevar sus cuentas y no quiere pelearse con Excel.",
+        "Personas que quieren ver en qué se les va el mes de un vistazo.",
+        "Quien prefiere probar el sistema antes de pasar a la versión Pro."
+      ],
+      "includes": [
+        "Registro de ingresos y gastos.",
+        "Vista mensual del estado de tus cuentas.",
+        "Diseño visual pensado para consultarse a diario.",
+        "Enlace de duplicado directo, sin coste."
+      ],
+      "faq": [
+        {
+          "q": "¿Cómo recibo la plantilla?",
+          "a": "Recibes un enlace de duplicado directo. Se abre en tu propio espacio de Notion con un clic, sin instalar nada."
+        },
+        {
+          "q": "¿Necesito Notion de pago?",
+          "a": "No. Funciona en el plan gratuito de Notion, tanto en escritorio como en la aplicación móvil."
+        },
+        {
+          "q": "¿Puedo modificarla?",
+          "a": "Sí. Al duplicarla queda en tu espacio y es tuya: puedes cambiar campos, vistas, colores y estructura sin límite."
+        },
+        {
+          "q": "¿Está en español?",
+          "a": "Sí, la plantilla está en español. Si la prefieres en inglés, escríbeme y te paso esa versión."
+        }
+      ]
+    },
+    "en": {
+      "title": "Free Notion personal finance template",
+      "metaDescription": "Free Notion template to organize your personal finances: income, expenses and savings in one visual system. Direct duplicate link, no cost.",
+      "h1": "Notion personal finance template (free)",
+      "short": "Personal finance · Free",
+      "intro": "Organize your personal finances with a visual, intuitive system. It is free: duplicate it into your Notion and start tracking today, no spreadsheet needed.",
+      "forWho": [
+        "Anyone starting to track their money without fighting a spreadsheet.",
+        "People who want to see where the month went at a glance.",
+        "Anyone who wants to try the system before moving to Pro."
+      ],
+      "includes": [
+        "Income and expense log.",
+        "Monthly view of where your accounts stand.",
+        "Visual design made for daily use.",
+        "Direct duplicate link, free of charge."
+      ],
+      "faq": [
+        {
+          "q": "How do I get the template?",
+          "a": "You get a direct duplicate link. It opens in your own Notion workspace in one click, with nothing to install."
+        },
+        {
+          "q": "Do I need a paid Notion plan?",
+          "a": "No. It works on the free Notion plan, on desktop and in the mobile app."
+        },
+        {
+          "q": "Can I modify it?",
+          "a": "Yes. Once duplicated it lives in your workspace and it is yours: change fields, views, colors and structure freely."
+        },
+        {
+          "q": "Which language is it in?",
+          "a": "Templates ship in Spanish and English. Tell me which you prefer and I will send that version."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "plantilla-finanzas-personales-pro",
+    "name": "Finance Planner Pro",
+    "price": "$9.99",
+    "href": "https://www.notion.com/templates/finance-planner-pro",
+    "img": "cover-finance-pro.webp",
+    "icon": null,
+    "image_url": null,
+    "active": true,
+    "sort": 2,
+    "es": {
+      "title": "Plantilla Notion finanzas Pro con informes",
+      "metaDescription": "Plantilla de Notion en español para finanzas personales avanzadas: seguimiento detallado, informes y proyecciones. Versión Pro del planificador.",
+      "h1": "Plantilla de Notion para finanzas personales (Pro)",
+      "short": "Finanzas personales · Pro",
+      "intro": "La versión avanzada del planificador financiero: seguimiento detallado con informes y proyecciones, para cuando ya no te basta con anotar ingresos y gastos.",
+      "forWho": [
+        "Quien ya lleva sus cuentas y quiere analizarlas, no solo registrarlas.",
+        "Personas con varias fuentes de ingreso o metas de ahorro a plazo.",
+        "Quien viene de la versión gratuita y se ha quedado corto."
+      ],
+      "includes": [
+        "Seguimiento financiero detallado.",
+        "Informes sobre tu comportamiento de gasto.",
+        "Proyecciones a futuro.",
+        "Enlace de duplicado directo a tu espacio de Notion."
+      ],
+      "faq": [
+        {
+          "q": "¿Cómo recibo la plantilla?",
+          "a": "Recibes un enlace de duplicado directo. Se abre en tu propio espacio de Notion con un clic, sin instalar nada."
+        },
+        {
+          "q": "¿Necesito Notion de pago?",
+          "a": "No. Funciona en el plan gratuito de Notion, tanto en escritorio como en la aplicación móvil."
+        },
+        {
+          "q": "¿Puedo modificarla?",
+          "a": "Sí. Al duplicarla queda en tu espacio y es tuya: puedes cambiar campos, vistas, colores y estructura sin límite."
+        },
+        {
+          "q": "¿Está en español?",
+          "a": "Sí, la plantilla está en español. Si la prefieres en inglés, escríbeme y te paso esa versión."
+        }
+      ]
+    },
+    "en": {
+      "title": "Notion finance Pro template with reports",
+      "metaDescription": "Notion template for advanced personal finance: detailed tracking, reports and projections. The Pro version of the finance planner.",
+      "h1": "Notion personal finance template (Pro)",
+      "short": "Personal finance · Pro",
+      "intro": "The advanced version of the finance planner: detailed tracking with reports and projections, for when logging income and expenses is no longer enough.",
+      "forWho": [
+        "Anyone already tracking money who wants to analyze it, not just record it.",
+        "People with several income streams or long-term savings goals.",
+        "Anyone who has outgrown the free version."
+      ],
+      "includes": [
+        "Detailed financial tracking.",
+        "Reports on your spending behaviour.",
+        "Forward projections.",
+        "Direct duplicate link into your Notion workspace."
+      ],
+      "faq": [
+        {
+          "q": "How do I get the template?",
+          "a": "You get a direct duplicate link. It opens in your own Notion workspace in one click, with nothing to install."
+        },
+        {
+          "q": "Do I need a paid Notion plan?",
+          "a": "No. It works on the free Notion plan, on desktop and in the mobile app."
+        },
+        {
+          "q": "Can I modify it?",
+          "a": "Yes. Once duplicated it lives in your workspace and it is yours: change fields, views, colors and structure freely."
+        },
+        {
+          "q": "Which language is it in?",
+          "a": "Templates ship in Spanish and English. Tell me which you prefer and I will send that version."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "plantilla-seguimiento-habitos",
+    "name": "Habit Planner",
+    "price": "Free",
+    "href": "https://www.notion.com/templates/habit-planner",
+    "img": "cover-habit.webp",
+    "icon": null,
+    "image_url": null,
+    "active": true,
+    "sort": 3,
+    "es": {
+      "title": "Plantilla Notion para hábitos gratis",
+      "metaDescription": "Plantilla de Notion gratuita en español para seguir tus hábitos sin la culpa visual de los días perdidos. Diseño de hoja en blanco para mantener el foco.",
+      "h1": "Plantilla de Notion para seguimiento de hábitos",
+      "short": "Hábitos · Gratis",
+      "intro": "Transforma tus hábitos sin la culpa visual de los días perdidos. Un diseño de hoja en blanco que mantiene tu mente clara y enfocada por completo en tu crecimiento.",
+      "forWho": [
+        "Quien abandona los trackers al ver la racha rota.",
+        "Personas que quieren constancia sin castigarse por los fallos.",
+        "Quien prefiere un sistema sereno a uno lleno de alertas."
+      ],
+      "includes": [
+        "Seguimiento diario de hábitos.",
+        "Diseño que no arrastra el historial de días fallados.",
+        "Vista limpia, pensada para consultarse sin fricción.",
+        "Enlace de duplicado directo, sin coste."
+      ],
+      "faq": [
+        {
+          "q": "¿Cómo recibo la plantilla?",
+          "a": "Recibes un enlace de duplicado directo. Se abre en tu propio espacio de Notion con un clic, sin instalar nada."
+        },
+        {
+          "q": "¿Necesito Notion de pago?",
+          "a": "No. Funciona en el plan gratuito de Notion, tanto en escritorio como en la aplicación móvil."
+        },
+        {
+          "q": "¿Puedo modificarla?",
+          "a": "Sí. Al duplicarla queda en tu espacio y es tuya: puedes cambiar campos, vistas, colores y estructura sin límite."
+        },
+        {
+          "q": "¿Está en español?",
+          "a": "Sí, la plantilla está en español. Si la prefieres en inglés, escríbeme y te paso esa versión."
+        }
+      ]
+    },
+    "en": {
+      "title": "Free Notion habit tracker template",
+      "metaDescription": "Free Notion habit tracker designed without the visual guilt of missed days. A clean-slate layout that keeps your focus on growth.",
+      "h1": "Notion habit tracker template",
+      "short": "Habits · Free",
+      "intro": "Transform your habits without the visual guilt of missed days from the past. A clean-slate design that keeps your mind clear and focused entirely on your growth.",
+      "forWho": [
+        "Anyone who abandons trackers the moment the streak breaks.",
+        "People who want consistency without punishing themselves for slips.",
+        "Anyone who prefers a calm system over one full of alerts."
+      ],
+      "includes": [
+        "Daily habit tracking.",
+        "A design that does not drag your failed days along.",
+        "Clean view, made to check without friction.",
+        "Direct duplicate link, free of charge."
+      ],
+      "faq": [
+        {
+          "q": "How do I get the template?",
+          "a": "You get a direct duplicate link. It opens in your own Notion workspace in one click, with nothing to install."
+        },
+        {
+          "q": "Do I need a paid Notion plan?",
+          "a": "No. It works on the free Notion plan, on desktop and in the mobile app."
+        },
+        {
+          "q": "Can I modify it?",
+          "a": "Yes. Once duplicated it lives in your workspace and it is yours: change fields, views, colors and structure freely."
+        },
+        {
+          "q": "Which language is it in?",
+          "a": "Templates ship in Spanish and English. Tell me which you prefer and I will send that version."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "plantilla-notion-estudiantes",
+    "name": "Student OS & Study Planner",
+    "price": "$5.99",
+    "href": "https://www.notion.com/templates/student-os-study-planner",
+    "img": null,
+    "icon": "graduation-cap",
+    "image_url": null,
+    "active": true,
+    "sort": 4,
+    "es": {
+      "title": "Plantilla de Notion para estudiantes",
+      "metaDescription": "Plantilla de Notion en español para estudiantes: apuntes, tareas, entregas y exámenes en un panel minimalista. Organiza el semestre completo sin dispersión.",
+      "h1": "Plantilla de Notion para estudiantes",
+      "short": "Estudiantes",
+      "intro": "Di adiós a las notas dispersas y a los plazos perdidos con un único panel minimalista. Lleva toda tu vida estudiantil sin contratiempos, desde las tareas diarias hasta los exámenes finales.",
+      "forWho": [
+        "Estudiantes de universidad o bachillerato con varias asignaturas a la vez.",
+        "Quien pierde entregas por tenerlas anotadas en cinco sitios distintos.",
+        "Personas que estudian y trabajan y necesitan ver el semestre completo."
+      ],
+      "includes": [
+        "Panel único con tareas y entregas.",
+        "Organización por asignatura.",
+        "Seguimiento desde la tarea diaria hasta el examen final.",
+        "Enlace de duplicado directo a tu espacio de Notion."
+      ],
+      "faq": [
+        {
+          "q": "¿Cómo recibo la plantilla?",
+          "a": "Recibes un enlace de duplicado directo. Se abre en tu propio espacio de Notion con un clic, sin instalar nada."
+        },
+        {
+          "q": "¿Necesito Notion de pago?",
+          "a": "No. Funciona en el plan gratuito de Notion, tanto en escritorio como en la aplicación móvil."
+        },
+        {
+          "q": "¿Puedo modificarla?",
+          "a": "Sí. Al duplicarla queda en tu espacio y es tuya: puedes cambiar campos, vistas, colores y estructura sin límite."
+        },
+        {
+          "q": "¿Está en español?",
+          "a": "Sí, la plantilla está en español. Si la prefieres en inglés, escríbeme y te paso esa versión."
+        }
+      ]
+    },
+    "en": {
+      "title": "Notion template for students",
+      "metaDescription": "Notion template for students: notes, tasks, deadlines and exams in one minimalist dashboard. Run a whole semester without scattering your work.",
+      "h1": "Notion template for students",
+      "short": "Students",
+      "intro": "Say goodbye to scattered notes and missed deadlines with a single minimalist dashboard. Run your entire student life smoothly, from daily tasks to final exams.",
+      "forWho": [
+        "University or high-school students juggling several subjects.",
+        "Anyone missing deadlines because they are written down in five places.",
+        "People who study and work and need to see the whole semester."
+      ],
+      "includes": [
+        "Single dashboard for tasks and deadlines.",
+        "Organization by subject.",
+        "Tracking from daily task to final exam.",
+        "Direct duplicate link into your Notion workspace."
+      ],
+      "faq": [
+        {
+          "q": "How do I get the template?",
+          "a": "You get a direct duplicate link. It opens in your own Notion workspace in one click, with nothing to install."
+        },
+        {
+          "q": "Do I need a paid Notion plan?",
+          "a": "No. It works on the free Notion plan, on desktop and in the mobile app."
+        },
+        {
+          "q": "Can I modify it?",
+          "a": "Yes. Once duplicated it lives in your workspace and it is yours: change fields, views, colors and structure freely."
+        },
+        {
+          "q": "Which language is it in?",
+          "a": "Templates ship in Spanish and English. Tell me which you prefer and I will send that version."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "plantilla-bienestar-mental",
+    "name": "Quiet Mind Planner",
+    "price": "Free",
+    "href": "https://www.notion.com/templates/quiet-mind-planner",
+    "img": "cover-quiet-mind.webp",
+    "icon": null,
+    "image_url": null,
+    "active": true,
+    "sort": 5,
+    "es": {
+      "title": "Plantilla Notion bienestar y calma gratis",
+      "metaDescription": "Plantilla de Notion gratuita en español para silenciar el ruido mental: un santuario minimalista que protege tu energía y ordena tus rutinas diarias.",
+      "h1": "Plantilla de Notion para calma y bienestar mental",
+      "short": "Calma mental · Gratis",
+      "intro": "Libera tu mente del ruido mental con un santuario minimalista diseñado para proteger tu energía y traer calma. Transforma tus rutinas diarias en un flujo suave de reflexión intencional.",
+      "forWho": [
+        "Quien siente que su Notion se ha vuelto otra fuente de ruido.",
+        "Personas que buscan un espacio de reflexión, no otro panel de tareas.",
+        "Quien quiere una rutina diaria sostenible y sin sobrecarga."
+      ],
+      "includes": [
+        "Espacio de reflexión diaria.",
+        "Rutinas pensadas para proteger tu energía.",
+        "Diseño minimalista, sin exceso de botones.",
+        "Enlace de duplicado directo, sin coste."
+      ],
+      "faq": [
+        {
+          "q": "¿Cómo recibo la plantilla?",
+          "a": "Recibes un enlace de duplicado directo. Se abre en tu propio espacio de Notion con un clic, sin instalar nada."
+        },
+        {
+          "q": "¿Necesito Notion de pago?",
+          "a": "No. Funciona en el plan gratuito de Notion, tanto en escritorio como en la aplicación móvil."
+        },
+        {
+          "q": "¿Puedo modificarla?",
+          "a": "Sí. Al duplicarla queda en tu espacio y es tuya: puedes cambiar campos, vistas, colores y estructura sin límite."
+        },
+        {
+          "q": "¿Está en español?",
+          "a": "Sí, la plantilla está en español. Si la prefieres en inglés, escríbeme y te paso esa versión."
+        }
+      ]
+    },
+    "en": {
+      "title": "Free Notion calm and wellbeing template",
+      "metaDescription": "Free Notion template to quiet mental noise: a minimalist sanctuary that protects your energy and turns daily routines into intentional reflection.",
+      "h1": "Notion template for calm and mental wellbeing",
+      "short": "Quiet mind · Free",
+      "intro": "Free your mind from mental noise with a minimalist sanctuary designed to protect your energy and bring calm. Transform your daily routines into a gentle flow of intentional reflection.",
+      "forWho": [
+        "Anyone whose Notion has become another source of noise.",
+        "People looking for a space to reflect, not another task board.",
+        "Anyone who wants a sustainable daily routine without overload."
+      ],
+      "includes": [
+        "Space for daily reflection.",
+        "Routines designed to protect your energy.",
+        "Minimalist design, no button overload.",
+        "Direct duplicate link, free of charge."
+      ],
+      "faq": [
+        {
+          "q": "How do I get the template?",
+          "a": "You get a direct duplicate link. It opens in your own Notion workspace in one click, with nothing to install."
+        },
+        {
+          "q": "Do I need a paid Notion plan?",
+          "a": "No. It works on the free Notion plan, on desktop and in the mobile app."
+        },
+        {
+          "q": "Can I modify it?",
+          "a": "Yes. Once duplicated it lives in your workspace and it is yours: change fields, views, colors and structure freely."
+        },
+        {
+          "q": "Which language is it in?",
+          "a": "Templates ship in Spanish and English. Tell me which you prefer and I will send that version."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "plantilla-notion-youtubers",
+    "name": "YouTube Creator OS - Planner & Script",
+    "price": "$15",
+    "href": "https://www.notion.com/templates/youtube-creator-os-automated-social-media-planner-script",
+    "img": "cover-youtube.webp",
+    "icon": null,
+    "image_url": null,
+    "active": true,
+    "sort": 6,
+    "es": {
+      "title": "Plantilla Notion para YouTubers y creadores",
+      "metaDescription": "Plantilla de Notion en español para creadores de YouTube: ideas, guiones, calendario de publicación y shorts en un solo espacio de trabajo.",
+      "h1": "Plantilla de Notion para creadores de YouTube",
+      "short": "YouTube Creator OS",
+      "intro": "Deja de perder ideas de vídeo con un espacio de trabajo integral creado para creadores y productores. Lleva claridad estratégica a tu canal, desde guiones largos hasta shorts.",
+      "forWho": [
+        "Creadores de YouTube que publican con regularidad.",
+        "Quien apunta ideas en el móvil y luego no las encuentra.",
+        "Equipos pequeños que producen vídeo y necesitan un guion compartido."
+      ],
+      "includes": [
+        "Banco de ideas de vídeo.",
+        "Guiones para formato largo y para shorts.",
+        "Planificación del calendario del canal.",
+        "Enlace de duplicado directo a tu espacio de Notion."
+      ],
+      "faq": [
+        {
+          "q": "¿Cómo recibo la plantilla?",
+          "a": "Recibes un enlace de duplicado directo. Se abre en tu propio espacio de Notion con un clic, sin instalar nada."
+        },
+        {
+          "q": "¿Necesito Notion de pago?",
+          "a": "No. Funciona en el plan gratuito de Notion, tanto en escritorio como en la aplicación móvil."
+        },
+        {
+          "q": "¿Puedo modificarla?",
+          "a": "Sí. Al duplicarla queda en tu espacio y es tuya: puedes cambiar campos, vistas, colores y estructura sin límite."
+        },
+        {
+          "q": "¿Está en español?",
+          "a": "Sí, la plantilla está en español. Si la prefieres en inglés, escríbeme y te paso esa versión."
+        }
+      ]
+    },
+    "en": {
+      "title": "Notion template for YouTubers and creators",
+      "metaDescription": "Notion template for YouTube creators: ideas, scripts, publishing calendar and shorts in a single workspace built for producing video.",
+      "h1": "Notion template for YouTube creators",
+      "short": "YouTube Creator OS",
+      "intro": "Stop losing video ideas with a comprehensive workspace built for creators and producers. Bring strategic clarity to your channel, from long-form scripts to shorts.",
+      "forWho": [
+        "YouTube creators publishing on a regular schedule.",
+        "Anyone who jots ideas on their phone and never finds them again.",
+        "Small teams producing video who need a shared script."
+      ],
+      "includes": [
+        "Video idea bank.",
+        "Scripts for long form and for shorts.",
+        "Channel publishing calendar.",
+        "Direct duplicate link into your Notion workspace."
+      ],
+      "faq": [
+        {
+          "q": "How do I get the template?",
+          "a": "You get a direct duplicate link. It opens in your own Notion workspace in one click, with nothing to install."
+        },
+        {
+          "q": "Do I need a paid Notion plan?",
+          "a": "No. It works on the free Notion plan, on desktop and in the mobile app."
+        },
+        {
+          "q": "Can I modify it?",
+          "a": "Yes. Once duplicated it lives in your workspace and it is yours: change fields, views, colors and structure freely."
+        },
+        {
+          "q": "Which language is it in?",
+          "a": "Templates ship in Spanish and English. Tell me which you prefer and I will send that version."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "plantilla-redes-sociales",
+    "name": "Social Media Planner",
+    "price": "$4",
+    "href": "https://www.notion.com/templates/social-media-planner-256",
+    "img": "cover-social-media.webp",
+    "icon": null,
+    "image_url": null,
+    "active": true,
+    "sort": 7,
+    "es": {
+      "title": "Plantilla Notion para redes sociales barata",
+      "metaDescription": "Plantilla de Notion en español para planificar redes sociales: contenido, calendario y publicaciones en un ecosistema minimalista. Desde 4 USD.",
+      "h1": "Plantilla de Notion para planificar redes sociales",
+      "short": "Redes sociales",
+      "intro": "Lleva claridad mental y control a tu negocio digital con un ecosistema minimalista diseñado para creadores y emprendedores. Gestiona todo desde un solo lugar.",
+      "forWho": [
+        "Creadores y emprendedores que publican en varias redes.",
+        "Quien improvisa el contenido el mismo día de publicarlo.",
+        "Negocios pequeños que quieren coherencia sin contratar gestión."
+      ],
+      "includes": [
+        "Calendario de publicación.",
+        "Banco de contenido reutilizable.",
+        "Vista única para todas tus redes.",
+        "Enlace de duplicado directo a tu espacio de Notion."
+      ],
+      "faq": [
+        {
+          "q": "¿Cómo recibo la plantilla?",
+          "a": "Recibes un enlace de duplicado directo. Se abre en tu propio espacio de Notion con un clic, sin instalar nada."
+        },
+        {
+          "q": "¿Necesito Notion de pago?",
+          "a": "No. Funciona en el plan gratuito de Notion, tanto en escritorio como en la aplicación móvil."
+        },
+        {
+          "q": "¿Puedo modificarla?",
+          "a": "Sí. Al duplicarla queda en tu espacio y es tuya: puedes cambiar campos, vistas, colores y estructura sin límite."
+        },
+        {
+          "q": "¿Está en español?",
+          "a": "Sí, la plantilla está en español. Si la prefieres en inglés, escríbeme y te paso esa versión."
+        }
+      ]
+    },
+    "en": {
+      "title": "Affordable Notion social media template",
+      "metaDescription": "Notion template to plan social media: content, calendar and posts in one minimalist ecosystem for creators and small businesses. From 4 USD.",
+      "h1": "Notion template to plan social media",
+      "short": "Social media",
+      "intro": "Bring mental clarity and control to your digital business with a minimalist ecosystem designed for creators and entrepreneurs. Manage everything from one place.",
+      "forWho": [
+        "Creators and entrepreneurs posting across several networks.",
+        "Anyone improvising content on the day it ships.",
+        "Small businesses wanting consistency without hiring management."
+      ],
+      "includes": [
+        "Publishing calendar.",
+        "Reusable content bank.",
+        "Single view across all your networks.",
+        "Direct duplicate link into your Notion workspace."
+      ],
+      "faq": [
+        {
+          "q": "How do I get the template?",
+          "a": "You get a direct duplicate link. It opens in your own Notion workspace in one click, with nothing to install."
+        },
+        {
+          "q": "Do I need a paid Notion plan?",
+          "a": "No. It works on the free Notion plan, on desktop and in the mobile app."
+        },
+        {
+          "q": "Can I modify it?",
+          "a": "Yes. Once duplicated it lives in your workspace and it is yours: change fields, views, colors and structure freely."
+        },
+        {
+          "q": "Which language is it in?",
+          "a": "Templates ship in Spanish and English. Tell me which you prefer and I will send that version."
+        }
+      ]
+    }
+  }
+]

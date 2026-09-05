@@ -1,0 +1,56 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { adminListRows, type PlantillaRow } from '../../lib/catalog';
+
+let rows: PlantillaRow[] = [];
+let loadError: string | null = null;
+try {
+  rows = await adminListRows();
+} catch (err) {
+  loadError = err instanceof Error ? err.message : String(err);
+}
+
+const published = Astro.url.searchParams.get('ok');
+---
+<AdminLayout title="Productos">
+  <a slot="actions" class="btn primary" href="/admin/nuevo">+ Nueva plantilla</a>
+
+  {published === 'saved' && (
+    <div class="msg ok">Guardado en la base. El sitio se actualiza en 1-2 min si el deploy está configurado.</div>
+  )}
+  {published === 'deleted' && <div class="msg ok">Plantilla eliminada.</div>}
+  {loadError && <div class="msg err">No se pudo leer el catálogo: {loadError}</div>}
+
+  <p class="note">{rows.length} plantilla(s). El orden es el que se ve en el sitio.</p>
+
+  <table>
+    <thead>
+      <tr><th>Orden</th><th>Nombre</th><th>Precio</th><th>Estado</th><th></th></tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <td>{r.sort}</td>
+          <td>
+            <strong>{r.name}</strong><br />
+            <span class="note">{r.slug}</span>
+          </td>
+          <td>{r.price}</td>
+          <td>
+            <span class={`tag ${r.active ? 'on' : 'off'}`}>{r.active ? 'Visible' : 'Oculta'}</span>
+          </td>
+          <td style="text-align:right;white-space:nowrap">
+            <a class="btn" href={`/admin/editar/${r.slug}`}>Editar</a>
+            <form method="post" action="/api/admin/toggle" style="display:inline;margin-left:6px">
+              <input type="hidden" name="slug" value={r.slug} />
+              <input type="hidden" name="active" value={r.active ? '0' : '1'} />
+              <button class="btn" type="submit">{r.active ? 'Ocultar' : 'Mostrar'}</button>
+            </form>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</AdminLayout>

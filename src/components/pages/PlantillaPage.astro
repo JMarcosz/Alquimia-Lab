@@ -32,8 +32,12 @@ const isFree = /free/i.test(plantilla.price);
 const priceValue = isFree ? '0' : (plantilla.price.replace(',', '.').match(/[\d.]+/)?.[0] ?? null);
 
 // Portada absoluta para el schema: `Product` sin `image` no produce rich results.
-const productImage =
-  plantilla.img && hasImage(plantilla.img) ? imageUrl(plantilla.img, Astro.site!, 1440) : null;
+// Prioridad: imagen subida desde el panel (URL de Supabase) > portada legada.
+const productImage = plantilla.image
+  ? plantilla.image
+  : plantilla.img && hasImage(plantilla.img)
+    ? imageUrl(plantilla.img, Astro.site!, 1440)
+    : null;
 
 const pageUrl = new URL(L(`/plantillas-notion/${plantilla.slug}`), Astro.site!).href;
 
@@ -98,7 +102,18 @@ const backLabel = lang === 'es' ? 'Ver todas las plantillas' : 'See all template
       <div class="plantilla-hero">
         <div class="plantilla-media">
           {
-            plantilla.img ? (
+            plantilla.image ? (
+              <img
+                src={plantilla.image}
+                alt={c.h1}
+                class="plantilla-cover"
+                width="480"
+                height="360"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+              />
+            ) : plantilla.img ? (
               <Pic
                 name={plantilla.img}
                 alt={c.h1}

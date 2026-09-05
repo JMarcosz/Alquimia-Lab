@@ -1,0 +1,88 @@
+---
+/**
+ * Cascarón mínimo del panel. NO usa BaseLayout: nada de nav pública, footer,
+ * i18n ni SEO. `noindex` explícito por si la ruta se filtra.
+ */
+interface Props {
+  title: string;
+}
+const { title } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} · Admin · Alquimia Lab</title>
+    <style is:global>
+      :root {
+        --bg: #0f1115;
+        --panel: #171a21;
+        --panel-2: #1e222b;
+        --border: #2a2f3a;
+        --text: #e7e9ee;
+        --muted: #9aa1ad;
+        --accent: #6c8cff;
+        --danger: #ff6b6b;
+        --ok: #3ecf8e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      a { color: var(--accent); }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
+      header.admin {
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 16px; margin-bottom: 24px; padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+      header.admin h1 { font-size: 18px; margin: 0; }
+      header.admin .sp { flex: 1; }
+      .btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: var(--panel-2); color: var(--text);
+        border: 1px solid var(--border); border-radius: 8px;
+        padding: 8px 14px; font-size: 14px; cursor: pointer; text-decoration: none;
+      }
+      .btn:hover { border-color: var(--accent); }
+      .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+      .btn.danger { border-color: var(--danger); color: var(--danger); }
+      .btn[disabled] { opacity: .5; cursor: not-allowed; }
+      input, textarea, select {
+        width: 100%; background: var(--panel); color: var(--text);
+        border: 1px solid var(--border); border-radius: 8px; padding: 9px 11px;
+        font: inherit;
+      }
+      textarea { resize: vertical; min-height: 64px; }
+      label { display: block; font-size: 13px; color: var(--muted); margin: 14px 0 5px; }
+      table { width: 100%; border-collapse: collapse; }
+      th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+      th { color: var(--muted); font-weight: 600; font-size: 13px; }
+      .tag { font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); }
+      .tag.on { color: var(--ok); border-color: var(--ok); }
+      .tag.off { color: var(--muted); }
+      .note { color: var(--muted); font-size: 13px; }
+      .msg { padding: 12px 14px; border-radius: 8px; border: 1px solid var(--border); margin: 16px 0; }
+      .msg.ok { border-color: var(--ok); color: var(--ok); }
+      .msg.err { border-color: var(--danger); color: var(--danger); white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="admin">
+        <h1><a href="/admin" style="text-decoration:none;color:inherit">Alquimia Lab · Admin</a></h1>
+        <span class="sp"></span>
+        <slot name="actions" />
+        <form method="post" action="/api/admin/logout" style="margin:0">
+          <button class="btn" type="submit">Salir</button>
+        </form>
+      </header>
+      <slot />
+    </div>
+  </body>
+</html>

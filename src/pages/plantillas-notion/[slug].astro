@@ -1,10 +1,12 @@
 ---
 import PlantillaPage from "../../components/pages/PlantillaPage.astro";
-import { plantillas, type Plantilla } from "../../data/plantillas";
+import type { Plantilla } from "../../data/plantillas";
+import { getPlantillas } from "../../lib/catalog";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
   // Se pasa la ENTRADA por props, no solo el slug: volver a buscarla por
   // `Astro.params.slug` se rompe en cuanto los slugs difieran por idioma.
+  const plantillas = await getPlantillas();
   return plantillas.map((p) => ({ params: { slug: p.slug }, props: { plantilla: p } }));
 }
 

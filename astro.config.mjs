@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, passthroughImageService } from 'astro/config';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
 import { SITE_URL } from './src/consts.ts';
@@ -17,6 +17,13 @@ export default defineConfig({
   // `export const prerender = false`.
   output: 'static',
   adapter: vercel(),
+
+  // El sitio no usa `astro:assets`: `<Pic>` sirve variantes pregeneradas desde
+  // `src/image-manifest.json`. Con rutas SSR (`/admin`, `/api/admin`) el
+  // adaptador arrastraba `sharp` al bundle de la función y fallaba al symlinkear
+  // en Windows/OneDrive. El servicio passthrough quita esa dependencia del
+  // runtime; `sharp` sigue disponible para los scripts de build.
+  image: { service: passthroughImageService() },
 
   redirects: {
     // @astrojs/sitemap genera `/sitemap-index.xml`. Search Console y muchas
@@ -41,7 +48,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       // `/404` lleva `noindex`: enviarlo en el sitemap es contradictorio.
-      filter: (page) => !page.includes('/404'),
+      filter: (page) => !page.includes('/404') && !page.includes('/admin'),
 
       // ⚠️ Esta opción SOLO funciona mientras ES y EN compartan slug.
       // `createGetI18nLinks` empareja URLs cuyo path coincide tras quitar el
