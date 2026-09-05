@@ -18,6 +18,13 @@ export default defineConfig({
   output: 'static',
   adapter: vercel(),
 
+  redirects: {
+    // @astrojs/sitemap genera `/sitemap-index.xml`. Search Console y muchas
+    // herramientas asumen `/sitemap.xml`: se redirige (301) para cubrir ese
+    // caso. `robots.txt` ya apunta al -index directamente.
+    '/sitemap.xml': '/sitemap-index.xml',
+  },
+
 
   // El sitemap emitía `/ai-characters/` con barra final mientras el canonical
   // decía `/servicios` sin ella. Se fija una sola convención.
