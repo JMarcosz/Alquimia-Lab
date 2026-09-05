@@ -74,8 +74,38 @@ const altHref = localizePath(path, other);
   // es lo que Lighthouse revisa y lo que anuncian los lectores de pantalla.
   const btn = document.querySelector('.nav-toggle');
   const links = document.getElementById('nav-links');
-  btn?.addEventListener('click', () => {
-    const open = links?.classList.toggle('open') ?? false;
+
+  function setNavOpen(open: boolean) {
+    if (!links || !btn) return;
+    links.classList.toggle('open', open);
     btn.setAttribute('aria-expanded', String(open));
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  btn?.addEventListener('click', () => {
+    const isOpen = links?.classList.contains('open') ?? false;
+    setNavOpen(!isOpen);
+  });
+
+  // Cierra el menú móvil al pulsar cualquier enlace interno
+  links?.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('a')) {
+      setNavOpen(false);
+    }
+  });
+
+  // Cierra con Escape si está abierto
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && links?.classList.contains('open')) {
+      setNavOpen(false);
+    }
+  });
+
+  // Si cambia el tamaño de pantalla a escritorio, restaura el scroll del body
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 768 && links?.classList.contains('open')) {
+      setNavOpen(false);
+    }
   });
 </script>

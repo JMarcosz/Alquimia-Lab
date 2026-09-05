@@ -103,10 +103,12 @@ const processTitle = lang === 'es' ? 'Cómo trabajo' : 'How I work';
 
     <section class="section" style="text-align:center; padding-top: 0;">
       <p style="color: var(--text-muted); margin-bottom: 16px;">{ctaText}</p>
-      <a class="btn-primary" href={L('/contacto')} style="margin-right: 8px;">{ctaTitle}</a>
-      <a class="btn-secondary" href={WHATSAPP_URL} target="_blank" rel="noopener">
-        {t('Write on WhatsApp')}
-      </a>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a class="btn-primary" href={L('/contacto')}>{ctaTitle}</a>
+        <a class="btn-secondary" href={WHATSAPP_URL} target="_blank" rel="noopener">
+          {t('Write on WhatsApp')}
+        </a>
+      </div>
     </section>
   </div>
 </BaseLayout>
