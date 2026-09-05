@@ -757,7 +757,8 @@ img { max-width: 100%; display: block; }
 
   .portfolio-grid { grid-template-columns: repeat(2, 1fr); }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
-  .category-grid { grid-template-columns: 1fr; }
+  .category-grid,
+  .page#products-page .category-grid { grid-template-columns: 1fr; }
 
   .about-top { flex-direction: column; align-items: center; text-align: center; }
   .about-photo { width: 120px; height: 120px; }
@@ -1545,7 +1546,8 @@ h1.section-title, h2.section-title {
   aspect-ratio: 4 / 3;
   font-size: 64px;
   border-radius: 18px;
-  background: linear-gradient(135deg, var(--purple), var(--purple-light));
+  background: var(--lavender-light);
+  border: 1px solid var(--lavender);
 }
 .plantilla-intro { line-height: 1.7; color: var(--text-muted); }
 .plantilla-price { font-size: 28px; color: var(--purple); margin: 8px 0 16px; }
