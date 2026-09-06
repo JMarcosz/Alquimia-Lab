@@ -214,23 +214,22 @@ label {
 
 /* ========================================
    TABLAS  (admin/usuarios.astro, admin/registro.astro)
-   El contenido ancho hace scroll DENTRO de .table-wrap;
-   la página nunca desborda horizontalmente.
+   Escritorio: tabla real.  Móvil (<720px): cada fila colapsa a una
+   tarjeta con pares etiqueta/valor — nada de datos sueltos ni scroll lateral.
    ======================================== */
 .table-wrap {
   width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   border: 1px solid var(--lavender);
   border-radius: var(--admin-radius);
   background: var(--surface);
+  overflow: hidden;
 }
 table {
   width: 100%;
   border-collapse: collapse;
   font-size: var(--text-sm);
 }
-.table-wrap table { min-width: 38rem; }
+.table-wrap table { min-width: 32rem; }
 thead th {
   text-align: left;
   font-size: var(--text-xs);
@@ -250,6 +249,47 @@ tbody td {
 }
 tbody tr:last-child td { border-bottom: 0; }
 table .btn { min-height: 36px; padding: 8px 14px; }
+.admin-cell-action { text-align: right; white-space: nowrap; }
+
+@media (max-width: 719px) {
+  .table-wrap {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .table-wrap table { min-width: 0; }
+  .table-wrap thead { display: none; }
+  .table-wrap table,
+  .table-wrap tbody,
+  .table-wrap tr,
+  .table-wrap td { display: block; }
+  .table-wrap tr {
+    border: 1px solid var(--lavender);
+    border-radius: var(--admin-radius);
+    background: var(--surface);
+    margin-bottom: 10px;
+    padding: 6px 2px;
+  }
+  .table-wrap td {
+    padding: 8px 14px;
+    border: 0;
+  }
+  .table-wrap td + td { border-top: 1px solid var(--lavender-light); }
+  .table-wrap td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-weight: 700;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--text-muted);
+    margin-bottom: 2px;
+  }
+  .table-wrap td:empty { display: none; }
+  .table-wrap td.admin-cell-action { text-align: left; }
+  .table-wrap td .btn { width: 100%; margin-top: 4px; }
+}
 
 .audit-diff { margin-top: 4px; }
 .audit-diff summary { cursor: pointer; }
@@ -302,10 +342,14 @@ table .btn { min-height: 36px; padding: 8px 14px; }
 
 .admin-row {
   display: grid;
-  grid-template-columns: auto 72px 1fr auto auto auto;
+  grid-template-columns: auto 64px minmax(0, 1fr);
+  grid-template-areas:
+    "order thumb body"
+    "foot  foot  foot";
   align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
+  column-gap: var(--space-md);
+  row-gap: 12px;
+  padding: var(--space-md);
   background: var(--surface);
   border: 1px solid var(--lavender);
   border-radius: var(--admin-radius);
@@ -315,11 +359,43 @@ table .btn { min-height: 36px; padding: 8px 14px; }
   transform: translateY(-2px);
   box-shadow: 0 8px 20px var(--shadow);
 }
+.admin-order { grid-area: order; }
+.admin-thumb { grid-area: thumb; }
+.admin-row-body { grid-area: body; }
+
+/* Pie de la tarjeta: precio · estado · acciones */
+.admin-foot {
+  grid-area: foot;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--lavender-light);
+}
+.admin-foot .tag { margin-inline-end: auto; }
+.admin-foot .btn { flex: 1 1 auto; min-width: 104px; }
+
+/* ≥ 620px: los botones vuelven a su ancho natural */
+@media (min-width: 620px) {
+  .admin-foot .btn { flex: 0 0 auto; min-width: 0; }
+}
+
+/* ≥ 880px: todo en una sola fila */
+@media (min-width: 880px) {
+  .admin-row {
+    grid-template-columns: auto 64px minmax(0, 1fr) auto;
+    grid-template-areas: "order thumb body foot";
+    row-gap: 0;
+  }
+  .admin-foot { border-top: 0; padding-top: 0; flex-wrap: nowrap; }
+}
 
 .admin-order {
   display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   background: var(--lavender-light);
   border-radius: 10px;
   padding: 4px;
@@ -342,7 +418,7 @@ table .btn { min-height: 36px; padding: 8px 14px; }
 }
 
 .admin-thumb {
-  width: 72px; height: 72px;
+  width: 64px; height: 64px;
   border-radius: 12px;
   object-fit: cover;
   background: var(--lavender-light);
@@ -377,31 +453,6 @@ table .btn { min-height: 36px; padding: 8px 14px; }
   white-space: nowrap;
 }
 .admin-price.free { color: var(--text-muted); font-size: var(--text-base); }
-
-.admin-actions {
-  display: flex; gap: 8px; align-items: center;
-  white-space: nowrap;
-}
-.admin-actions form { margin: 0; display: inline-flex; }
-
-@media (max-width: 720px) {
-  .admin-row {
-    grid-template-columns: auto 56px 1fr;
-    grid-template-areas:
-      "order thumb body"
-      "meta  meta  meta"
-      "acts  acts  acts";
-    row-gap: var(--space-sm);
-  }
-  .admin-order { grid-area: order; flex-direction: column; gap: 2px; }
-  .admin-thumb { grid-area: thumb; width: 56px; height: 56px; }
-  .admin-row-body { grid-area: body; }
-  .admin-row .admin-price { grid-area: meta; justify-self: start; }
-  .admin-row .tag { grid-area: meta; justify-self: end; align-self: center; }
-  .admin-actions { grid-area: acts; }
-  .admin-actions .btn, .admin-actions form { flex: 1; }
-  .admin-actions .btn { width: 100%; }
-}
 
 /* ========================================
    AUTENTICACIÓN  (admin/login.astro)

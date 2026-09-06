@@ -82,11 +82,11 @@ const meId = Astro.locals.user?.id ?? '';
       <tbody>
         {users.map((u) => (
           <tr data-id={u.id} data-disabled={String(u.disabled)}>
-            <td>{u.email}{u.id === meId && <span class="note"> · tú</span>}</td>
-            <td>{u.role === 'superadmin' ? 'Super admin' : 'Editora'}</td>
-            <td class="note" style="white-space:nowrap">{new Date(u.created_at).toLocaleDateString('es-CO')}</td>
-            <td><span class={`tag ${u.disabled ? 'off' : 'on'}`}>{u.disabled ? 'Desactivada' : 'Activa'}</span></td>
-            <td style="text-align:right">
+            <td data-label="Correo">{u.email}{u.id === meId && <span class="note"> · tú</span>}</td>
+            <td data-label="Rol">{u.role === 'superadmin' ? 'Super admin' : 'Editora'}</td>
+            <td data-label="Alta" class="note">{new Date(u.created_at).toLocaleDateString('es-CO')}</td>
+            <td data-label="Estado"><span class={`tag ${u.disabled ? 'off' : 'on'}`}>{u.disabled ? 'Desactivada' : 'Activa'}</span></td>
+            <td class="admin-cell-action">
               {u.id !== meId && (
                 <button class="btn danger toggle-user">{u.disabled ? 'Reactivar' : 'Desactivar'}</button>
               )}

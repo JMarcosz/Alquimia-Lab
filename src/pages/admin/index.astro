@@ -72,9 +72,9 @@ function thumb(r: PlantillaRow): { kind: 'img'; src: string } | { kind: 'ph'; ic
             <strong>{r.name}</strong>
             <span class="note">{r.slug}</span>
           </div>
-          <span class={`admin-price ${free ? 'free' : ''}`}>{r.price}</span>
-          <span class={`tag ${r.active ? 'on' : 'off'}`}>{r.active ? 'Visible' : 'Oculta'}</span>
-          <div class="admin-actions">
+          <div class="admin-foot">
+            <span class={`admin-price ${free ? 'free' : ''}`}>{r.price}</span>
+            <span class={`tag ${r.active ? 'on' : 'off'}`}>{r.active ? 'Visible' : 'Oculta'}</span>
             <a class="btn" href={`/admin/editar/${r.slug}`}>Editar</a>
             <button class="btn vis">{r.active ? 'Ocultar' : 'Mostrar'}</button>
             <button class="btn danger del">Eliminar</button>

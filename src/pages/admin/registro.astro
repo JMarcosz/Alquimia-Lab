@@ -42,13 +42,13 @@ const fmt = (iso: string) =>
       <tbody>
         {rows.map((r) => (
           <tr>
-            <td class="note" style="white-space:nowrap">{fmt(r.at)}</td>
-            <td>
+            <td data-label="Cuándo" class="note">{fmt(r.at)}</td>
+            <td data-label="Quién">
               {r.actor_email ?? '—'}<br />
               <span class="note">{r.actor_role === 'superadmin' ? 'super admin' : r.actor_role ?? ''}</span>
             </td>
-            <td>{ACTION_ES[r.action] ?? r.action}{r.entity_id && <><br /><span class="note">{r.entity_id}</span></>}</td>
-            <td>
+            <td data-label="Acción">{ACTION_ES[r.action] ?? r.action}{r.entity_id && <><br /><span class="note">{r.entity_id}</span></>}</td>
+            <td data-label="Detalle">
               {r.summary}
               {r.diff != null && (
                 <details class="audit-diff">
