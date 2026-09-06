@@ -3,6 +3,11 @@
 import type { User } from '@supabase/supabase-js';
 import type { Role } from './lib/session';
 
+interface ImportMetaEnv {
+  /** Fecha (YYYY-MM-DD) del mtime del video lofi, inyectada en el build. */
+  readonly LOFI_VIDEO_DATE: string;
+}
+
 declare global {
   namespace App {
     interface Locals {

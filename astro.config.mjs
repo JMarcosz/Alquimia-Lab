@@ -1,4 +1,5 @@
 // @ts-check
+import { statSync } from 'node:fs';
 import { defineConfig, passthroughImageService } from 'astro/config';
 import { loadEnv } from 'vite';
 import vercel from '@astrojs/vercel';
@@ -8,6 +9,23 @@ import { SITE_URL } from './src/consts.ts';
 const env = loadEnv(process.env.NODE_ENV ?? 'production', process.cwd(), '');
 const SUPABASE_URL = env.SUPABASE_URL ?? process.env.SUPABASE_URL;
 const SUPABASE_KEY = env.SUPABASE_KEY ?? process.env.SUPABASE_KEY;
+
+/**
+ * Fecha de subida del video lofi para el `VideoObject` de `/productos`. Se
+ * resuelve del mtime real del archivo EN EL BUILD y se inyecta como constante:
+ * `/productos` es SSR y `public/` NO existe en el filesystem de la función
+ * serverless de Vercel, así que un `statSync` en tiempo de request tiraba
+ * `ENOENT`, el render fallaba y la página quedaba en blanco (con la respuesta
+ * vacía cacheada en el edge). Si el archivo no está (p. ej. en un check parcial),
+ * cae a la fecha de hoy.
+ */
+const LOFI_VIDEO_DATE = (() => {
+  try {
+    return statSync('public/video/lofi-video.mp4').mtime.toISOString().slice(0, 10);
+  } catch {
+    return new Date().toISOString().slice(0, 10);
+  }
+})();
 
 /**
  * URLs que el sitemap ya no puede descubrir solo porque sus páginas son SSR
@@ -68,6 +86,13 @@ export default defineConfig({
   // en Windows/OneDrive. El servicio passthrough quita esa dependencia del
   // runtime; `sharp` sigue disponible para los scripts de build.
   image: { service: passthroughImageService() },
+
+  vite: {
+    define: {
+      // Ver LOFI_VIDEO_DATE arriba: dato de build, no de request.
+      'import.meta.env.LOFI_VIDEO_DATE': JSON.stringify(LOFI_VIDEO_DATE),
+    },
+  },
 
   redirects: {
     // @astrojs/sitemap genera `/sitemap-index.xml`. Search Console y muchas

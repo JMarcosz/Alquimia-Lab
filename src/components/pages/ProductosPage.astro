@@ -76,9 +76,11 @@ const productListLd = {
   }),
 };
 
-const videoUploadDate = new Date(
-  (await import('node:fs')).statSync('public/video/lofi-video.mp4').mtime,
-).toISOString().slice(0, 10);
+// La fecha se resuelve del mtime real del video EN EL BUILD (ver
+// `LOFI_VIDEO_DATE` en astro.config.mjs). Antes se hacía `statSync` aquí, pero
+// esta página es SSR y `public/` no existe en la función serverless de Vercel:
+// el `ENOENT` dejaba /productos en blanco.
+const videoUploadDate = import.meta.env.LOFI_VIDEO_DATE;
 
 const videoLd = {
   '@context': 'https://schema.org',
