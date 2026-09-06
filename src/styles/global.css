@@ -1640,6 +1640,16 @@ h1.section-title, h2.section-title {
   font-size: 13px;
   color: var(--text-muted);
 }
+.footer-legal a {
+  color: var(--purple);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity .2s ease;
+}
+.footer-legal a:hover {
+  opacity: .75;
+}
 @media (max-width: 900px) {
   .footer-inner { grid-template-columns: 1fr 1fr; }
 }
