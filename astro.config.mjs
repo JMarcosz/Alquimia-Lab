@@ -38,6 +38,10 @@ const LOFI_VIDEO_DATE = (() => {
  */
 async function ssrSitemapUrls() {
   const fixed = [
+    // La home también es SSR (su carrusel lee el catálogo), así que el crawler
+    // del build ya no la descubre. Sin esto desaparece del sitemap.
+    `${SITE_URL}/`,
+    `${SITE_URL}/en`,
     `${SITE_URL}/plantillas-notion`,
     `${SITE_URL}/en/plantillas-notion`,
     `${SITE_URL}/productos`,

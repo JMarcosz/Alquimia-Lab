@@ -841,6 +841,13 @@ img { max-width: 100%; display: block; }
   color: var(--text-muted);
   margin-bottom: 8px;
   flex: 1;
+  /* El texto viene del catálogo (intro de la plantilla) y varía de largo:
+     se limita a 3 líneas para que todas las tarjetas midan igual. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
 }
 .featured-info .btn-primary,
 .featured-info .btn-secondary {

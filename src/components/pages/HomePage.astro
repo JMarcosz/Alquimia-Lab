@@ -3,10 +3,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Pic from '../Pic.astro';
 import Icon from '../Icon.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n';
+import { getPlantillas } from '../../lib/catalog';
 
 const { lang } = Astro.props as { lang: Lang };
 const t = useTranslations(lang);
 const L = (p: string) => localizePath(p, lang);
+
+const plantillas = await getPlantillas();
 
 const categories = [
   {
@@ -29,50 +32,22 @@ const categories = [
   },
 ];
 
-const featured = [
-  {
-    img: 'featured-freelancer.webp',
-    title: 'Freelancer CRM - Planner',
-    text: 'Operating system to structure your workflow from start to finish.',
-    href: 'https://bordergaze.gumroad.com/l/FreelancerCRM',
-    btn: 'btn-primary',
-  },
-  {
-    img: 'featured-finance.webp',
-    title: 'Finance Planner Free',
-    text: 'Available in Free and Pro versions.',
-    href: 'https://www.notion.com/templates/finance-planner-785',
-    btn: 'btn-primary',
-  },
-  {
-    img: 'featured-quietmind.webp',
-    title: 'Quiet Mind Planner',
-    text: 'Clear mental noise and protect your energy with a minimalist sanctuary.',
-    href: 'https://www.notion.com/templates/quiet-mind-planner',
-    btn: 'btn-secondary',
-  },
-  {
-    img: 'featured-youtube.webp',
-    title: 'YouTube Creator OS',
-    text: 'Comprehensive Notion workspace for creators and producers.',
-    href: 'https://www.notion.com/templates/youtube-creator-os-automated-social-media-planner-script',
-    btn: 'btn-primary',
-  },
-  {
-    img: 'featured-social.webp',
-    title: 'Social Media Planner',
-    text: 'A minimalist ecosystem for creators and entrepreneurs.',
-    href: 'https://www.notion.com/templates/social-media-planner-256',
-    btn: 'btn-primary',
-  },
-  {
-    img: 'featured-coloring.webp',
-    title: 'Coloring Books',
-    text: 'Print edition on Amazon and digital on Gumroad.',
-    href: 'https://www.amazon.com/COLORING-Adults-Isabel-Correa-Boder/dp/B0HBML5LCP/?_encoding=UTF8',
-    btn: 'btn-secondary',
-  },
-];
+// El carrusel refleja el catálogo (Supabase): las plantillas activas, en el
+// mismo orden que /productos. Editar una plantilla en el panel se ve aquí sin
+// tocar código. `href` apunta a la ficha externa de compra/duplicado.
+const featured = plantillas.map((p) => {
+  const c = p[lang];
+  const free = /free/i.test(p.price);
+  return {
+    image: p.image ?? null,
+    img: p.img ?? null,
+    icon: p.icon ?? null,
+    title: p.name,
+    text: c.intro,
+    href: p.href,
+    btn: free ? 'btn-secondary' : 'btn-primary',
+  };
+});
 // The track is duplicated for the seamless infinite-scroll animation.
 const featuredLoop = [...featured, ...featured];
 ---
@@ -145,10 +120,21 @@ const featuredLoop = [...featured, ...featured];
         {
           featuredLoop.map((f) => (
             <div class="featured-card">
-              <Pic name={f.img} alt={f.title} class="featured-thumb" />
+              {f.image ? (
+                <img src={f.image} alt={f.title} class="featured-thumb" loading="lazy" decoding="async" />
+              ) : f.img ? (
+                <Pic name={f.img} alt={f.title} class="featured-thumb" />
+              ) : (
+                <div
+                  class="featured-thumb"
+                  style="display:flex;align-items:center;justify-content:center;background:var(--lavender-light);color:var(--purple);"
+                >
+                  {f.icon ? <Icon name={f.icon as any} size={24} /> : null}
+                </div>
+              )}
               <div class="featured-info">
                 <h3>{f.title}</h3>
-                <p>{t(f.text)}</p>
+                <p>{f.text}</p>
                 <a
                   href={f.href}
                   target="_blank"

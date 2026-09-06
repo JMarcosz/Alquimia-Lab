@@ -1,4 +1,12 @@
 ---
+// SSR: el carrusel "Featured" lee el catálogo (Supabase) en cada request, así
+// que una edición en el panel se ve sin desplegar. Cacheado en el edge 60 s
+// (igual que /productos y /plantillas-notion).
+export const prerender = false;
 import HomePage from '../components/pages/HomePage.astro';
+Astro.response.headers.set(
+  'Cache-Control',
+  'public, s-maxage=60, stale-while-revalidate=86400',
+);
 ---
 <HomePage lang="es" />
