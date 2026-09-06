@@ -70,8 +70,11 @@ else {
   }
 }
 
-// --- Comprobaciones sobre dist/, solo si ya se compiló ---
-if (existsSync('dist')) {
+// --- Comprobaciones sobre la salida compilada, solo si ya se compiló ---
+// Con rutas SSR (`prerender = false`) el adaptador de Vercel emite los assets
+// estáticos bajo `dist/client/`; en un build 100% estático están en `dist/`.
+const DIST = existsSync('dist/client') ? 'dist/client' : 'dist';
+if (existsSync(DIST)) {
   const html = [];
   (function walk(dir) {
     for (const e of readdirSync(dir)) {
@@ -79,9 +82,13 @@ if (existsSync('dist')) {
       if (statSync(p).isDirectory()) walk(p);
       else if (e.endsWith('.html')) html.push(p);
     }
-  })('dist');
+  })(DIST);
 
-  const page = readFileSync(html.find((f) => f.endsWith('dist/index.html')) ?? html[0], 'utf8');
+  const norm = (f) => f.split(/[\\/]/).join('/');
+  const page = readFileSync(
+    html.find((f) => norm(f).endsWith(`${DIST}/index.html`)) ?? html[0],
+    'utf8',
+  );
 
   // 7. og:image:width/height declarados == archivo real
   const w = page.match(/property="og:image:width" content="(\d+)"/)?.[1];
@@ -98,7 +105,7 @@ if (existsSync('dist')) {
       const u = new URL(m[1]);
       if (!/\.(png|jpe?g|webp|avif|gif|svg|mp4)$/i.test(u.pathname)) continue;
       refs++;
-      if (!existsSync(join('dist', decodeURIComponent(u.pathname)))) missing.add(u.pathname);
+      if (!existsSync(join(DIST, decodeURIComponent(u.pathname)))) missing.add(u.pathname);
     }
   }
   check(missing.size === 0,

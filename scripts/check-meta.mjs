@@ -10,12 +10,16 @@
  * descripción de la home tenía 186. El español se expande ~5-7 caracteres
  * sobre el inglés y nadie lo había presupuestado.
  */
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
 const TITLE_MAX = 60;
 const DESC_MAX = 160;
 const DESC_MIN = 70;
+
+// Con rutas SSR el adaptador de Vercel deja el HTML prerenderizado en
+// `dist/client/`; en un build estático puro está en `dist/`.
+const DIST = existsSync('dist/client') ? 'dist/client' : 'dist';
 
 const html = [];
 (function walk(dir) {
@@ -24,7 +28,7 @@ const html = [];
     if (statSync(full).isDirectory()) walk(full);
     else if (entry.endsWith('.html')) html.push(full);
   }
-})('dist');
+})(DIST);
 
 /** Deshace las entidades que Astro escapa al serializar los atributos. */
 const decode = (s) =>
@@ -37,7 +41,7 @@ const decode = (s) =>
     .replace(/&#x27;/g, "'");
 
 const toRoute = (file) => {
-  const rel = file.split(/[\\/]/).join('/').replace(/^dist/, '');
+  const rel = file.split(/[\\/]/).join('/').replace(new RegExp(`^${DIST}`), '');
   return rel.replace(/\/index\.html$/, '').replace(/\.html$/, '') || '/';
 };
 
