@@ -2,7 +2,6 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { adminSetActive } from '../../../lib/catalog';
-import { triggerDeploy } from '../../../lib/deploy';
 
 export const POST: APIRoute = async ({ request, url, redirect }) => {
   const origin = request.headers.get('origin');
@@ -14,6 +13,5 @@ export const POST: APIRoute = async ({ request, url, redirect }) => {
   if (!slug) return new Response('Falta slug', { status: 400 });
 
   await adminSetActive(slug, active);
-  await triggerDeploy();
   return redirect('/admin?ok=saved', 302);
 };

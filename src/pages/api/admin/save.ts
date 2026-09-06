@@ -3,7 +3,6 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { validatePlantilla, ValidationError } from '../../../lib/validate';
 import { adminUpsertRow, adminDeleteRow, adminGetRow } from '../../../lib/catalog';
-import { triggerDeploy } from '../../../lib/deploy';
 
 function checkOrigin(request: Request, url: URL): boolean {
   const origin = request.headers.get('origin');
@@ -42,8 +41,8 @@ export const POST: APIRoute = async ({ request, url }) => {
     return json({ error: err instanceof Error ? err.message : 'Error al guardar' }, 500);
   }
 
-  const deploy = await triggerDeploy();
-  return json({ ok: true, slug: row.slug, deploy });
+  // Las páginas del sitio son SSR: el cambio se ve solo (edge cache ~1 min).
+  return json({ ok: true, slug: row.slug });
 };
 
 export const DELETE: APIRoute = async ({ request, url }) => {
@@ -63,6 +62,5 @@ export const DELETE: APIRoute = async ({ request, url }) => {
     return json({ error: err instanceof Error ? err.message : 'Error al eliminar' }, 500);
   }
 
-  const deploy = await triggerDeploy();
-  return json({ ok: true, deploy });
+  return json({ ok: true });
 };

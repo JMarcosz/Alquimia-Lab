@@ -1,13 +1,15 @@
 ---
+export const prerender = false;
+
 import PlantillaPage from "../../../components/pages/PlantillaPage.astro";
-import type { Plantilla } from "../../../data/plantillas";
-import { getPlantillas } from "../../../lib/catalog";
+import { getPlantilla } from "../../../lib/catalog";
 
-export async function getStaticPaths() {
-  const plantillas = await getPlantillas();
-  return plantillas.map((p) => ({ params: { slug: p.slug }, props: { plantilla: p } }));
-}
+const plantilla = await getPlantilla(Astro.params.slug!);
+if (!plantilla) return new Response(null, { status: 404 });
 
-const { plantilla } = Astro.props as { plantilla: Plantilla };
+Astro.response.headers.set(
+  "Cache-Control",
+  "public, s-maxage=60, stale-while-revalidate=86400",
+);
 ---
 <PlantillaPage lang="en" plantilla={plantilla} />

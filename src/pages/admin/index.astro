@@ -18,7 +18,7 @@ const published = Astro.url.searchParams.get('ok');
   <a slot="actions" class="btn primary" href="/admin/nuevo">+ Nueva plantilla</a>
 
   {published === 'saved' && (
-    <div class="msg ok">Guardado en la base. El sitio se actualiza en 1-2 min si el deploy está configurado.</div>
+    <div class="msg ok">Guardado. El sitio refleja el cambio en ~1 minuto (sin necesidad de desplegar).</div>
   )}
   {published === 'deleted' && <div class="msg ok">Plantilla eliminada.</div>}
   {loadError && <div class="msg err">No se pudo leer el catálogo: {loadError}</div>}

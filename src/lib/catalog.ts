@@ -60,19 +60,25 @@ async function fetchRows(): Promise<PlantillaRow[]> {
   );
 }
 
-let cache: Promise<PlantillaRow[]> | null = null;
+const CACHE_TTL_MS = 10_000;
+let cache: { at: number; rows: Promise<PlantillaRow[]> } | null = null;
 
 /**
  * Plantillas activas, ordenadas por `sort`. El cliente publicable solo ve filas
  * `active` (RLS), así que no hace falta filtrar aquí.
  *
- * El resultado se memoiza durante la vida del proceso: en un build estático
- * (`getStaticPaths` + `Footer` en 45 páginas) Supabase se consulta UNA vez.
+ * Cache con TTL corto (10 s): en el build, las ~35 páginas estáticas que montan
+ * el `Footer` comparten una sola consulta; en SSR (`/plantillas-notion/*`,
+ * `/productos`) cada instancia caliente refresca a lo sumo cada 10 s, y encima
+ * está el `s-maxage` del edge. Un cambio en el panel se ve en ~1 min.
  */
 export async function getPlantillas(): Promise<Plantilla[]> {
-  if (!cache) cache = fetchRows();
+  const now = Date.now();
+  if (!cache || now - cache.at > CACHE_TTL_MS) {
+    cache = { at: now, rows: fetchRows() };
+  }
   try {
-    return (await cache).map(rowToPlantilla);
+    return (await cache.rows).map(rowToPlantilla);
   } catch (err) {
     cache = null; // permitir reintento en la siguiente llamada
     throw err;
