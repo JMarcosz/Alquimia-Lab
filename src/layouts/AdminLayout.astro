@@ -54,14 +54,14 @@ const navItems = [
         <span class="sp"></span>
         <slot name="actions" />
         {!onLogin && user && (
-          <>
+          <div class="admin-tail">
             <span class="note admin-whoami">
               {user.email} · <strong>{isSuperadmin ? 'Super admin' : 'Editora'}</strong>
             </span>
-            <form method="post" action="/api/admin/logout" style="margin:0">
+            <form method="post" action="/api/admin/logout">
               <button class="btn" type="submit">Salir</button>
             </form>
-          </>
+          </div>
         )}
       </header>
       <slot />

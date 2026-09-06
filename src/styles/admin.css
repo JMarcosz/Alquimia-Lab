@@ -50,8 +50,9 @@ img { max-width: 100%; display: block; }
 
 header.admin {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-sm);
+  gap: 10px var(--space-sm);
   margin-bottom: var(--space-lg);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--lavender);
@@ -61,9 +62,54 @@ header.admin h1 {
   font-weight: 700;
   letter-spacing: .02em;
   margin: 0;
+  white-space: nowrap;
 }
 header.admin h1 a { color: var(--purple); text-decoration: none; }
-header.admin .sp { flex: 1; }
+header.admin .sp { flex: 1 1 0; min-width: 0; }
+header.admin form { margin: 0; }
+
+/* Navegación del panel (Productos / Usuarios / Registro) */
+.admin-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+.admin-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.admin-nav a:hover { background: var(--lavender-light); color: var(--purple); text-decoration: none; }
+.admin-nav a[aria-current="page"] { background: var(--lavender); color: var(--purple-dark); }
+
+/* Cola de la cabecera: correo + "Salir" viajan juntos y envuelven como bloque */
+.admin-tail {
+  display: flex;
+  align-items: center;
+  gap: 10px var(--space-sm);
+  flex-wrap: wrap;
+}
+.admin-tail form { margin: 0; }
+.admin-whoami {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  overflow-wrap: break-word;
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  /* En móvil el título ocupa su línea y empuja el resto abajo */
+  header.admin h1 { flex: 1 1 100%; }
+  header.admin .sp { display: none; }
+  .admin-tail { width: 100%; justify-content: space-between; }
+}
 
 h2 { font-size: var(--text-xl); font-weight: 700; color: var(--text); }
 h3 { font-size: var(--text-lg); font-weight: 700; color: var(--text); }
@@ -167,6 +213,82 @@ label {
 .tag.off { background: transparent; color: var(--text-muted); border-color: var(--lavender); }
 
 /* ========================================
+   TABLAS  (admin/usuarios.astro, admin/registro.astro)
+   El contenido ancho hace scroll DENTRO de .table-wrap;
+   la página nunca desborda horizontalmente.
+   ======================================== */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--lavender);
+  border-radius: var(--admin-radius);
+  background: var(--surface);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+.table-wrap table { min-width: 38rem; }
+thead th {
+  text-align: left;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--text-muted);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--lavender);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--lavender-light);
+  vertical-align: top;
+  overflow-wrap: break-word;
+}
+tbody tr:last-child td { border-bottom: 0; }
+table .btn { min-height: 36px; padding: 8px 14px; }
+
+.audit-diff { margin-top: 4px; }
+.audit-diff summary { cursor: pointer; }
+.audit-diff pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--text-xs);
+  background: var(--lavender-light);
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin: 4px 0 0;
+}
+
+/* ========================================
+   CAMPO DE CONTRASEÑA CON MOSTRAR / OCULTAR
+   ======================================== */
+.field-pw { position: relative; }
+.field-pw > input { padding-right: 46px; }
+.pw-toggle {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: 44px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 0 12px 12px 0;
+}
+.pw-toggle:hover { color: var(--purple); }
+.pw-toggle svg { width: 20px; height: 20px; display: block; }
+.pw-toggle .pw-eye-off { display: none; }
+.pw-toggle[aria-pressed="true"] .pw-eye { display: none; }
+.pw-toggle[aria-pressed="true"] .pw-eye-off { display: block; }
+
+/* ========================================
    LISTADO DE PLANTILLAS  (admin/index.astro)
    Fila tipo .product-item del sitio: miniatura + cuerpo + acciones.
    ======================================== */
@@ -195,14 +317,28 @@ label {
 }
 
 .admin-order {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--lavender-light);
+  border-radius: 10px;
+  padding: 4px;
+}
+.admin-order .sortnum {
   font-size: var(--text-sm);
   font-weight: 700;
   color: var(--purple);
-  background: var(--lavender-light);
-  border-radius: 8px;
-  padding: 4px 10px;
-  min-width: 34px;
+  min-width: 16px;
   text-align: center;
+}
+/* Botones ▲▼ compactos: sobrescriben el tamaño de .btn */
+.btn.mv {
+  min-height: 40px;
+  min-width: 40px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1;
 }
 
 .admin-thumb {
@@ -257,7 +393,7 @@ label {
       "acts  acts  acts";
     row-gap: var(--space-sm);
   }
-  .admin-order { grid-area: order; }
+  .admin-order { grid-area: order; flex-direction: column; gap: 2px; }
   .admin-thumb { grid-area: thumb; width: 56px; height: 56px; }
   .admin-row-body { grid-area: body; }
   .admin-row .admin-price { grid-area: meta; justify-self: start; }
@@ -357,3 +493,9 @@ label {
 
 .pf-section-gap { margin-top: var(--space-lg); }
 .pf-faq-row .faq-del { margin-top: 10px; }
+
+@media (max-width: 560px) {
+  .pf-actions { flex-direction: column; align-items: stretch; }
+  .pf-actions .btn { width: 100%; }
+  .pf-actions .push-end { margin-left: 0; }
+}

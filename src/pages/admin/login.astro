@@ -22,9 +22,40 @@ const failed = Astro.url.searchParams.get('e') === '1';
         <label for="email">Correo</label>
         <input id="email" name="email" type="email" autocomplete="username" required autofocus />
         <label for="password">Contraseña</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" required />
+        <div class="field-pw">
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+          <button type="button" class="pw-toggle" data-pw-toggle="password"
+            aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="password">
+            <svg class="pw-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <svg class="pw-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m2 2 20 20" />
+              <path d="M6.7 6.7C3.6 8.5 2 12 2 12s3.5 7 10 7c2.2 0 4.1-.6 5.6-1.5" />
+              <path d="M10 5.2A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.4 3.3" />
+            </svg>
+          </button>
+        </div>
         <button class="btn primary" type="submit">Entrar</button>
       </form>
     </div>
   </div>
 </AdminLayout>
+
+<script>
+  document.querySelectorAll('.pw-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const b = btn as HTMLButtonElement;
+      const input = document.getElementById(b.dataset.pwToggle!) as HTMLInputElement | null;
+      if (!input) return;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      b.setAttribute('aria-pressed', String(show));
+      b.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      input.focus();
+    });
+  });
+</script>

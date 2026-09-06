@@ -52,7 +52,23 @@ const meId = Astro.locals.user?.id ?? '';
         <option value="superadmin">Super admin (todo)</option>
       </select>
       <label for="u-pass">Contraseña (opcional — si la dejas vacía se genera una)</label>
-      <input id="u-pass" type="text" autocomplete="off" placeholder="mín. 8 caracteres" />
+      <div class="field-pw">
+        <input id="u-pass" type="password" autocomplete="new-password" placeholder="mín. 8 caracteres" />
+        <button type="button" class="pw-toggle" data-pw-toggle="u-pass"
+          aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="u-pass">
+          <svg class="pw-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg class="pw-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m2 2 20 20" />
+            <path d="M6.7 6.7C3.6 8.5 2 12 2 12s3.5 7 10 7c2.2 0 4.1-.6 5.6-1.5" />
+            <path d="M10 5.2A10.8 10.8 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.4 3.3" />
+          </svg>
+        </button>
+      </div>
       <button class="btn primary" type="submit">Crear</button>
     </form>
     <div id="created" class="msg ok" hidden></div>
@@ -60,24 +76,26 @@ const meId = Astro.locals.user?.id ?? '';
 
   {loadError && <div class="msg err">No se pudo leer la lista: {loadError}</div>}
 
-  <table style="margin-top:20px">
-    <thead><tr><th>Correo</th><th>Rol</th><th>Alta</th><th>Estado</th><th></th></tr></thead>
-    <tbody>
-      {users.map((u) => (
-        <tr data-id={u.id} data-disabled={String(u.disabled)}>
-          <td>{u.email}{u.id === meId && <span class="note"> · tú</span>}</td>
-          <td>{u.role === 'superadmin' ? 'Super admin' : 'Editora'}</td>
-          <td class="note">{new Date(u.created_at).toLocaleDateString('es-CO')}</td>
-          <td><span class={`tag ${u.disabled ? 'off' : 'on'}`}>{u.disabled ? 'Desactivada' : 'Activa'}</span></td>
-          <td style="text-align:right">
-            {u.id !== meId && (
-              <button class="btn danger toggle-user">{u.disabled ? 'Reactivar' : 'Desactivar'}</button>
-            )}
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <div class="table-wrap" style="margin-top:20px">
+    <table>
+      <thead><tr><th>Correo</th><th>Rol</th><th>Alta</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        {users.map((u) => (
+          <tr data-id={u.id} data-disabled={String(u.disabled)}>
+            <td>{u.email}{u.id === meId && <span class="note"> · tú</span>}</td>
+            <td>{u.role === 'superadmin' ? 'Super admin' : 'Editora'}</td>
+            <td class="note" style="white-space:nowrap">{new Date(u.created_at).toLocaleDateString('es-CO')}</td>
+            <td><span class={`tag ${u.disabled ? 'off' : 'on'}`}>{u.disabled ? 'Desactivada' : 'Activa'}</span></td>
+            <td style="text-align:right">
+              {u.id !== meId && (
+                <button class="btn danger toggle-user">{u.disabled ? 'Reactivar' : 'Desactivar'}</button>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 </AdminLayout>
 
 <script>
@@ -129,6 +147,19 @@ const meId = Astro.locals.user?.id ?? '';
       } catch (err) {
         flash('err', 'No se pudo cambiar: ' + (err as Error).message);
       }
+    });
+  });
+
+  document.querySelectorAll('.pw-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const b = btn as HTMLButtonElement;
+      const input = document.getElementById(b.dataset.pwToggle!) as HTMLInputElement | null;
+      if (!input) return;
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      b.setAttribute('aria-pressed', String(show));
+      b.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      input.focus();
     });
   });
 </script>
