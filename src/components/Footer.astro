@@ -21,7 +21,6 @@ import {
   SOCIAL_LINKS,
 } from '../consts';
 import { servicios } from '../data/servicios';
-import { getPlantillas } from '../lib/catalog';
 
 interface Props {
   lang: Lang;
@@ -33,8 +32,16 @@ const es = lang === 'es';
 
 const year = new Date().getFullYear();
 
-// Solo las 4 plantillas más buscadas: un footer no es un mapa del sitio.
-const topPlantillas = (await getPlantillas()).slice(0, 4);
+/*
+ * El footer YA NO lista plantillas concretas.
+ *
+ * Lo hacía con `getPlantillas().slice(0, 4)`, pero el footer va en TODAS las
+ * páginas y la mayoría (servicios, portafolio, branding…) son estáticas: esos
+ * 4 nombres quedaban congelados en el build y contradecían al panel en cuanto
+ * se renombraba o reordenaba un producto. Como el catálogo debe salir solo de
+ * la base de datos y verse al instante, el footer enlaza a los hubs —que son
+ * SSR y siempre están al día— en vez de duplicar una porción del catálogo.
+ */
 
 const cols = [
   {
@@ -47,11 +54,11 @@ const cols = [
   {
     title: es ? 'Plantillas de Notion' : 'Notion templates',
     links: [
-      ...topPlantillas.map((p) => ({
-        label: p[lang].short,
-        href: L(`/plantillas-notion/${p.slug}`),
-      })),
-      { label: es ? 'Ver todas' : 'See all', href: L('/plantillas-notion') },
+      {
+        label: es ? 'Todas las plantillas' : 'All templates',
+        href: L('/plantillas-notion'),
+      },
+      { label: t('Products'), href: L('/productos') },
     ],
   },
   {

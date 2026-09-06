@@ -11,6 +11,7 @@
  * de producto, a las que este hub enlaza.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CatalogLive from '../CatalogLive.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import Pic from '../Pic.astro';
 import Icon from '../Icon.astro';
@@ -135,14 +136,14 @@ const card = (p: (typeof plantillas)[number]) => p;
                     )}
                   </a>
                   <h3>
-                    <a href={L(`/plantillas-notion/${p.slug}`)}>{c.short}</a>
+                    <a href={L(`/plantillas-notion/${p.slug}`)}>{p.name}</a>
                   </h3>
                   <p>{c.intro}</p>
                   <p class="prod-price">
                     {/free/i.test(p.price) ? (es ? 'Gratis' : 'Free') : `${p.price} USD`}
                   </p>
                   <a class="prod-cta" href={L(`/plantillas-notion/${p.slug}`)}>
-                    {es ? `Ver ${c.short}` : `See ${c.short}`} →
+                    {es ? `Ver ${p.name}` : `See ${p.name}`} →
                   </a>
                 </article>
               );
@@ -154,4 +155,5 @@ const card = (p: (typeof plantillas)[number]) => p;
 
     <Faq title={es ? 'Preguntas frecuentes' : 'FAQ'} items={faq} />
   </div>
+  <CatalogLive />
 </BaseLayout>

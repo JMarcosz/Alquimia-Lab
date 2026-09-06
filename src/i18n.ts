@@ -172,8 +172,10 @@ const dict: Record<string, string> = {
     'Herramientas y creatividad para organizar tu vida, encontrar calma y trabajar con intención.',
   'My Lofi Music': 'Mi Música Lofi',
   'Subscribe on YouTube →': 'Suscríbete en YouTube →',
-  'Productivity, planning, and personal & professional organization systems. 8 templates available.':
-    'Sistemas de productividad, planificación y organización personal y profesional. 8 plantillas disponibles.',
+  // El conteo ya NO va en la cadena: se calcula del catálogo en ProductosPage.
+  // Estaba escrito a mano ("8") y mentía en cuanto se añadía o quitaba una.
+  'Productivity, planning, and personal & professional organization systems.':
+    'Sistemas de productividad, planificación y organización personal y profesional.',
   'View all': 'Ver todo',
   'Coloring books, productivity PDFs, and more. Available on Amazon and Gumroad.':
     'Libros para colorear, PDFs de productividad y más. Disponibles en Amazon y Gumroad.',

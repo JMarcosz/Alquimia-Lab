@@ -60,29 +60,30 @@ async function fetchRows(): Promise<PlantillaRow[]> {
   );
 }
 
-const CACHE_TTL_MS = 10_000;
-let cache: { at: number; rows: Promise<PlantillaRow[]> } | null = null;
-
 /**
  * Plantillas activas, ordenadas por `sort`. El cliente publicable solo ve filas
  * `active` (RLS), así que no hace falta filtrar aquí.
  *
- * Cache con TTL corto (10 s): en el build, las ~35 páginas estáticas que montan
- * el `Footer` comparten una sola consulta; en SSR (`/plantillas-notion/*`,
- * `/productos`) cada instancia caliente refresca a lo sumo cada 10 s, y encima
- * está el `s-maxage` del edge. Un cambio en el panel se ve en ~1 min.
+ * SIN CACHÉ, a propósito. Antes había una memoria de 10 s que, sumada al
+ * `s-maxage=60` del edge, hacía que un cambio del panel tardara hasta ~70 s en
+ * verse. El catálogo debe reflejar la base de datos al instante, así que cada
+ * render consulta. Son 8 filas y las rutas que llaman aquí ya se sirven
+ * `no-store`: el coste real es una consulta por visita.
  */
 export async function getPlantillas(): Promise<Plantilla[]> {
-  const now = Date.now();
-  if (!cache || now - cache.at > CACHE_TTL_MS) {
-    cache = { at: now, rows: fetchRows() };
-  }
-  try {
-    return (await cache.rows).map(rowToPlantilla);
-  } catch (err) {
-    cache = null; // permitir reintento en la siguiente llamada
-    throw err;
-  }
+  return (await fetchRows()).map(rowToPlantilla);
+}
+
+/**
+ * Huella del catálogo para que el navegador detecte cambios sin recargar a
+ * ciegas: la marca de tiempo más reciente y cuántas filas visibles hay. El
+ * contador es necesario porque ocultar una plantilla la saca del alcance de
+ * RLS y su `updated_at` dejaría de contar para el máximo.
+ */
+export async function getCatalogVersion(): Promise<string> {
+  const rows = await fetchRows();
+  const latest = rows.reduce((max, r) => (r.updated_at > max ? r.updated_at : max), '');
+  return `${rows.length}:${latest}`;
 }
 
 export async function getPlantilla(slug: string): Promise<Plantilla | undefined> {

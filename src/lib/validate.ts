@@ -118,7 +118,6 @@ export function deriveLang(name: string, price: string, lang: 'es' | 'en'): Plan
     title: clamp(name, 60),
     metaDescription: clamp(meta, 160),
     h1: name,
-    short: clamp(name, 60),
     intro,
     forWho: [],
     includes: [],
@@ -132,7 +131,6 @@ function validateLang(lang: unknown, tag: string, issues: string[]): PlantillaLa
     title: str(l.title),
     metaDescription: str(l.metaDescription),
     h1: str(l.h1),
-    short: str(l.short),
     intro: str(l.intro),
     forWho: strList(l.forWho),
     includes: strList(l.includes),
@@ -152,7 +150,6 @@ function validateLang(lang: unknown, tag: string, issues: string[]): PlantillaLa
   else if (out.metaDescription.length < 70 || out.metaDescription.length > 160)
     issues.push(`[${tag}] meta description fuera de 70-160 (${out.metaDescription.length})`);
   if (!out.h1) issues.push(`[${tag}] falta h1`);
-  if (!out.short) issues.push(`[${tag}] falta nombre corto`);
   if (!out.intro) issues.push(`[${tag}] falta intro`);
   if (out.includes.length === 0) issues.push(`[${tag}] "qué incluye" vacío`);
 

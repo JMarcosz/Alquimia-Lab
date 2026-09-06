@@ -2,9 +2,6 @@
 // SSR: ver src/pages/index.astro.
 export const prerender = false;
 import HomePage from '../../components/pages/HomePage.astro';
-Astro.response.headers.set(
-  'Cache-Control',
-  'public, s-maxage=60, stale-while-revalidate=86400',
-);
+Astro.response.headers.set('Cache-Control', 'no-store');
 ---
 <HomePage lang="en" />

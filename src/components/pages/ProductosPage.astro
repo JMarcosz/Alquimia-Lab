@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CatalogLive from '../CatalogLive.astro';
 import Pic from '../Pic.astro';
 import Modal from '../Modal.astro';
 import ModalScript from '../ModalScript.astro';
@@ -140,7 +141,10 @@ const videoLd = {
           <div class="category-media"><Pic name="notion-featured.webp" alt="Notion Templates" /></div>
           <h3>{t('Notion Templates')}</h3>
           <p>
-            {t('Productivity, planning, and personal & professional organization systems. 8 templates available.')}
+            {t('Productivity, planning, and personal & professional organization systems.')}{' '}
+            {lang === 'es'
+              ? `${plantillas.length} plantillas disponibles.`
+              : `${plantillas.length} templates available.`}
           </p>
           <a class="btn-primary btn-sm" href={L('/plantillas-notion')}>{t('View all')}</a>
         </div>
@@ -180,7 +184,7 @@ const videoLd = {
                 </a>
                 <div class="notion-info">
                   <h3>
-                    <a href={L(`/plantillas-notion/${p.slug}`)}>{c.short}</a>
+                    <a href={L(`/plantillas-notion/${p.slug}`)}>{p.name}</a>
                   </h3>
                   <p>{c.intro}</p>
                   <span class="notion-price" style={free ? 'color:var(--text-muted);' : undefined}>
@@ -321,4 +325,5 @@ const videoLd = {
       });
     </script>
   </Fragment>
+  <CatalogLive />
 </BaseLayout>

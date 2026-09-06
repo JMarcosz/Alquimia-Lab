@@ -10,6 +10,7 @@
  * `Astro.params.slug` rompería en cuanto los slugs difieran por idioma.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CatalogLive from '../CatalogLive.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
 import Faq from '../Faq.astro';
 import Pic from '../Pic.astro';
@@ -92,7 +93,7 @@ const backLabel = lang === 'es' ? 'Ver todas las plantillas' : 'See all template
       items={[
         { name: t('Home'), href: L('/') },
         { name: lang === 'es' ? 'Plantillas de Notion' : 'Notion templates', href: L('/plantillas-notion') },
-        { name: c.short },
+        { name: plantilla.name },
       ]}
     />
 
@@ -169,4 +170,5 @@ const backLabel = lang === 'es' ? 'Ver todas las plantillas' : 'See all template
       <a class="btn-secondary" href={L('/plantillas-notion')}>{backLabel}</a>
     </section>
   </div>
+  <CatalogLive />
 </BaseLayout>

@@ -27,7 +27,6 @@ const langBlock = (lang: 'es' | 'en') => {
     title: l?.title ?? '',
     metaDescription: l?.metaDescription ?? '',
     h1: l?.h1 ?? '',
-    short: l?.short ?? '',
     intro: l?.intro ?? '',
     forWho: (l?.forWho ?? []).join('\n'),
     includes: (l?.includes ?? []).join('\n'),
@@ -108,8 +107,6 @@ const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
               <textarea data-l={lang} data-k="metaDescription">{D.metaDescription}</textarea>
               <label>H1</label>
               <input data-l={lang} data-k="h1" value={D.h1} />
-              <label>Nombre corto (tarjetas / migas)</label>
-              <input data-l={lang} data-k="short" value={D.short} />
               <label>Intro (2-3 frases)</label>
               <textarea data-l={lang} data-k="intro">{D.intro}</textarea>
               <label>Para quién es (una línea por punto)</label>
@@ -243,7 +240,6 @@ const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
       title: g('title'),
       metaDescription: g('metaDescription'),
       h1: g('h1'),
-      short: g('short'),
       intro: g('intro'),
       forWho: lines('forWho'),
       includes: lines('includes'),

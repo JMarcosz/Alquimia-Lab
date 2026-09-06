@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import CatalogLive from '../CatalogLive.astro';
 import Pic from '../Pic.astro';
 import Icon from '../Icon.astro';
 import { useTranslations, localizePath, type Lang } from '../../i18n';
@@ -158,4 +159,5 @@ const featuredLoop = [...featured, ...featured];
       {t('Explore all products')}
     </a>
   </section>
+  <CatalogLive />
 </BaseLayout>

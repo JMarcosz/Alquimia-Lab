@@ -29,8 +29,6 @@ export interface PlantillaLang {
   metaDescription: string;
   /** <h1> de la página. */
   h1: string;
-  /** Nombre corto para tarjetas y migas de pan. */
-  short: string;
   /** 2-3 frases: qué es y para quién. */
   intro: string;
   /** Para quién es. */
@@ -43,7 +41,12 @@ export interface PlantillaLang {
 export interface Plantilla {
   /** Slug lógico con keyword en español. */
   slug: string;
-  /** Nombre comercial, idéntico en ambos idiomas. */
+  /**
+   * Nombre comercial, idéntico en ambos idiomas. FUENTE ÚNICA del nombre
+   * visible: tarjetas, migas de pan, enlaces y JSON-LD salen todos de aquí.
+   * Antes convivía con un `short` por idioma y editar uno no movía el otro:
+   * el panel mostraba un nombre y la web otro.
+   */
   name: string;
   /** Portada en src/assets/img, si existe. Pipeline `<Pic>` (legado). */
   img?: string;
@@ -69,10 +72,17 @@ export interface Plantilla {
 }
 
 /*
- * Los datos viven ahora en Supabase (tabla `public.plantillas`). Se leen con
- * `getPlantillas()` de `src/lib/catalog.ts`. Este archivo conserva solo los
- * tipos, que siguen siendo la fuente de verdad de la forma de cada fila.
+ * Los datos viven ahora en Supabase (tabla `public.plantillas`) y SOLO ahí. Se
+ * leen con `getPlantillas()` de `src/lib/catalog.ts`; este archivo conserva
+ * únicamente los tipos, que siguen siendo la fuente de verdad de la FORMA de
+ * cada fila (no de su contenido).
  *
- * Snapshot inicial de los 8 productos: `db/plantillas.seed.json`.
+ * Ya no hay semilla en el repo. `db/plantillas.seed.json` y los scripts
+ * `export-plantillas.mjs` / `seed-supabase.mjs` se eliminaron: cumplieron su
+ * función en la migración inicial y después eran una segunda copia del
+ * catálogo que solo podía divergir —cargar la semilla habría revertido la
+ * tabla a su estado de septiembre—. Están en el historial de git si alguna vez
+ * hace falta consultarlos.
+ *
  * Migración del esquema: `db/schema.sql`.
  */

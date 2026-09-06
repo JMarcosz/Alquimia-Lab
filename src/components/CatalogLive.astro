@@ -1,0 +1,64 @@
+---
+/**
+ * Mantiene la página al día con el catálogo sin recargarla a mano.
+ *
+ * Sondea `/api/catalog-version` y recarga cuando la huella cambia (alta, baja,
+ * renombrado, cambio de precio, reordenación u ocultar/mostrar). La huella
+ * inicial se serializa aquí, en el mismo render que pintó el catálogo, así que
+ * no hay ventana ciega entre el HTML servido y el primer sondeo.
+ *
+ * POR QUÉ UN SONDEO Y NO SUPABASE REALTIME
+ * El canal WebSocket de Supabase exigiría publicar SUPABASE_KEY en el bundle
+ * del navegador —lo que src/lib/supabase.ts evita a propósito— y arrastrar
+ * ~40 KB de supabase-js a un sitio público que hoy sirve 0 KB de JS. Esto son
+ * ~700 bytes, sin dependencias y sin claves: la consulta la sigue haciendo el
+ * servidor detrás de /api/catalog-version.
+ */
+import { getCatalogVersion } from '../lib/catalog';
+
+// Un fallo aquí no debe tumbar la página: sin huella, el script no se activa.
+let version: string | null = null;
+try {
+  version = await getCatalogVersion();
+} catch {
+  version = null;
+}
+
+const INTERVAL_MS = 5000;
+---
+
+{
+  version && (
+    <script is:inline data-catalog-live define:vars={{ version, INTERVAL_MS }}>
+      (() => {
+        let current = version;
+        let stop = false;
+
+        // Recargar con un modal abierto tira por tierra lo que el visitante
+        // estaba mirando: se espera al siguiente ciclo.
+        const busy = () => !!document.querySelector('.modal-overlay.show');
+
+        async function check() {
+          if (stop || document.hidden || busy()) return;
+          try {
+            const res = await fetch('/api/catalog-version', { cache: 'no-store' });
+            if (!res.ok) return;
+            const { v } = await res.json();
+            if (!v || v === current) return;
+            current = v;
+            stop = true;
+            location.reload();
+          } catch {
+            /* corte de red puntual: se reintenta en el siguiente ciclo */
+          }
+        }
+
+        setInterval(check, INTERVAL_MS);
+        // Al volver a la pestaña, comprobar ya en vez de esperar al ciclo.
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) check();
+        });
+      })();
+    </script>
+  )
+}

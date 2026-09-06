@@ -22,10 +22,13 @@ import type { PlantillaLang } from '../../../../data/plantillas';
  * Si un texto del bloque de idioma era exactamente el nombre anterior (o sea,
  * derivado automáticamente y nunca tocado por el superadmin), lo actualiza al
  * nuevo nombre. Nunca pisa copy escrito a mano.
+ *
+ * Ya no toca `short`: ese campo desapareció y el nombre visible sale siempre
+ * de la columna `name`.
  */
 function cascadeName(lang: PlantillaLang, oldName: string, newName: string): PlantillaLang {
   const swap = (v: string) => (v === oldName ? newName : v);
-  return { ...lang, title: swap(lang.title), h1: swap(lang.h1), short: swap(lang.short) };
+  return { ...lang, title: swap(lang.title), h1: swap(lang.h1) };
 }
 
 /** PATCH /api/admin/productos/:slug */
