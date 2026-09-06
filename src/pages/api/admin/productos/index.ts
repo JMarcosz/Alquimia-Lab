@@ -5,6 +5,7 @@ import { guard, json, readJson, requireRole, requireUser, ApiError } from '../..
 import {
   adminListRows,
   adminInsertRow,
+  adminNextSort,
   uniqueSlug,
 } from '../../../../lib/catalog';
 import {
@@ -32,7 +33,7 @@ export const POST: APIRoute = guard(async ({ request, locals }) => {
     if (role === 'editor') {
       const partial = validateEditorCreate(input);
       const slug = await uniqueSlug(slugify(partial.name));
-      const row = { ...partial, slug };
+      const row = { ...partial, slug, sort: await adminNextSort() };
       await adminInsertRow(row, user.id);
       await writeAudit({
         actor: user,
@@ -44,10 +45,12 @@ export const POST: APIRoute = guard(async ({ request, locals }) => {
       return json({ ok: true, slug, active: false });
     }
 
-    // superadmin: cuerpo completo. Si no manda slug, se deriva del nombre.
+    // superadmin: cuerpo completo. El slug se deriva del nombre y el orden
+    // manda la fila al final (ambos campos ya no están en el formulario).
     const withSlug = { ...input, slug: slugify(input.slug || input.name || '') };
     const row = validateFullPlantilla(withSlug);
     row.slug = await uniqueSlug(row.slug);
+    row.sort = await adminNextSort();
     await adminInsertRow(row, user.id);
     await writeAudit({
       actor: user,

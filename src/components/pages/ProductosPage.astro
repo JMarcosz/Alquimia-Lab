@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CatalogLive from '../CatalogLive.astro';
 import Pic from '../Pic.astro';
+import Icon from '../Icon.astro';
 import Modal from '../Modal.astro';
 import ModalScript from '../ModalScript.astro';
 import Breadcrumbs from '../Breadcrumbs.astro';
@@ -176,9 +177,9 @@ const videoLd = {
                   ) : (
                     <div
                       class="notion-thumb"
-                      style="background: linear-gradient(135deg, #6462ab 0%, #524f96 100%); display:flex; align-items:center; justify-content:center; color:#fff; font-size:32px;"
+                      style="background: linear-gradient(135deg, #6462ab 0%, #524f96 100%); display:flex; align-items:center; justify-content:center; color:#fff;"
                     >
-                      {p.icon}
+                      <Icon name={(p.icon ?? 'file-text') as any} size={40} />
                     </div>
                   )}
                 </a>

@@ -4,9 +4,13 @@
  *
  * Según el rol:
  *  - `editor` (la clienta): formulario sencillo — nombre, precio, enlace,
- *    imagen, orden. Nada de slug, textos SEO ni FAQ. Al crear, el producto
- *    entra oculto.
- *  - `superadmin`: formulario completo (slug + ES/EN + FAQ).
+ *    imagen. Nada de textos SEO ni FAQ. Al crear, el producto entra oculto.
+ *  - `superadmin`: formulario completo (ES/EN + FAQ).
+ *
+ * El slug (URL), el icono por defecto y el orden se resuelven en el servidor:
+ * el slug sale del nombre, el icono se asigna al azar si no hay imagen y el
+ * orden manda la fila al final. Título/H1/meta se derivan del nombre y la
+ * intro cuando no se rellenan a mano.
  *
  * Envía JSON:  alta → POST /api/admin/productos ·  edición → PATCH /api/admin/productos/:slug
  */
@@ -25,8 +29,6 @@ const langBlock = (lang: 'es' | 'en') => {
   const l = row?.[lang];
   return {
     title: l?.title ?? '',
-    metaDescription: l?.metaDescription ?? '',
-    h1: l?.h1 ?? '',
     intro: l?.intro ?? '',
     forWho: (l?.forWho ?? []).join('\n'),
     includes: (l?.includes ?? []).join('\n'),
@@ -41,19 +43,12 @@ const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
   <div id="msg"></div>
 
   <div class="pf-grid-2">
-    {!isEditor && (
-      <div>
-        <label for="slug">Slug (URL)</label>
-        <input id="slug" name="slug" value={row?.slug ?? ''} readonly={!isNew}
-          placeholder="plantilla-de-algo" pattern="[a-z0-9]+(-[a-z0-9]+)*" />
-        <span class="note">
-          {isNew ? 'Si lo dejas vacío se genera del nombre.' : 'El slug no se cambia: es la URL publicada.'}
-        </span>
-      </div>
-    )}
     <div>
       <label for="name">Nombre</label>
       <input id="name" name="name" value={row?.name ?? ''} required />
+      {isNew && (
+        <span class="note">La URL se genera del nombre. Sin imagen, se asigna un icono automático.</span>
+      )}
     </div>
     <div>
       <label for="price">Precio (tal cual se muestra)</label>
@@ -62,14 +57,6 @@ const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
     <div>
       <label for="href">Enlace de compra / duplicado</label>
       <input id="href" name="href" value={row?.href ?? ''} placeholder="https://..." required />
-    </div>
-    <div>
-      <label for="sort">Orden</label>
-      <input id="sort" name="sort" type="number" value={row?.sort ?? 0} />
-    </div>
-    <div>
-      <label for="icon">Icono Lucide (si no hay imagen)</label>
-      <input id="icon" name="icon" value={row?.icon ?? ''} placeholder="graduation-cap" />
     </div>
   </div>
 
@@ -103,10 +90,6 @@ const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
               <legend>{lang === 'es' ? 'Español' : 'English'}</legend>
               <label>Título (&le;60)</label>
               <input data-l={lang} data-k="title" value={D.title} />
-              <label>Meta description (70-160)</label>
-              <textarea data-l={lang} data-k="metaDescription">{D.metaDescription}</textarea>
-              <label>H1</label>
-              <input data-l={lang} data-k="h1" value={D.h1} />
               <label>Intro (2-3 frases)</label>
               <textarea data-l={lang} data-k="intro">{D.intro}</textarea>
               <label>Para quién es (una línea por punto)</label>
@@ -193,7 +176,7 @@ const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
     try {
       imgStatus.textContent = 'Comprimiendo…';
       const blob = await compress(file);
-      const slugForName = val('slug') || val('name') || 'producto';
+      const slugForName = val('name') || 'producto';
       imgStatus.textContent = `Subiendo (${Math.round(blob.size / 1024)} KB)…`;
       const r = await fetch(`/api/admin/upload?slug=${encodeURIComponent(slugForName)}`, {
         method: 'POST',
@@ -238,8 +221,6 @@ const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
     });
     return {
       title: g('title'),
-      metaDescription: g('metaDescription'),
-      h1: g('h1'),
       intro: g('intro'),
       forWho: lines('forWho'),
       includes: lines('includes'),
@@ -256,16 +237,12 @@ const faqRows = Math.max(ES.faq.length, EN.faq.length, 1);
       name: val('name'),
       price: val('price'),
       href: val('href'),
-      sort: Number(val('sort') || 0),
-      icon: val('icon') || null,
       image_url: imgUrl.value.trim() || null,
     };
     if (mode === 'full') {
       base.img = val('img') || null;
       base.es = collectLang('es');
       base.en = collectLang('en');
-      const slug = val('slug');
-      if (slug) base.slug = slug;
     }
 
     const url = isNew ? '/api/admin/productos' : `/api/admin/productos/${encodeURIComponent(rowSlug)}`;

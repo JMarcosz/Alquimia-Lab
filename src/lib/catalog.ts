@@ -123,6 +123,18 @@ export async function adminSlugExists(slug: string): Promise<boolean> {
   return data !== null;
 }
 
+/** Siguiente `sort` para que una plantilla nueva quede al final de la lista. */
+export async function adminNextSort(): Promise<number> {
+  const { data, error } = await createAdminClient()
+    .from('plantillas')
+    .select('sort')
+    .order('sort', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw new Error(`adminNextSort: ${error.message}`);
+  return ((data?.sort as number | undefined) ?? 0) + 1;
+}
+
 /** `base`, `base-2`, `base-3`… hasta encontrar uno libre. */
 export async function uniqueSlug(base: string): Promise<string> {
   let candidate = base || 'plantilla';

@@ -59,6 +59,17 @@ export interface EditorFields {
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const str = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+
+/**
+ * Iconos decorativos válidos para una plantilla sin imagen de portada.
+ * Deben existir en `src/components/Icon.astro` (mapa FLAT).
+ */
+const DEFAULT_ICONS = ['file-text', 'clipboard-list', 'graduation-cap', 'palette'] as const;
+
+/** Icono por defecto al azar, para plantillas que no traen imagen. */
+export function randomIcon(): string {
+  return DEFAULT_ICONS[Math.floor(Math.random() * DEFAULT_ICONS.length)];
+}
 const strList = (v: unknown): string[] =>
   Array.isArray(v) ? v.map((x) => str(x)).filter(Boolean) : [];
 
@@ -125,13 +136,23 @@ export function deriveLang(name: string, price: string, lang: 'es' | 'en'): Plan
   };
 }
 
-function validateLang(lang: unknown, tag: string, issues: string[]): PlantillaLang {
+/**
+ * Normaliza un bloque de idioma. `title`, `h1` y `metaDescription` ya no se
+ * piden en el formulario: si no vienen, se derivan del nombre y de la intro.
+ */
+function validateLang(
+  lang: unknown,
+  tag: string,
+  issues: string[],
+  fallbackName: string,
+): PlantillaLang {
   const l = (lang ?? {}) as Record<string, unknown>;
+  const intro = str(l.intro);
   const out: PlantillaLang = {
-    title: str(l.title),
-    metaDescription: str(l.metaDescription),
-    h1: str(l.h1),
-    intro: str(l.intro),
+    title: str(l.title) || clamp(fallbackName, 60),
+    metaDescription: clamp(str(l.metaDescription) || intro || fallbackName, 160),
+    h1: str(l.h1) || fallbackName,
+    intro,
     forWho: strList(l.forWho),
     includes: strList(l.includes),
     faq: Array.isArray(l.faq)
@@ -144,12 +165,7 @@ function validateLang(lang: unknown, tag: string, issues: string[]): PlantillaLa
       : [],
   };
 
-  if (!out.title) issues.push(`[${tag}] falta título`);
-  else if (out.title.length > 60) issues.push(`[${tag}] título >60 (${out.title.length})`);
-  if (!out.metaDescription) issues.push(`[${tag}] falta meta description`);
-  else if (out.metaDescription.length < 70 || out.metaDescription.length > 160)
-    issues.push(`[${tag}] meta description fuera de 70-160 (${out.metaDescription.length})`);
-  if (!out.h1) issues.push(`[${tag}] falta h1`);
+  if (out.title.length > 60) issues.push(`[${tag}] título >60 (${out.title.length})`);
   if (!out.intro) issues.push(`[${tag}] falta intro`);
   if (out.includes.length === 0) issues.push(`[${tag}] "qué incluye" vacío`);
 
@@ -175,14 +191,13 @@ export function validateFullPlantilla(input: PlantillaInput): PlantillaRowInput 
   const hIssue = hrefIssue(href);
   if (hIssue) issues.push(hIssue);
 
-  const es = validateLang(input.es, 'es', issues);
-  const en = validateLang(input.en, 'en', issues);
+  const es = validateLang(input.es, 'es', issues, name);
+  const en = validateLang(input.en, 'en', issues, name);
 
-  const icon = input.icon ? str(input.icon) : null;
+  let icon = input.icon ? str(input.icon) : null;
   const img = input.img ? str(input.img) : null;
   const image_url = input.image_url ? str(input.image_url) : null;
-  if (!img && !image_url && !icon)
-    issues.push('hace falta una imagen subida, una portada legada o un icono');
+  if (!img && !image_url && !icon) icon = randomIcon();
 
   const sort = Number.isFinite(input.sort) ? Math.trunc(input.sort as number) : 0;
 
@@ -223,9 +238,9 @@ export function validateEditorCreate(input: PlantillaInput): Omit<PlantillaRowIn
   const hIssue = hrefIssue(href);
   if (hIssue) issues.push(hIssue);
 
-  const icon = input.icon ? str(input.icon) : null;
+  let icon = input.icon ? str(input.icon) : null;
   const image_url = input.image_url ? str(input.image_url) : null;
-  if (!image_url && !icon) issues.push('sube una imagen o indica un icono');
+  if (!image_url && !icon) icon = randomIcon();
 
   const sort = Number.isFinite(input.sort) ? Math.trunc(input.sort as number) : 0;
 

@@ -61,8 +61,14 @@ export const PATCH: APIRoute = guard(async ({ params, request, locals }) => {
       return json({ ok: true, slug });
     }
 
-    // superadmin: cuerpo completo (mismo slug de la URL).
-    const row = validateFullPlantilla({ ...input, slug });
+    // superadmin: cuerpo completo. El slug sale de la URL; el icono y el orden
+    // ya no se editan a mano, así que se conservan los de la fila existente.
+    const row = validateFullPlantilla({
+      ...input,
+      slug,
+      icon: existing.icon,
+      sort: existing.sort,
+    });
     await adminUpsertFull(row, user.id);
     await writeAudit({
       actor: user,

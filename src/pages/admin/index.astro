@@ -17,7 +17,7 @@ const role = Astro.locals.role;
 const published = Astro.url.searchParams.get('ok');
 const err = Astro.url.searchParams.get('e');
 
-/** Miniatura: portada subida → portada legada (manifiesto) → placeholder con icono. */
+/** Miniatura: portada subida → portada legada (manifiesto) → inicial del nombre. */
 function thumb(r: PlantillaRow): { kind: 'img'; src: string } | { kind: 'ph'; icon: string } {
   if (r.image_url) return { kind: 'img', src: r.image_url };
   if (r.img && hasImage(r.img)) {
@@ -27,7 +27,7 @@ function thumb(r: PlantillaRow): { kind: 'img'; src: string } | { kind: 'ph'; ic
       /* fuera del manifiesto: cae al placeholder */
     }
   }
-  return { kind: 'ph', icon: (r.icon || r.name.charAt(0) || '?').slice(0, 2) };
+  return { kind: 'ph', icon: (r.name.charAt(0) || '?').toUpperCase() };
 }
 ---
 <AdminLayout title="Productos">
