@@ -3,6 +3,7 @@ export const prerender = false;
 
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { adminListRows, type PlantillaRow } from '../../lib/catalog';
+import { imageUrl, hasImage } from '../../image-url';
 
 let rows: PlantillaRow[] = [];
 let loadError: string | null = null;
@@ -12,45 +13,146 @@ try {
   loadError = err instanceof Error ? err.message : String(err);
 }
 
+const role = Astro.locals.role;
 const published = Astro.url.searchParams.get('ok');
+const err = Astro.url.searchParams.get('e');
+
+/** Miniatura: portada subida → portada legada (manifiesto) → placeholder con icono. */
+function thumb(r: PlantillaRow): { kind: 'img'; src: string } | { kind: 'ph'; icon: string } {
+  if (r.image_url) return { kind: 'img', src: r.image_url };
+  if (r.img && hasImage(r.img)) {
+    try {
+      return { kind: 'img', src: imageUrl(r.img, Astro.site!, 256) };
+    } catch {
+      /* fuera del manifiesto: cae al placeholder */
+    }
+  }
+  return { kind: 'ph', icon: (r.icon || r.name.charAt(0) || '?').slice(0, 2) };
+}
 ---
 <AdminLayout title="Productos">
-  <a slot="actions" class="btn primary" href="/admin/nuevo">+ Nueva plantilla</a>
+  <a slot="actions" class="btn primary" href="/admin/nuevo">+ Nuevo producto</a>
 
-  {published === 'saved' && (
-    <div class="msg ok">Guardado. El sitio refleja el cambio en ~1 minuto (sin necesidad de desplegar).</div>
+  {published === 'saved' && <div class="msg ok">Guardado. El sitio refleja el cambio en ~1 minuto (sin desplegar).</div>}
+  {published === 'created' && role === 'editor' && (
+    <div class="msg ok">
+      Producto creado. Entra <strong>oculto</strong>: pídele al super admin que complete la ficha
+      y lo publique, o muéstralo tú desde aquí cuando esté listo.
+    </div>
   )}
-  {published === 'deleted' && <div class="msg ok">Plantilla eliminada.</div>}
+  {published === 'created' && role !== 'editor' && <div class="msg ok">Producto creado.</div>}
+  {published === 'deleted' && <div class="msg ok">Producto eliminado.</div>}
+  {err === 'forbidden' && <div class="msg err">Esa sección es solo para el super admin.</div>}
   {loadError && <div class="msg err">No se pudo leer el catálogo: {loadError}</div>}
 
-  <p class="note">{rows.length} plantilla(s). El orden es el que se ve en el sitio.</p>
+  <div class="admin-head">
+    <h2>Productos</h2>
+    <span class="note">{rows.length} en total · el orden es el que se ve en el sitio (▲▼ para moverlos).</span>
+  </div>
 
-  <table>
-    <thead>
-      <tr><th>Orden</th><th>Nombre</th><th>Precio</th><th>Estado</th><th></th></tr>
-    </thead>
-    <tbody>
-      {rows.map((r) => (
-        <tr>
-          <td>{r.sort}</td>
-          <td>
-            <strong>{r.name}</strong><br />
+  <div id="list-msg"></div>
+
+  <div class="admin-list" id="prod-list">
+    {rows.map((r, i) => {
+      const t = thumb(r);
+      const free = /free|gratis/i.test(r.price);
+      return (
+        <div class="admin-row" data-slug={r.slug} data-active={String(r.active)}>
+          <span class="admin-order" title="Orden">
+            <button class="btn mv" data-dir="-1" disabled={i === 0} aria-label="Subir">▲</button>
+            <span class="sortnum">{r.sort}</span>
+            <button class="btn mv" data-dir="1" disabled={i === rows.length - 1} aria-label="Bajar">▼</button>
+          </span>
+          {t.kind === 'img' ? (
+            <img class="admin-thumb" src={t.src} alt="" loading="lazy" decoding="async" width="72" height="72" />
+          ) : (
+            <div class="admin-thumb admin-thumb--ph">{t.icon}</div>
+          )}
+          <div class="admin-row-body">
+            <strong>{r.name}</strong>
             <span class="note">{r.slug}</span>
-          </td>
-          <td>{r.price}</td>
-          <td>
-            <span class={`tag ${r.active ? 'on' : 'off'}`}>{r.active ? 'Visible' : 'Oculta'}</span>
-          </td>
-          <td style="text-align:right;white-space:nowrap">
+          </div>
+          <span class={`admin-price ${free ? 'free' : ''}`}>{r.price}</span>
+          <span class={`tag ${r.active ? 'on' : 'off'}`}>{r.active ? 'Visible' : 'Oculta'}</span>
+          <div class="admin-actions">
             <a class="btn" href={`/admin/editar/${r.slug}`}>Editar</a>
-            <form method="post" action="/api/admin/toggle" style="display:inline;margin-left:6px">
-              <input type="hidden" name="slug" value={r.slug} />
-              <input type="hidden" name="active" value={r.active ? '0' : '1'} />
-              <button class="btn" type="submit">{r.active ? 'Ocultar' : 'Mostrar'}</button>
-            </form>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+            <button class="btn vis">{r.active ? 'Ocultar' : 'Mostrar'}</button>
+            <button class="btn danger del">Eliminar</button>
+          </div>
+        </div>
+      );
+    })}
+  </div>
 </AdminLayout>
+
+<script>
+  const list = document.getElementById('prod-list');
+  const msg = document.getElementById('list-msg')!;
+
+  function flash(kind: 'ok' | 'err', text: string) {
+    msg.className = `msg ${kind}`;
+    msg.textContent = text;
+    msg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  async function call(url: string, method: string, body?: unknown) {
+    const r = await fetch(url, {
+      method,
+      headers: body ? { 'content-type': 'application/json' } : {},
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error((data.issues || [data.error || `HTTP ${r.status}`]).join('\n'));
+    return data;
+  }
+
+  list?.addEventListener('click', async (e) => {
+    const btn = (e.target as HTMLElement).closest('button');
+    if (!btn || !(btn instanceof HTMLButtonElement)) return;
+    const row = btn.closest('.admin-row') as HTMLElement;
+    const slug = row.dataset.slug!;
+
+    if (btn.classList.contains('vis')) {
+      const next = row.dataset.active !== 'true';
+      btn.disabled = true;
+      try {
+        await call(`/api/admin/productos/${slug}/visibility`, 'POST', { active: next });
+        location.reload();
+      } catch (err) {
+        flash('err', 'No se pudo cambiar la visibilidad: ' + (err as Error).message);
+        btn.disabled = false;
+      }
+      return;
+    }
+
+    if (btn.classList.contains('del')) {
+      if (!confirm(`¿Eliminar "${slug}"? La URL /plantillas-notion/${slug} dejará de existir.`)) return;
+      btn.disabled = true;
+      try {
+        await call(`/api/admin/productos/${slug}`, 'DELETE');
+        location.href = '/admin?ok=deleted';
+      } catch (err) {
+        flash('err', 'No se pudo eliminar: ' + (err as Error).message);
+        btn.disabled = false;
+      }
+      return;
+    }
+
+    if (btn.classList.contains('mv')) {
+      const dir = Number(btn.dataset.dir);
+      const rowsArr = Array.from(list!.querySelectorAll('.admin-row')) as HTMLElement[];
+      const idx = rowsArr.indexOf(row);
+      if (idx + dir < 0 || idx + dir >= rowsArr.length) return;
+      // Intercambia y renumera TODA la lista de forma secuencial (sin colisiones).
+      const order = rowsArr.map((el) => el.dataset.slug!);
+      [order[idx], order[idx + dir]] = [order[idx + dir], order[idx]];
+      const items = order.map((slug, sort) => ({ slug, sort }));
+      try {
+        await call('/api/admin/productos/reorder', 'POST', { items });
+        location.reload();
+      } catch (err) {
+        flash('err', 'No se pudo reordenar: ' + (err as Error).message);
+      }
+    }
+  });
+</script>

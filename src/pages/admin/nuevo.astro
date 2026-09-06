@@ -3,8 +3,10 @@ export const prerender = false;
 
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import PlantillaForm from '../../components/admin/PlantillaForm.astro';
+
+const role = Astro.locals.role ?? 'editor';
 ---
-<AdminLayout title="Nueva plantilla">
-  <h2 style="margin-top:0">Nueva plantilla</h2>
-  <PlantillaForm row={null} />
+<AdminLayout title="Nuevo producto">
+  <h2>Nuevo producto</h2>
+  <PlantillaForm row={null} role={role} />
 </AdminLayout>

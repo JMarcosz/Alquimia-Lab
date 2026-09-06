@@ -1,0 +1,359 @@
+/* ========================================
+   ALQUIMIA LAB — Panel /admin
+   Mismo tema que el sitio público: tokens.css aporta la fuente Quicksand
+   y la paleta morada. Aquí solo viven los componentes del panel.
+   NO se importa global.css (1600+ líneas de la web pública que el panel
+   no usa).
+   ======================================== */
+@import './tokens.css';
+
+:root {
+  /* Alias semánticos del panel, mapeados a la paleta de marca.
+     Permiten que el HTML heredado (PlantillaForm) siga resolviendo
+     var(--border) / var(--muted) sin tocarlo. */
+  --border: var(--lavender);
+  --muted: var(--text-muted);
+  --admin-danger: #d6455d;
+  --admin-ok: #3f9d7c;
+  --admin-radius: 16px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Quicksand', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--text-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+a { color: var(--purple); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; display: block; }
+
+:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* === SHELL === */
+.wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md) var(--space-xl);
+}
+
+header.admin {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--lavender);
+}
+header.admin h1 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  letter-spacing: .02em;
+  margin: 0;
+}
+header.admin h1 a { color: var(--purple); text-decoration: none; }
+header.admin .sp { flex: 1; }
+
+h2 { font-size: var(--text-xl); font-weight: 700; color: var(--text); }
+h3 { font-size: var(--text-lg); font-weight: 700; color: var(--text); }
+
+/* === BOTONES (mismo lenguaje que .btn-primary del sitio) === */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: 42px;
+  padding: 10px 20px;
+  background: var(--surface);
+  color: var(--purple);
+  border: 1.5px solid var(--lavender);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+}
+.btn:hover {
+  text-decoration: none;
+  border-color: var(--purple);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+.btn.primary {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(100, 98, 171, .3);
+}
+.btn.primary:hover { background: var(--purple-dark); border-color: var(--purple-dark); }
+.btn.danger { border-color: var(--admin-danger); color: var(--admin-danger); background: var(--surface); }
+.btn.danger:hover { background: var(--admin-danger); color: #fff; border-color: var(--admin-danger); }
+.btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* === FORM FIELDS (mismo lenguaje que .form input del sitio) === */
+input, textarea, select {
+  width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--lavender);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: var(--text-sm);
+  transition: border-color .2s ease, box-shadow .2s ease;
+  outline: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px var(--shadow);
+}
+input[readonly] { background: var(--lavender-light); color: var(--text-muted); cursor: not-allowed; }
+textarea { resize: vertical; min-height: 64px; }
+input::placeholder, textarea::placeholder { color: var(--text-muted); }
+input[type="file"] {
+  padding: 9px 12px;
+  background: var(--surface);
+  font-size: var(--text-xs);
+}
+
+label {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  margin: 16px 0 6px;
+}
+
+/* === NOTAS / MENSAJES === */
+.note { color: var(--text-muted); font-size: var(--text-sm); }
+.note a { color: var(--purple); font-weight: 600; }
+
+.msg {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--lavender);
+  background: var(--surface);
+  margin: 16px 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+.msg.ok { background: var(--lavender-light); border-color: var(--purple-light); color: var(--purple-dark); }
+.msg.err { background: rgba(214, 69, 93, .08); border-color: var(--admin-danger); color: var(--admin-danger); white-space: pre-wrap; }
+
+/* === PILL DE ESTADO === */
+.tag {
+  display: inline-flex; align-items: center;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.tag.on { background: var(--lavender); color: var(--purple-dark); }
+.tag.off { background: transparent; color: var(--text-muted); border-color: var(--lavender); }
+
+/* ========================================
+   LISTADO DE PLANTILLAS  (admin/index.astro)
+   Fila tipo .product-item del sitio: miniatura + cuerpo + acciones.
+   ======================================== */
+.admin-head {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px;
+  margin-bottom: var(--space-md);
+}
+.admin-head h2 { margin: 0; }
+
+.admin-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+
+.admin-row {
+  display: grid;
+  grid-template-columns: auto 72px 1fr auto auto auto;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--surface);
+  border: 1px solid var(--lavender);
+  border-radius: var(--admin-radius);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.admin-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+
+.admin-order {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--purple);
+  background: var(--lavender-light);
+  border-radius: 8px;
+  padding: 4px 10px;
+  min-width: 34px;
+  text-align: center;
+}
+
+.admin-thumb {
+  width: 72px; height: 72px;
+  border-radius: 12px;
+  object-fit: cover;
+  background: var(--lavender-light);
+  border: 1px solid var(--lavender);
+}
+.admin-thumb--ph {
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--purple) 0%, var(--purple-dark) 100%);
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  text-transform: lowercase;
+}
+
+.admin-row-body { min-width: 0; }
+.admin-row-body strong {
+  display: block;
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.admin-row-body .note {
+  display: block;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.admin-price {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--purple);
+  white-space: nowrap;
+}
+.admin-price.free { color: var(--text-muted); font-size: var(--text-base); }
+
+.admin-actions {
+  display: flex; gap: 8px; align-items: center;
+  white-space: nowrap;
+}
+.admin-actions form { margin: 0; display: inline-flex; }
+
+@media (max-width: 720px) {
+  .admin-row {
+    grid-template-columns: auto 56px 1fr;
+    grid-template-areas:
+      "order thumb body"
+      "meta  meta  meta"
+      "acts  acts  acts";
+    row-gap: var(--space-sm);
+  }
+  .admin-order { grid-area: order; }
+  .admin-thumb { grid-area: thumb; width: 56px; height: 56px; }
+  .admin-row-body { grid-area: body; }
+  .admin-row .admin-price { grid-area: meta; justify-self: start; }
+  .admin-row .tag { grid-area: meta; justify-self: end; align-self: center; }
+  .admin-actions { grid-area: acts; }
+  .admin-actions .btn, .admin-actions form { flex: 1; }
+  .admin-actions .btn { width: 100%; }
+}
+
+/* ========================================
+   AUTENTICACIÓN  (admin/login.astro)
+   ======================================== */
+.admin-auth {
+  max-width: 380px;
+  margin: 10vh auto 0;
+}
+.admin-card {
+  background: var(--surface);
+  border: 1px solid var(--lavender);
+  border-radius: 20px;
+  padding: var(--space-lg);
+  box-shadow: 0 8px 24px var(--shadow);
+}
+.admin-card h2 { margin: 0 0 4px; }
+.admin-card .btn { width: 100%; margin-top: 16px; }
+
+/* ========================================
+   FORMULARIO DE PLANTILLA  (components/admin/PlantillaForm.astro)
+   ======================================== */
+.pf-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+.pf-langs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+@media (max-width: 720px) {
+  .pf-grid-2, .pf-langs { grid-template-columns: 1fr; }
+}
+
+.pf-cover-label { margin-top: var(--space-lg); }
+.pf-cover {
+  display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap;
+}
+.pf-cover > div { flex: 1; min-width: 220px; }
+.pf-img-preview {
+  width: 180px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--lavender);
+  background: var(--lavender-light);
+}
+
+.pf-fieldset {
+  border: 1px solid var(--lavender);
+  border-radius: var(--admin-radius);
+  padding: 0 16px 16px;
+}
+.pf-fieldset legend {
+  padding: 0 8px;
+  color: var(--purple);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.pf-faq-row {
+  border: 1px solid var(--lavender);
+  border-radius: var(--admin-radius);
+  padding: 14px;
+  margin-bottom: 10px;
+  background: var(--surface);
+}
+.pf-faq-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 720px) {
+  .pf-faq-grid { grid-template-columns: 1fr; }
+}
+
+.pf-actions {
+  margin-top: var(--space-lg);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pf-actions .push-end { margin-left: auto; }
+
+.pf-section-gap { margin-top: var(--space-lg); }
+.pf-faq-row .faq-del { margin-top: 10px; }

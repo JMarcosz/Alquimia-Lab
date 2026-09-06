@@ -2,10 +2,9 @@
 export const prerender = false;
 
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { verifySession, SESSION_COOKIE } from '../../lib/auth';
 
-// Ya con sesión → al panel.
-if (verifySession(Astro.cookies.get(SESSION_COOKIE)?.value)) {
+// Ya con sesión → al panel. (El middleware pobló locals.user.)
+if (Astro.locals.user) {
   return Astro.redirect('/admin', 302);
 }
 
@@ -13,15 +12,19 @@ const next = Astro.url.searchParams.get('next') || '/admin';
 const failed = Astro.url.searchParams.get('e') === '1';
 ---
 <AdminLayout title="Entrar">
-  <div style="max-width:360px;margin:8vh auto 0">
-    <h2 style="margin:0 0 4px">Panel de contenido</h2>
-    <p class="note">Acceso solo para Alquimia Lab.</p>
-    {failed && <div class="msg err">Contraseña incorrecta.</div>}
-    <form method="post" action="/api/admin/login">
-      <input type="hidden" name="next" value={next} />
-      <label for="password">Contraseña</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" required autofocus />
-      <button class="btn primary" type="submit" style="margin-top:16px;width:100%">Entrar</button>
-    </form>
+  <div class="admin-auth">
+    <div class="admin-card">
+      <h2>Panel de contenido</h2>
+      <p class="note">Acceso solo para Alquimia Lab.</p>
+      {failed && <div class="msg err">Correo o contraseña incorrectos.</div>}
+      <form method="post" action="/api/admin/login">
+        <input type="hidden" name="next" value={next} />
+        <label for="email">Correo</label>
+        <input id="email" name="email" type="email" autocomplete="username" required autofocus />
+        <label for="password">Contraseña</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required />
+        <button class="btn primary" type="submit">Entrar</button>
+      </form>
+    </div>
   </div>
 </AdminLayout>

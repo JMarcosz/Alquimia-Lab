@@ -2,16 +2,18 @@ export const prerender = false;
 
 import type { APIRoute } from 'astro';
 import { createAdminClient } from '../../../lib/supabase';
+import { json, sameOrigin, requireRole } from '../../../lib/api';
 
 const BUCKET = 'productos';
 const MAX_BYTES = 3 * 1024 * 1024;
 
-const json = (body: unknown, status = 200) =>
-  new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
-
-export const POST: APIRoute = async ({ request, url }) => {
-  const origin = request.headers.get('origin');
-  if (origin && new URL(origin).host !== url.host) return json({ error: 'Origen no permitido' }, 403);
+export const POST: APIRoute = async ({ request, url, locals }) => {
+  try {
+    requireRole(locals, 'superadmin', 'editor');
+  } catch {
+    return json({ error: 'No autorizado' }, 401);
+  }
+  if (!sameOrigin(request, url)) return json({ error: 'Origen no permitido' }, 403);
 
   const type = request.headers.get('content-type') ?? '';
   if (!type.startsWith('image/')) return json({ error: 'Se espera un cuerpo image/*' }, 415);

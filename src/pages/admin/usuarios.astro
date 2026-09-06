@@ -1,0 +1,134 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createAdminClient } from '../../lib/supabase';
+
+let users: {
+  id: string;
+  email: string | undefined;
+  role: string;
+  created_at: string;
+  disabled: boolean;
+}[] = [];
+let loadError: string | null = null;
+
+try {
+  const { data, error } = await createAdminClient().auth.admin.listUsers({ perPage: 200 });
+  if (error) throw error;
+  users = data.users.map((u) => ({
+    id: u.id,
+    email: u.email,
+    role: (u.app_metadata as Record<string, unknown>)?.role === 'superadmin' ? 'superadmin' : 'editor',
+    created_at: u.created_at,
+    disabled: Boolean(
+      (u as { banned_until?: string }).banned_until &&
+        new Date((u as { banned_until?: string }).banned_until!) > new Date(),
+    ),
+  }));
+} catch (err) {
+  loadError = err instanceof Error ? err.message : String(err);
+}
+
+const meId = Astro.locals.user?.id ?? '';
+---
+<AdminLayout title="Usuarios">
+  <h2>Usuarios del panel</h2>
+  <p class="note">
+    El super admin puede todo. La <strong>editora</strong> solo gestiona productos
+    (crear, editar, mostrar/ocultar, reordenar y eliminar). No ve esta sección ni el registro.
+  </p>
+
+  <div id="msg"></div>
+
+  <div class="admin-card" style="max-width:520px">
+    <h3>Crear cuenta</h3>
+    <form id="new-user">
+      <label for="u-email">Correo</label>
+      <input id="u-email" type="email" required placeholder="clienta@correo.com" />
+      <label for="u-role">Rol</label>
+      <select id="u-role">
+        <option value="editor" selected>Editora (solo productos)</option>
+        <option value="superadmin">Super admin (todo)</option>
+      </select>
+      <label for="u-pass">Contraseña (opcional — si la dejas vacía se genera una)</label>
+      <input id="u-pass" type="text" autocomplete="off" placeholder="mín. 8 caracteres" />
+      <button class="btn primary" type="submit">Crear</button>
+    </form>
+    <div id="created" class="msg ok" hidden></div>
+  </div>
+
+  {loadError && <div class="msg err">No se pudo leer la lista: {loadError}</div>}
+
+  <table style="margin-top:20px">
+    <thead><tr><th>Correo</th><th>Rol</th><th>Alta</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+      {users.map((u) => (
+        <tr data-id={u.id} data-disabled={String(u.disabled)}>
+          <td>{u.email}{u.id === meId && <span class="note"> · tú</span>}</td>
+          <td>{u.role === 'superadmin' ? 'Super admin' : 'Editora'}</td>
+          <td class="note">{new Date(u.created_at).toLocaleDateString('es-CO')}</td>
+          <td><span class={`tag ${u.disabled ? 'off' : 'on'}`}>{u.disabled ? 'Desactivada' : 'Activa'}</span></td>
+          <td style="text-align:right">
+            {u.id !== meId && (
+              <button class="btn danger toggle-user">{u.disabled ? 'Reactivar' : 'Desactivar'}</button>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</AdminLayout>
+
+<script>
+  const msg = document.getElementById('msg')!;
+  const created = document.getElementById('created') as HTMLElement;
+
+  function flash(kind: 'ok' | 'err', text: string) {
+    msg.className = `msg ${kind}`;
+    msg.textContent = text;
+  }
+  async function call(url: string, body: unknown, method = 'POST') {
+    const r = await fetch(url, {
+      method,
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(data.error || `HTTP ${r.status}`);
+    return data;
+  }
+
+  document.getElementById('new-user')!.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = (document.getElementById('u-email') as HTMLInputElement).value.trim();
+    const role = (document.getElementById('u-role') as HTMLSelectElement).value;
+    const password = (document.getElementById('u-pass') as HTMLInputElement).value.trim();
+    try {
+      const data = await call('/api/admin/usuarios', { email, role, password: password || undefined });
+      created.hidden = false;
+      created.innerHTML =
+        `Cuenta <strong>${data.user.email}</strong> creada (rol ${data.user.role}).<br>` +
+        `Contraseña: <code>${data.password}</code><br>` +
+        `Cópiala y pásasela por un canal seguro. No se vuelve a mostrar.`;
+      flash('ok', 'Cuenta creada.');
+      setTimeout(() => location.reload(), 4000);
+    } catch (err) {
+      flash('err', 'No se pudo crear: ' + (err as Error).message);
+    }
+  });
+
+  document.querySelectorAll('.toggle-user').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const tr = (btn as HTMLElement).closest('tr') as HTMLElement;
+      const id = tr.dataset.id!;
+      const disabled = tr.dataset.disabled !== 'true';
+      try {
+        await call(`/api/admin/usuarios/${id}/disable`, { disabled });
+        location.reload();
+      } catch (err) {
+        flash('err', 'No se pudo cambiar: ' + (err as Error).message);
+      }
+    });
+  });
+</script>

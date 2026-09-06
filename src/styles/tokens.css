@@ -1,0 +1,62 @@
+/* ========================================
+   ALQUIMIA LAB — Tokens compartidos
+   Fuente + variables de marca. Lo consumen:
+   - src/styles/global.css  (sitio público)
+   - src/styles/admin.css   (panel /admin)
+   Cualquier cambio de marca se hace UNA sola vez aquí.
+   ======================================== */
+
+/* === TIPOGRAFIA AUTOHOSPEDADA ===
+   Antes: <link> a fonts.googleapis.com, que encadenaba DNS+TLS a un segundo
+   origen (fonts.gstatic.com) ANTES del primer pintado: 300-600 ms de FCP en
+   movil. Ahora es un solo woff2 servido desde el propio dominio.
+   Quicksand es fuente VARIABLE: un archivo cubre 300-700, asi que los tres
+   pesos que usabamos son una sola peticion de 27,6 KB. */
+@font-face {
+  font-family: 'Quicksand';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/fonts/quicksand-latin.woff2') format('woff2-variations');
+  /* Solo subset `latin`: cubre U+0000-00FF, donde caen todos los acentos del
+     espanol. `latin-ext` seria peso muerto. */
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191,
+    U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* === VARIABLES === */
+:root {
+  --purple: #6462ab;
+  --purple-dark: #524f96;
+  --purple-light: #a29de0;
+  --lavender: #ccc9e6;
+  --lavender-light: #e8e6f4;
+  --bg: #f2f2f2;
+  --surface: #ffffff;
+  --text: #3b3866;
+  --text-muted: #8a87ad;
+  --shadow: rgba(100, 98, 171, .12);
+  --shadow-lg: rgba(100, 98, 171, .22);
+
+  /* === ESCALA TIPOGRÁFICA FLUIDA (clamp) === */
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);   /* ~12px -> 13px */
+  --text-sm: clamp(0.8125rem, 0.78rem + 0.2vw, 0.875rem);   /* ~13px -> 14px */
+  --text-base: clamp(0.9375rem, 0.88rem + 0.3vw, 1rem);     /* ~15px -> 16px */
+  --text-lg: clamp(1.0625rem, 0.98rem + 0.4vw, 1.1875rem);  /* ~17px -> 19px */
+  --text-xl: clamp(1.25rem, 1.15rem + 0.6vw, 1.5rem);       /* ~20px -> 24px */
+  --text-2xl: clamp(1.5rem, 1.3rem + 1.1vw, 2rem);          /* ~24px -> 32px */
+  --text-3xl: clamp(1.875rem, 1.55rem + 1.8vw, 2.625rem);   /* ~30px -> 42px (H1 Hero) */
+  --text-4xl: clamp(2.25rem, 1.8rem + 2.5vw, 3.5rem);       /* ~36px -> 56px (404) */
+
+  /* === ESCALA DE ESPACIADO FLUIDO (clamp) === */
+  --space-xs: clamp(0.5rem, 0.45rem + 0.25vw, 0.75rem);     /* ~8px -> 12px */
+  --space-sm: clamp(0.75rem, 0.65rem + 0.5vw, 1rem);        /* ~12px -> 16px */
+  --space-md: clamp(1rem, 0.85rem + 0.75vw, 1.5rem);        /* ~16px -> 24px */
+  --space-lg: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);        /* ~24px -> 40px */
+  --space-xl: clamp(2.5rem, 2rem + 2.5vw, 5rem);            /* ~40px -> 80px (Padding secciones) */
+
+  /* === UNIDADES DE VIEWPORT DINÁMICAS === */
+  --screen-dvh: 100dvh;
+  --screen-svh: 100svh;
+}

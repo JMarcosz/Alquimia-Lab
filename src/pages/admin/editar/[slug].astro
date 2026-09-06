@@ -8,9 +8,11 @@ import { adminGetRow } from '../../../lib/catalog';
 const { slug } = Astro.params;
 const row = slug ? await adminGetRow(slug) : null;
 if (!row) return Astro.redirect('/admin', 302);
+
+const role = Astro.locals.role ?? 'editor';
 ---
 <AdminLayout title={`Editar · ${row.name}`}>
-  <h2 style="margin-top:0">Editar: {row.name}</h2>
+  <h2>Editar: {row.name}</h2>
   <p class="note"><a href={`/plantillas-notion/${row.slug}`} target="_blank" rel="noopener">Ver página pública ↗</a></p>
-  <PlantillaForm row={row} />
+  <PlantillaForm row={row} role={role} />
 </AdminLayout>

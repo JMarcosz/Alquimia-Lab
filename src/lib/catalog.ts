@@ -111,19 +111,87 @@ export async function adminGetRow(slug: string): Promise<PlantillaRow | null> {
   return (data as PlantillaRow) ?? null;
 }
 
-export async function adminUpsertRow(row: PlantillaRowInput): Promise<void> {
-  const { error } = await createAdminClient()
+/** ¿Ya existe una fila con ese slug? */
+export async function adminSlugExists(slug: string): Promise<boolean> {
+  const { data, error } = await createAdminClient()
     .from('plantillas')
-    .upsert(row, { onConflict: 'slug' });
-  if (error) throw new Error(`adminUpsertRow: ${error.message}`);
+    .select('slug')
+    .eq('slug', slug)
+    .maybeSingle();
+  if (error) throw new Error(`adminSlugExists: ${error.message}`);
+  return data !== null;
 }
 
-export async function adminSetActive(slug: string, active: boolean): Promise<void> {
+/** `base`, `base-2`, `base-3`… hasta encontrar uno libre. */
+export async function uniqueSlug(base: string): Promise<string> {
+  let candidate = base || 'plantilla';
+  let n = 2;
+  while (await adminSlugExists(candidate)) {
+    candidate = `${base}-${n++}`;
+  }
+  return candidate;
+}
+
+/** Alta/edición completa (rol superadmin). Upsert por slug. */
+export async function adminUpsertFull(
+  row: PlantillaRowInput,
+  actorId: string | null,
+): Promise<void> {
   const { error } = await createAdminClient()
     .from('plantillas')
-    .update({ active })
+    .upsert({ ...row, updated_by: actorId }, { onConflict: 'slug' });
+  if (error) throw new Error(`adminUpsertFull: ${error.message}`);
+}
+
+/** Alta desde el panel (cualquier rol). Insert puro: falla si el slug choca. */
+export async function adminInsertRow(
+  row: PlantillaRowInput,
+  actorId: string | null,
+): Promise<void> {
+  const { error } = await createAdminClient()
+    .from('plantillas')
+    .insert({ ...row, created_by: actorId, updated_by: actorId });
+  if (error) throw new Error(`adminInsertRow: ${error.message}`);
+}
+
+/** Actualización parcial de columnas planas (rol editor). */
+export async function adminUpdateFields(
+  slug: string,
+  fields: Record<string, unknown>,
+  actorId: string | null,
+): Promise<void> {
+  const { error } = await createAdminClient()
+    .from('plantillas')
+    .update({ ...fields, updated_by: actorId })
+    .eq('slug', slug);
+  if (error) throw new Error(`adminUpdateFields: ${error.message}`);
+}
+
+export async function adminSetActive(
+  slug: string,
+  active: boolean,
+  actorId: string | null,
+): Promise<void> {
+  const { error } = await createAdminClient()
+    .from('plantillas')
+    .update({ active, updated_by: actorId })
     .eq('slug', slug);
   if (error) throw new Error(`adminSetActive: ${error.message}`);
+}
+
+/** Reordena en lote: `[{ slug, sort }]`. */
+export async function adminReorder(
+  items: { slug: string; sort: number }[],
+  actorId: string | null,
+): Promise<void> {
+  const client = createAdminClient();
+  for (const { slug, sort } of items) {
+    const { error } = await client
+      .from('plantillas')
+      .update({ sort, updated_by: actorId })
+      .eq('slug', slug);
+    if (error) throw new Error(`adminReorder(${slug}): ${error.message}`);
+  }
 }
 
 export async function adminDeleteRow(slug: string): Promise<void> {
