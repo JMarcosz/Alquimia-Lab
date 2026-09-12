@@ -28,10 +28,17 @@ const AI_BOTS = [
 // para poder mostrarlo en los resultados de búsqueda.
 const aiBlock = AI_BOTS.map((bot) => `User-agent: ${bot}\nAllow: /`).join('\n\n');
 
+// https://contentsignals.org — declara la postura del sitio ante crawlers de
+// IA: no autoriza entrenar modelos con el contenido, pero sí que se use para
+// aparecer en búsqueda y en respuestas generadas (coherente con `AI_BOTS`
+// arriba, que persigue justamente aparecer en Perplexity/ChatGPT/Gemini).
+const contentSignal = 'Content-Signal: ai-train=no, search=yes, ai-input=yes';
+
 const body = [
   'User-agent: *',
   'Allow: /',
   'Disallow: /admin',
+  contentSignal,
   '',
   aiBlock,
   '',
